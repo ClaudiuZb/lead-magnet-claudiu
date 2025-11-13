@@ -232,18 +232,16 @@ actions:
         </pre>
       </div>
 
-      {/* AI Thinking Terminal - shown when AI is working */}
-      {isAICoding && aiThinking && (
-        <div className="h-40 bg-[#0E0E0E] border-t border-[#2D2D2D] overflow-auto font-mono text-xs">
-          <div className="sticky top-0 bg-[#181818] px-3 py-2 border-b border-[#2D2D2D] flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-            <span className="text-[#CCCCCC] font-semibold">membrane@ide:~/projects/{capitalizedName}-integration-layer$</span>
-          </div>
-          <div className="p-3 text-[#00FF00] whitespace-pre-wrap">
-            {aiThinking}
-          </div>
+      {/* AI Thinking Terminal - always visible */}
+      <div className="h-40 bg-[#0E0E0E] border-t border-[#2D2D2D] overflow-auto font-mono text-xs">
+        <div className="sticky top-0 bg-[#181818] px-3 py-2 border-b border-[#2D2D2D] flex items-center gap-2">
+          <div className={`w-2 h-2 rounded-full ${isAICoding ? 'bg-green-500 animate-pulse' : 'bg-gray-500'}`}></div>
+          <span className="text-[#CCCCCC] font-semibold">membrane@ide:~/projects/{capitalizedName}-integration-layer$</span>
         </div>
-      )}
+        <div className="p-3 text-[#00FF00] whitespace-pre-wrap">
+          {aiThinking || 'Ready to build integrations...'}
+        </div>
+      </div>
     </div>
   );
 }
