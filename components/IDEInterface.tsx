@@ -158,9 +158,9 @@ export default function IDEInterface({ companyUrl }: IDEInterfaceProps) {
       </div>
 
       {/* Main content area */}
-      <div className="flex w-full pt-12">
-        {/* Left sidebar - File tree */}
-        <div className="w-60 bg-[#252526] border-r border-[#2D2D2D] overflow-y-auto">
+      <div className="flex flex-col md:flex-row w-full pt-12">
+        {/* Left sidebar - File tree (hidden on mobile) */}
+        <div className="hidden md:block md:w-60 bg-[#252526] border-r border-[#2D2D2D] overflow-y-auto">
           <FileTree
             onFileSelect={setSelectedFile}
             selectedFile={selectedFile}
@@ -169,8 +169,8 @@ export default function IDEInterface({ companyUrl }: IDEInterfaceProps) {
           />
         </div>
 
-        {/* Center - Code panel */}
-        <div className="flex-1 overflow-hidden">
+        {/* Center - Code panel (hidden on mobile, shown on tablet+) */}
+        <div className="hidden lg:block flex-1 overflow-hidden">
           <CodePanel
             selectedFile={selectedFile}
             companyUrl={companyUrl}
@@ -182,8 +182,8 @@ export default function IDEInterface({ companyUrl }: IDEInterfaceProps) {
           />
         </div>
 
-        {/* Right sidebar - Chat panel */}
-        <div className="w-96 bg-[#1E1E1E] border-l border-[#2D2D2D] flex flex-col">
+        {/* Right sidebar - Chat panel (full width on mobile, fixed width on desktop) */}
+        <div className="flex-1 lg:w-96 bg-[#1E1E1E] border-l border-[#2D2D2D] flex flex-col">
           <ChatPanel
             companyUrl={companyUrl}
             onCodingStateChange={setIsAICoding}
