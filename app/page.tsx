@@ -42,7 +42,7 @@ export default function Home() {
         </div>
 
         {/* Main heading */}
-        <h1 className="text-[32px] sm:text-4xl md:text-5xl lg:text-6xl font-semibold leading-tight tracking-tight text-membrane-dark mb-4">
+        <h1 className="text-[28px] xs:text-[32px] sm:text-4xl md:text-5xl lg:text-6xl font-semibold leading-tight tracking-tight text-membrane-dark mb-4 whitespace-nowrap">
           AI for product integrations
         </h1>
 
