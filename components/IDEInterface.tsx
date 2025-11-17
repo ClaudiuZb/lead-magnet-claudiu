@@ -117,14 +117,14 @@ export default function IDEInterface({ companyUrl }: IDEInterfaceProps) {
   };
 
   return (
-    <div className="flex h-screen bg-[#1E1E1E] text-white overflow-hidden">
+    <div className="flex h-full bg-[#1E1E1E] text-white overflow-hidden">
       {/* Email capture overlay */}
       {showEmailCapture && (
         <EmailCaptureOverlay onSubmit={handleEmailSubmit} onSkip={handleEmailSkip} />
       )}
 
-      {/* Top bar */}
-      <div className="fixed top-0 left-0 right-0 h-12 bg-[#181818] border-b border-[#2D2D2D] flex items-center px-4 z-10">
+      {/* Top bar - Hidden when inside DesktopOS window */}
+      <div className="hidden fixed top-0 left-0 right-0 h-12 bg-[#181818] border-b border-[#2D2D2D] items-center px-4 z-10">
         <div className="flex items-center gap-3">
           <svg
             className="w-5 h-5"
@@ -158,7 +158,7 @@ export default function IDEInterface({ companyUrl }: IDEInterfaceProps) {
       </div>
 
       {/* Main content area */}
-      <div className="flex w-full pt-12">
+      <div className="flex w-full h-full">
         {/* Left sidebar - File tree (hidden on small screens) */}
         <div className="hidden lg:block w-60 bg-[#252526] border-r border-[#2D2D2D] overflow-y-auto">
           <FileTree
