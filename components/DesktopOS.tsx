@@ -143,7 +143,7 @@ export default function DesktopOS({ companyUrl }: DesktopOSProps) {
               fill="white"
             />
           </svg>
-          <span className="text-white text-xs font-semibold">Membrane</span>
+          <span className="text-white text-xs font-semibold">Membrane OS</span>
         </div>
         <div className="ml-auto text-xs text-white/70">
           {capitalizedName} Integration Platform
@@ -181,7 +181,7 @@ export default function DesktopOS({ companyUrl }: DesktopOSProps) {
         {/* IDE Window */}
         {windows.find((w) => w.id === 'ide')?.isOpen && (
           <div
-            className={`absolute left-24 right-4 top-4 bottom-4 bg-[#1E1E1E] rounded-lg shadow-2xl overflow-hidden flex flex-col transition-all duration-300 ${
+            className={`absolute left-32 right-12 top-12 bottom-12 bg-[#1E1E1E] rounded-lg shadow-2xl overflow-hidden flex flex-col transition-all duration-300 ${
               openingApp === 'ide' ? 'scale-0 opacity-0 origin-top-left' : 'scale-100 opacity-100'
             }`}
             style={{
