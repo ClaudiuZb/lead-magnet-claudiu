@@ -97,12 +97,12 @@ export default function FileTree({ onFileSelect, selectedFile, companyUrl, dynam
       return (
         <div key={node.path}>
           <div
-            className="flex items-center gap-1 px-3 py-1 cursor-pointer hover:bg-[#2D2D2D] text-sm"
+            className="flex items-center gap-1 px-3 py-1 cursor-pointer hover:bg-gray-100 text-sm"
             style={{ paddingLeft: `${level * 12 + 12}px` }}
             onClick={() => toggleFolder(node.path)}
           >
-            <span className="text-[#CCCCCC]">{isExpanded ? '▼' : '▶'}</span>
-            <span className="text-[#CCCCCC] ml-1">{node.name}</span>
+            <span className="text-gray-600">{isExpanded ? '▼' : '▶'}</span>
+            <span className="text-gray-700 ml-1 font-medium">{node.name}</span>
           </div>
           {isExpanded && node.children && (
             <div>{node.children.map((child) => renderNode(child, level + 1))}</div>
@@ -115,12 +115,12 @@ export default function FileTree({ onFileSelect, selectedFile, companyUrl, dynam
       <div
         key={node.path}
         className={`flex items-center gap-2 px-3 py-1 cursor-pointer text-sm ${
-          isSelected ? 'bg-[#37373D] text-white' : 'text-[#CCCCCC] hover:bg-[#2D2D2D]'
+          isSelected ? 'bg-blue-50 text-blue-700 border-l-2 border-blue-500' : 'text-gray-700 hover:bg-gray-100'
         }`}
         style={{ paddingLeft: `${level * 12 + 28}px` }}
         onClick={() => onFileSelect(node.path)}
       >
-        <span className="text-[#999]">📄</span>
+        <span className="text-gray-500">📄</span>
         <span>{node.name}</span>
       </div>
     );
@@ -147,9 +147,9 @@ export default function FileTree({ onFileSelect, selectedFile, companyUrl, dynam
 
   return (
     <div className="h-full">
-      <div className="px-3 py-2 border-b border-[#2D2D2D]">
-        <div className="text-xs font-semibold text-[#CCCCCC] mb-1">{capitalizedName}</div>
-        <div className="text-xs text-[#999]">integration-layer</div>
+      <div className="px-3 py-2 border-b border-gray-200">
+        <div className="text-xs font-semibold text-gray-700 mb-1">{capitalizedName}</div>
+        <div className="text-xs text-gray-500">integration-layer</div>
       </div>
       <div className="py-2">{fileStructure.map((node) => renderNode(node))}</div>
     </div>

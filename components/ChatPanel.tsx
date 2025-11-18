@@ -421,13 +421,13 @@ export default function ChatPanel({ companyUrl, companyAnalysis, isAnalyzing, on
   return (
     <div className="flex flex-col h-full">
       {/* Chat header */}
-      <div className="bg-[#252526] border-b border-[#2D2D2D] px-4 py-3 flex items-center gap-2">
+      <div className="bg-gray-100 border-b border-gray-200 px-4 py-3 flex items-center gap-2">
         <div className={`w-2 h-2 rounded-full ${isAnalyzing ? 'bg-yellow-500 animate-pulse' : 'bg-green-500'}`}></div>
-        <span className="text-sm font-medium text-[#CCCCCC]">Membrane Integration Agent</span>
+        <span className="text-sm font-medium text-gray-700">Membrane Integration Agent</span>
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
+      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 bg-white">
         {messages.map((message, index) => (
           <div key={index}>
             <div
@@ -437,8 +437,8 @@ export default function ChatPanel({ companyUrl, companyAnalysis, isAnalyzing, on
               <div
                 className={`w-7 h-7 rounded flex-shrink-0 flex items-center justify-center text-xs ${
                   message.role === 'assistant'
-                    ? 'bg-[#3E3E42] text-[#CCCCCC]'
-                    : 'bg-[#4B4B4B] text-white'
+                    ? 'bg-gray-200 text-gray-700'
+                    : 'bg-blue-100 text-blue-700'
                 }`}
               >
                 {message.role === 'assistant' ? (
@@ -450,15 +450,15 @@ export default function ChatPanel({ companyUrl, companyAnalysis, isAnalyzing, on
               <div
                 className={`flex-1 rounded-lg px-3 py-2 text-sm leading-relaxed whitespace-pre-wrap ${
                   message.role === 'assistant'
-                    ? 'bg-[#252526] text-[#D4D4D4]'
-                    : 'bg-[#007ACC] text-white'
+                    ? 'bg-gray-50 text-gray-800 border border-gray-200'
+                    : 'bg-blue-600 text-white'
                 }`}
               >
                 {message.isTyping ? (
                   <div className="flex gap-1 items-center py-1">
-                    <span className="w-2 h-2 bg-[#D4D4D4] rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
-                    <span className="w-2 h-2 bg-[#D4D4D4] rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
-                    <span className="w-2 h-2 bg-[#D4D4D4] rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
+                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
+                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
                   </div>
                 ) : (
                   message.content
@@ -479,7 +479,7 @@ export default function ChatPanel({ companyUrl, companyAnalysis, isAnalyzing, on
                   <button
                     key={i}
                     onClick={() => handleSuggestionClick(useCase)}
-                    className="w-full text-left text-xs bg-[#3A3D2F] hover:bg-[#4A4D3F] text-[#E8E6A0] px-4 py-3 rounded-full border border-[#4A4D3F] transition-all"
+                    className="w-full text-left text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 px-4 py-3 rounded-full border border-blue-200 transition-all font-medium"
                   >
                     {useCase}
                   </button>
@@ -493,7 +493,7 @@ export default function ChatPanel({ companyUrl, companyAnalysis, isAnalyzing, on
       </div>
 
       {/* Input area */}
-      <div className="border-t border-[#2D2D2D] p-4">
+      <div className="border-t border-gray-200 p-4 bg-gray-50">
         <form onSubmit={handleSubmit} className="flex flex-col gap-2">
           <textarea
             ref={textareaRef}
@@ -501,13 +501,13 @@ export default function ChatPanel({ companyUrl, companyAnalysis, isAnalyzing, on
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Describe the integration you need..."
-            className="w-full bg-[#252526] text-[#D4D4D4] text-sm rounded-lg px-3 py-2 border border-[#3E3E42] focus:outline-none focus:border-[#007ACC] resize-none min-h-[60px] max-h-[200px] placeholder:text-[#666]"
+            className="w-full bg-white text-gray-700 text-sm rounded-lg px-3 py-2 border border-gray-300 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 resize-none min-h-[60px] max-h-[200px] placeholder:text-gray-400"
             rows={2}
           />
           <button
             type="submit"
             disabled={!input.trim()}
-            className="self-end px-4 py-1.5 bg-[#007ACC] text-white text-sm rounded hover:bg-[#005A9E] disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+            className="self-end px-4 py-1.5 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
           >
             Send
           </button>

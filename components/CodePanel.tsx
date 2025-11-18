@@ -25,27 +25,27 @@ export default function CodePanel({ selectedFile, companyUrl, companyAnalysis, i
   const isGeneratedFile = selectedFile?.startsWith('generated/');
   const generatedContent = showingTypingFile ? typingFile.content : (isGeneratedFile && selectedFile ? generatedFileContents?.get(selectedFile) : null);
 
-  // VS Code-style syntax highlighting helper
+  // Light mode syntax highlighting helper
   const renderWithSyntax = (code: string, fileType: string) => {
     if (fileType === 'yaml') {
       return code.split('\n').map((line, i) => {
         if (line.trim().startsWith('#')) {
-          return <div key={i} className="text-[#6A9955]">{line}</div>;
+          return <div key={i} className="text-green-600">{line}</div>;
         }
         if (line.includes(':') && !line.trim().startsWith('-')) {
           const [key, ...rest] = line.split(':');
           return (
             <div key={i}>
-              <span className="text-[#9CDCFE]">{key}</span>
-              <span className="text-[#D4D4D4]">:</span>
-              <span className="text-[#CE9178]">{rest.join(':')}</span>
+              <span className="text-blue-600 font-medium">{key}</span>
+              <span className="text-gray-700">:</span>
+              <span className="text-orange-600">{rest.join(':')}</span>
             </div>
           );
         }
         if (line.trim().startsWith('-')) {
-          return <div key={i} className="text-[#D4D4D4]">{line}</div>;
+          return <div key={i} className="text-gray-700">{line}</div>;
         }
-        return <div key={i} className="text-[#D4D4D4]">{line}</div>;
+        return <div key={i} className="text-gray-700">{line}</div>;
       });
     }
 
@@ -57,18 +57,18 @@ export default function CodePanel({ selectedFile, companyUrl, companyAnalysis, i
           const value = parts.slice(1).join(':');
           return (
             <div key={i}>
-              <span className="text-[#D4D4D4]">{key.replace(/"([^"]+)"/, '')}</span>
-              <span className="text-[#9CDCFE]">&quot;{key.match(/"([^"]+)"/)?.[1] || ''}&quot;</span>
-              <span className="text-[#D4D4D4]">: </span>
-              <span className="text-[#CE9178]">{value}</span>
+              <span className="text-gray-700">{key.replace(/"([^"]+)"/, '')}</span>
+              <span className="text-blue-600">&quot;{key.match(/"([^"]+)"/)?.[1] || ''}&quot;</span>
+              <span className="text-gray-700">: </span>
+              <span className="text-orange-600">{value}</span>
             </div>
           );
         }
-        return <div key={i} className="text-[#D4D4D4]">{line}</div>;
+        return <div key={i} className="text-gray-700">{line}</div>;
       });
     }
 
-    return <div className="text-[#D4D4D4] whitespace-pre-wrap">{code}</div>;
+    return <div className="text-gray-700 whitespace-pre-wrap">{code}</div>;
   };
 
   // Sample code content based on selected file
@@ -220,25 +220,25 @@ actions:
     <div className="h-full flex flex-col">
       {/* File tab */}
       {selectedFile && (
-        <div className="bg-[#252526] border-b border-[#2D2D2D] px-4 py-2 flex items-center">
-          <span className="text-sm text-[#CCCCCC]">{selectedFile}</span>
+        <div className="bg-gray-100 border-b border-gray-200 px-4 py-2 flex items-center">
+          <span className="text-sm text-gray-700 font-medium">{selectedFile}</span>
         </div>
       )}
 
       {/* Code content */}
-      <div className="flex-1 overflow-auto bg-[#1E1E1E] p-6 relative">
+      <div className="flex-1 overflow-auto bg-white p-6 relative">
         <pre className="text-sm font-mono leading-relaxed">
           {renderWithSyntax(content, type)}
         </pre>
       </div>
 
-      {/* AI Thinking Terminal - always visible */}
-      <div className="h-40 bg-[#0E0E0E] border-t border-[#2D2D2D] overflow-auto font-mono text-xs">
-        <div className="sticky top-0 bg-[#181818] px-3 py-2 border-b border-[#2D2D2D] flex items-center gap-2">
-          <div className={`w-2 h-2 rounded-full ${isAICoding ? 'bg-green-500 animate-pulse' : 'bg-gray-500'}`}></div>
-          <span className="text-[#CCCCCC] font-semibold">membrane@ide:~/projects/{capitalizedName}-integration-layer$</span>
+      {/* AI Thinking Terminal - light mode */}
+      <div className="h-40 bg-gray-50 border-t border-gray-200 overflow-auto font-mono text-xs">
+        <div className="sticky top-0 bg-gray-100 px-3 py-2 border-b border-gray-200 flex items-center gap-2">
+          <div className={`w-2 h-2 rounded-full ${isAICoding ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`}></div>
+          <span className="text-gray-700 font-semibold">membrane@ide:~/projects/{capitalizedName}-integration-layer$</span>
         </div>
-        <div className="p-3 text-[#00FF00] whitespace-pre-wrap">
+        <div className="p-3 text-green-700 whitespace-pre-wrap">
           {aiThinking || 'Ready to build integrations...'}
         </div>
       </div>
