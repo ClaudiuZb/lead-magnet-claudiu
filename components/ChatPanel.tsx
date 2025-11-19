@@ -22,6 +22,7 @@ interface ChatPanelProps {
   onNewFile?: (fileName: string, fileContent: string) => void;
   onFileTyping?: (fileName: string, content: string, isComplete: boolean) => void;
   onAiThinking?: (thinking: string) => void;
+  onAddToIDE?: (integrationData: { name: string; description: string; url?: string; files: { name: string; content: string }[] }) => void;
 }
 
 const brandedLoadingMessages = [
@@ -33,12 +34,14 @@ const brandedLoadingMessages = [
   "Building the connection layer...",
 ];
 
-export default function ChatPanel({ companyUrl, companyAnalysis, isAnalyzing, onCodingStateChange, onNewFile, onFileTyping, onAiThinking }: ChatPanelProps) {
+export default function ChatPanel({ companyUrl, companyAnalysis, isAnalyzing, onCodingStateChange, onNewFile, onFileTyping, onAiThinking, onAddToIDE }: ChatPanelProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const initializedRef = useRef(false);
+  const [integrationCompleted, setIntegrationCompleted] = useState(false);
+  const [integrationData, setIntegrationData] = useState<{ name: string; description: string; url?: string; files: { name: string; content: string }[] } | null>(null);
 
   // Initial AI message sequence with thinking animation
   useEffect(() => {
@@ -156,11 +159,12 @@ export default function ChatPanel({ companyUrl, companyAnalysis, isAnalyzing, on
   }, [input]);
 
   // Helper function to process streaming response - TRULY LIVE VERSION
-  const processStreamingResponse = async (reader: ReadableStreamDefaultReader<Uint8Array>) => {
+  const processStreamingResponse = async (reader: ReadableStreamDefaultReader<Uint8Array>, integrationName: string, userRequest: string) => {
     const decoder = new TextDecoder();
     let assistantMessage = '';
     let displayedText = '';
     const processedFiles = new Set<string>();
+    const createdFiles: { name: string; content: string }[] = [];
     let terminalOutput = 'Parsing integration requirements...\n';
 
     // Show initial terminal output
@@ -185,8 +189,9 @@ export default function ChatPanel({ companyUrl, companyAnalysis, isAnalyzing, on
             if (parsed.content) {
               assistantMessage += parsed.content;
 
-              // LIVE UPDATE: Show reasoning as it streams, hide file markers
-              const textBeforeFile = assistantMessage.split('[FILE:')[0];
+              // LIVE UPDATE: Show reasoning as it streams, hide service and file markers
+              let cleanText = assistantMessage.replace(/\[SERVICE:[^\]]+\]/g, '').trim();
+              const textBeforeFile = cleanText.split('[FILE:')[0];
               if (textBeforeFile !== displayedText) {
                 displayedText = textBeforeFile;
                 setMessages((prev) => {
@@ -243,6 +248,9 @@ export default function ChatPanel({ companyUrl, companyAnalysis, isAnalyzing, on
                     onAiThinking(terminalOutput);
                   }
 
+                  // Store completed file data
+                  createdFiles.push({ name: fileName, content: fileContent });
+
                   // Update chat message
                   setMessages((prev) => {
                     const newMessages = [...prev];
@@ -273,6 +281,26 @@ export default function ChatPanel({ companyUrl, companyAnalysis, isAnalyzing, on
         newMessages[newMessages.length - 1].content = `${textBeforeFiles}\n\n✨ Integration complete! ${processedFiles.size} file${processedFiles.size > 1 ? 's' : ''} created.`;
         return newMessages;
       });
+
+      // Extract service name and domain from AI response
+      // AI should output: [SERVICE: ServiceName|domain.com]
+      let serviceName = integrationName;
+      let serviceUrl = '';
+
+      const serviceMatch = assistantMessage.match(/\[SERVICE:\s*([^|]+)\|([^\]]+)\]/);
+      if (serviceMatch) {
+        serviceName = serviceMatch[1].trim();
+        serviceUrl = serviceMatch[2].trim();
+      }
+
+      // Set integration completion data
+      setIntegrationData({
+        name: serviceName, // Use extracted service name (e.g., "Clearbit", "LinkedIn")
+        description: userRequest,
+        url: serviceUrl, // The actual domain (e.g., "linkedin.com")
+        files: createdFiles
+      });
+      setIntegrationCompleted(true);
     } else {
       setMessages((prev) => {
         const newMessages = [...prev];
@@ -340,7 +368,7 @@ export default function ChatPanel({ companyUrl, companyAnalysis, isAnalyzing, on
         setMessages((prev) => prev.slice(0, -1));
         // Add placeholder for streaming content
         setMessages((prev) => [...prev, { role: 'assistant', content: '...' }]);
-        await processStreamingResponse(reader);
+        await processStreamingResponse(reader, useCase, useCase);
       }
     } catch (error) {
       console.error('Error:', error);
@@ -395,7 +423,7 @@ export default function ChatPanel({ companyUrl, companyAnalysis, isAnalyzing, on
       const reader = response.body?.getReader();
 
       if (reader) {
-        await processStreamingResponse(reader);
+        await processStreamingResponse(reader, userMessage, userMessage);
       }
     } catch (error) {
       console.error('Error:', error);
@@ -421,7 +449,7 @@ export default function ChatPanel({ companyUrl, companyAnalysis, isAnalyzing, on
   return (
     <div className="flex flex-col h-full">
       {/* Chat header */}
-      <div className="bg-gray-100 border-b border-gray-200 px-4 py-3 flex items-center gap-2">
+      <div className="border-b px-4 py-3 flex items-center gap-2 bg-gray-100 border-gray-200">
         <div className={`w-2 h-2 rounded-full ${isAnalyzing ? 'bg-yellow-500 animate-pulse' : 'bg-green-500'}`}></div>
         <span className="text-sm font-medium text-gray-700">Membrane Integration Agent</span>
       </div>
@@ -436,9 +464,7 @@ export default function ChatPanel({ companyUrl, companyAnalysis, isAnalyzing, on
               {/* Avatar */}
               <div
                 className={`w-7 h-7 rounded flex-shrink-0 flex items-center justify-center text-xs ${
-                  message.role === 'assistant'
-                    ? 'bg-gray-200 text-gray-700'
-                    : 'bg-blue-100 text-blue-700'
+                  message.role === 'assistant' ? 'bg-gray-200 text-gray-700' : 'bg-blue-100 text-blue-700'
                 }`}
               >
                 {message.role === 'assistant' ? (
@@ -461,7 +487,7 @@ export default function ChatPanel({ companyUrl, companyAnalysis, isAnalyzing, on
                     <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
                   </div>
                 ) : (
-                  message.content
+                  message.content.replace(/\[SERVICE:[^\]]+\]/g, '').trim()
                 )}
               </div>
             </div>
@@ -486,6 +512,26 @@ export default function ChatPanel({ companyUrl, companyAnalysis, isAnalyzing, on
                 ))}
               </div>
             )}
+
+            {/* Show "Add to Your IDE" button after integration completion */}
+            {message.role === 'assistant' &&
+             index === messages.length - 1 &&
+             integrationCompleted &&
+             integrationData &&
+             message.content.includes('Integration complete!') && (
+              <div className="mt-3 ml-10">
+                <button
+                  onClick={() => {
+                    if (onAddToIDE && integrationData) {
+                      onAddToIDE(integrationData);
+                    }
+                  }}
+                  className="w-full text-left text-xs bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-4 py-3 rounded-full border border-transparent transition-all font-medium shadow-md hover:shadow-lg"
+                >
+                  ✨ Add to Your IDE
+                </button>
+              </div>
+            )}
           </div>
         ))}
 
@@ -493,7 +539,7 @@ export default function ChatPanel({ companyUrl, companyAnalysis, isAnalyzing, on
       </div>
 
       {/* Input area */}
-      <div className="border-t border-gray-200 p-4 bg-gray-50">
+      <div className="border-t p-4 border-gray-200 bg-gray-50">
         <form onSubmit={handleSubmit} className="flex flex-col gap-2">
           <textarea
             ref={textareaRef}
@@ -501,13 +547,13 @@ export default function ChatPanel({ companyUrl, companyAnalysis, isAnalyzing, on
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Describe the integration you need..."
-            className="w-full bg-white text-gray-700 text-sm rounded-lg px-3 py-2 border border-gray-300 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 resize-none min-h-[60px] max-h-[200px] placeholder:text-gray-400"
+            className="w-full text-sm rounded-lg px-3 py-2 border focus:outline-none focus:ring-2 resize-none min-h-[60px] max-h-[200px] bg-white text-gray-700 border-gray-300 focus:border-blue-500 focus:ring-blue-100 placeholder:text-gray-400"
             rows={2}
           />
           <button
             type="submit"
             disabled={!input.trim()}
-            className="self-end px-4 py-1.5 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+            className="self-end px-4 py-1.5 text-sm rounded disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium bg-blue-600 text-white hover:bg-blue-700"
           >
             Send
           </button>

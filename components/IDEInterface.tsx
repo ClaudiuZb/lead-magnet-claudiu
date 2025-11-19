@@ -1,13 +1,14 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import FileTree, { FileNode } from './FileTree';
-import CodePanel from './CodePanel';
-import ChatPanel from './ChatPanel';
-import EmailCaptureOverlay from './EmailCaptureOverlay';
+import IDEFileTree, { FileNode } from './IDEFileTree';
+import IDECodePanel from './IDECodePanel';
+import IDEChatPanel from './IDEChatPanel';
 
 interface IDEInterfaceProps {
   companyUrl: string;
+  integrationData?: { name: string; description: string; files: { name: string; content: string }[] } | null;
+  onPushToProduction?: () => void;
 }
 
 interface CompanyAnalysis {
@@ -22,11 +23,9 @@ export interface GeneratedFile {
   content: string;
 }
 
-export default function IDEInterface({ companyUrl }: IDEInterfaceProps) {
+export default function IDEInterface({ companyUrl, integrationData, onPushToProduction }: IDEInterfaceProps) {
   const [selectedFile, setSelectedFile] = useState<string | null>('packages/crm-sync.yaml');
   const [companyAnalysis, setCompanyAnalysis] = useState<CompanyAnalysis | null>(null);
-  const [showEmailCapture, setShowEmailCapture] = useState(false);
-  const [emailSubmitted, setEmailSubmitted] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(true);
   const [isAICoding, setIsAICoding] = useState(false);
   const [dynamicFiles, setDynamicFiles] = useState<FileNode[]>([]);
@@ -58,58 +57,38 @@ export default function IDEInterface({ companyUrl }: IDEInterfaceProps) {
     analyzeCompany();
   }, [companyUrl]);
 
-  // Show email capture after 45 seconds if not submitted
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (!emailSubmitted) {
-        setShowEmailCapture(true);
-      }
-    }, 45000); // 45 seconds
+  // Handle adding new generated files with dynamic folder structure
+  const handleNewFile = (filePath: string, fileContent: string) => {
+    // Parse the file path (e.g., "src/integrations/clearbit-client.ts")
+    const parts = filePath.split('/');
+    const fileName = parts[parts.length - 1];
 
-    return () => clearTimeout(timer);
-  }, [emailSubmitted]);
+    // Store file content with full path
+    setGeneratedFileContents((prev) => new Map(prev).set(filePath, fileContent));
+    setSelectedFile(filePath);
 
-  const handleEmailSubmit = async (email: string) => {
-    console.log('Email captured:', email, 'for company:', companyUrl);
-    // TODO: Send to your CRM/database
-    setEmailSubmitted(true);
-    setShowEmailCapture(false);
+    // Auto-expand folders in the path
+    const pathParts: string[] = [];
+    for (let i = 0; i < parts.length - 1; i++) {
+      pathParts.push(parts[i]);
+      const folderPath = pathParts.join('/');
+      setExpandedFolders((prev) => new Set(prev).add(folderPath));
+    }
   };
 
-  const handleEmailSkip = () => {
-    setShowEmailCapture(false);
-    // Show again after 2 minutes if they skip
-    setTimeout(() => {
-      if (!emailSubmitted) {
-        setShowEmailCapture(true);
-      }
-    }, 120000);
-  };
-
-  // Handle adding new generated files
-  const handleNewFile = (fileName: string, fileContent: string) => {
-    const newFile: FileNode = {
-      name: fileName,
-      type: 'file',
-      path: `generated/${fileName}`,
-    };
-
-    setDynamicFiles((prev) => [...prev, newFile]);
-    setGeneratedFileContents((prev) => new Map(prev).set(`generated/${fileName}`, fileContent));
-    setSelectedFile(`generated/${fileName}`);
-  };
+  const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set(['src']));
 
   // Handle file typing animation - called MANY times as content grows
-  const handleFileTyping = (fileName: string, content: string, isComplete: boolean) => {
+  const handleFileTyping = (filePath: string, content: string, isComplete: boolean) => {
     if (!isComplete) {
       // Still typing - update content in REAL-TIME
-      setTypingFile({ name: `generated/${fileName}`, content });
-      setSelectedFile(`generated/${fileName}`);
+      setTypingFile({ name: filePath, content });
+      setSelectedFile(filePath);
     } else {
       // Typing complete - move to permanent storage and clear typing state
       setGeneratedFileContents((prev) => {
         const newMap = new Map(prev);
-        newMap.set(`generated/${fileName}`, content);
+        newMap.set(filePath, content);
         return newMap;
       });
       setTypingFile(null);
@@ -117,37 +96,12 @@ export default function IDEInterface({ companyUrl }: IDEInterfaceProps) {
   };
 
   return (
-    <div className="flex h-full bg-white text-gray-900 overflow-hidden">
-      {/* Email capture overlay */}
-      {showEmailCapture && (
-        <EmailCaptureOverlay onSubmit={handleEmailSubmit} onSkip={handleEmailSkip} />
-      )}
-
+    <div className="flex h-full bg-[#1E1E1E] text-gray-100 overflow-hidden">
       {/* Top bar - Hidden when inside DesktopOS window */}
-      <div className="hidden fixed top-0 left-0 right-0 h-12 bg-gray-50 border-b border-gray-200 items-center px-4 z-10">
+      <div className="hidden fixed top-0 left-0 right-0 h-12 bg-[#252526] border-b border-[#3E3E42] items-center px-4 z-10">
         <div className="flex items-center gap-3">
-          <svg
-            className="w-5 h-5"
-            viewBox="0 0 180 225"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M177.996 55.3189C178.991 55.8951 179.604 56.9578 179.604 58.1076V164.277C179.604 166.264 177.452 167.504 175.733 166.508L153.939 153.886C153.143 153.425 152.653 152.575 152.653 151.655V77.9606C152.653 76.8108 152.04 75.7481 151.045 75.1718L83.7567 36.2047C82.9606 35.7437 82.4705 34.8936 82.4705 33.9737V4.47239C82.4705 2.48618 84.6222 1.24596 86.3411 2.24139L177.996 55.3189Z"
-              fill="white"
-            />
-            <path
-              d="M0 60.7224C0 58.7362 2.15168 57.496 3.8706 58.4914L95.5256 111.569C96.5207 112.145 97.1333 113.208 97.1333 114.358V220.527C97.1333 222.514 94.9817 223.754 93.2627 222.758L1.28618 169.495C0.490121 169.034 0 168.184 0 167.264V60.7224Z"
-              fill="white"
-            />
-            <path
-              d="M136.761 83.4439C137.756 84.0201 138.368 85.0828 138.368 86.2326V192.402C138.368 194.389 136.217 195.629 134.498 194.633L112.703 182.011C111.907 181.55 111.417 180.7 111.417 179.78V106.086C111.417 104.936 110.805 103.873 109.81 103.297L42.5214 64.3297C41.7254 63.8687 41.2353 63.0186 41.2353 62.0987V32.5974C41.2353 30.6112 43.3869 29.371 45.1059 30.3664L136.761 83.4439Z"
-              fill="white"
-            />
-          </svg>
-          <span className="text-sm font-medium">Membrane</span>
-          <span className="text-[#666]">|</span>
-          <span className="text-sm text-[#999]">Integration IDE</span>
+          <span className="text-lg font-mono text-[#569CD6]">&lt;/&gt;</span>
+          <span className="text-sm font-medium text-gray-300">Your IDE</span>
         </div>
         <div className="ml-auto text-xs text-[#999]">
           Project:{' '}
@@ -157,21 +111,33 @@ export default function IDEInterface({ companyUrl }: IDEInterfaceProps) {
         </div>
       </div>
 
-      {/* Main content area */}
+      {/* Main content area - VS Code Layout */}
       <div className="flex w-full h-full">
-        {/* Left sidebar - File tree (hidden) */}
-        <div className="hidden">
-          <FileTree
+        {/* Left sidebar - File tree (compact, 200px like VS Code) */}
+        <div className="w-[200px] bg-[#252526] border-r border-[#3E3E42] flex flex-col">
+          <IDEFileTree
             onFileSelect={setSelectedFile}
             selectedFile={selectedFile}
             companyUrl={companyUrl}
-            dynamicFiles={dynamicFiles}
+            generatedFileContents={generatedFileContents}
+            expandedFolders={expandedFolders}
+            onToggleFolder={(path) => {
+              setExpandedFolders((prev) => {
+                const next = new Set(prev);
+                if (next.has(path)) {
+                  next.delete(path);
+                } else {
+                  next.add(path);
+                }
+                return next;
+              });
+            }}
           />
         </div>
 
-        {/* Center - Code panel (hidden on small screens) */}
-        <div className="hidden lg:block flex-1 overflow-hidden">
-          <CodePanel
+        {/* Center - Code panel (always visible, responsive) */}
+        <div className="flex-1 overflow-hidden flex flex-col bg-[#1E1E1E]">
+          <IDECodePanel
             selectedFile={selectedFile}
             companyUrl={companyUrl}
             companyAnalysis={companyAnalysis || undefined}
@@ -182,9 +148,9 @@ export default function IDEInterface({ companyUrl }: IDEInterfaceProps) {
           />
         </div>
 
-        {/* Right sidebar - Chat panel (full width on mobile, 384px on desktop) */}
-        <div className="w-full lg:w-96 bg-white border-l border-gray-200 flex flex-col">
-          <ChatPanel
+        {/* Right sidebar - Chat panel (320px compact) */}
+        <div className="w-[320px] border-l border-[#3E3E42] flex flex-col">
+          <IDEChatPanel
             companyUrl={companyUrl}
             onCodingStateChange={setIsAICoding}
             onNewFile={handleNewFile}
@@ -192,6 +158,8 @@ export default function IDEInterface({ companyUrl }: IDEInterfaceProps) {
             onAiThinking={setAiThinking}
             companyAnalysis={companyAnalysis || undefined}
             isAnalyzing={isAnalyzing}
+            integrationData={integrationData}
+            onPushToProduction={onPushToProduction}
           />
         </div>
       </div>

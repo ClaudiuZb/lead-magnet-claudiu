@@ -65,18 +65,36 @@ Company: ${capitalizedName}
 Domain: ${domain}
 Page content: ${pageContent}
 
+⚠️ CRITICAL RULE - READ CAREFULLY ⚠️
+Each suggested use case MUST mention EXACTLY ONE service/platform name.
+
+✅ CORRECT EXAMPLES:
+- "Sync customer data with Salesforce for unified CRM"
+- "Send product events to Segment for analytics"
+- "Connect support tickets to Slack for notifications"
+- "Track email activity with Gmail for engagement scoring"
+
+❌ WRONG - NEVER DO THIS:
+- "Connect Gmail and Outlook" ← NO! Pick ONE email service
+- "Sync with Salesforce or HubSpot" ← NO! Pick ONE CRM
+- "Integrate email platform (Gmail/Outlook)" ← NO! Pick ONE
+- "Send to Slack and Teams" ← NO! Pick ONE chat tool
+
+IF YOU WRITE "AND", "OR", "/" BETWEEN TWO SERVICES, YOU FAILED.
+
 Respond with ONLY valid JSON (no markdown, no code blocks):
 {
   "companyName": "Company Name",
   "productTagline": "Short tagline (max 8 words)",
   "productDescription": "1-2 sentence description of what they do",
   "suggestedUseCases": [
-    "Sync customer data with HubSpot CRM for unified sales pipeline",
+    "Sync customer data with Salesforce for unified sales pipeline",
     "Send product analytics events to Segment for behavior tracking",
-    "Connect support tickets to Slack for real-time team notifications",
-    "Integrate billing events with Stripe for automated invoicing"
+    "Connect support tickets to Slack for real-time team notifications"
   ]
-}`
+}
+
+FINAL CHECK: Count the service names in each use case. If you see 2+ service names, REWRITE IT with only 1 service.`
           }
         ]
       })
