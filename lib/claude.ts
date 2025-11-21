@@ -9,10 +9,7 @@ export interface Message {
   content: string;
 }
 
-export async function streamChatCompletion(
-  messages: Message[],
-  companyUrl: string
-) {
+export async function streamChatCompletion(messages: Message[], companyUrl: string) {
   const companyName = companyUrl.split('.')[0];
   const capitalizedName = companyName.charAt(0).toUpperCase() + companyName.slice(1);
 

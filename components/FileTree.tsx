@@ -16,7 +16,12 @@ export interface FileNode {
   path: string;
 }
 
-export default function FileTree({ onFileSelect, selectedFile, companyUrl, dynamicFiles = [] }: FileTreeProps) {
+export default function FileTree({
+  onFileSelect,
+  selectedFile,
+  companyUrl,
+  dynamicFiles = [],
+}: FileTreeProps) {
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(
     new Set(['packages', 'flows', 'schemas', 'mappings', 'config', 'generated'])
   );
@@ -62,7 +67,11 @@ export default function FileTree({ onFileSelect, selectedFile, companyUrl, dynam
       path: 'mappings',
       children: [
         { name: 'crm_field_map.json', type: 'file', path: 'mappings/crm_field_map.json' },
-        { name: 'analytics_transform.json', type: 'file', path: 'mappings/analytics_transform.json' },
+        {
+          name: 'analytics_transform.json',
+          type: 'file',
+          path: 'mappings/analytics_transform.json',
+        },
         { name: 'support_routing.json', type: 'file', path: 'mappings/support_routing.json' },
       ],
     },
@@ -115,7 +124,9 @@ export default function FileTree({ onFileSelect, selectedFile, companyUrl, dynam
       <div
         key={node.path}
         className={`flex items-center gap-2 px-3 py-1 cursor-pointer text-sm ${
-          isSelected ? 'bg-blue-50 text-blue-700 border-l-2 border-blue-500' : 'text-gray-700 hover:bg-gray-100'
+          isSelected
+            ? 'bg-blue-50 text-blue-700 border-l-2 border-blue-500'
+            : 'text-gray-700 hover:bg-gray-100'
         }`}
         style={{ paddingLeft: `${level * 12 + 28}px` }}
         onClick={() => onFileSelect(node.path)}
@@ -129,10 +140,8 @@ export default function FileTree({ onFileSelect, selectedFile, companyUrl, dynam
   const companyName = companyUrl.split('.')[0];
   const capitalizedName = companyName.charAt(0).toUpperCase() + companyName.slice(1);
 
-  // Combine base structure with dynamic files
   const fileStructure: FileNode[] = [
     ...baseFileStructure,
-    // Add generated folder if there are dynamic files
     ...(dynamicFiles.length > 0
       ? [
           {

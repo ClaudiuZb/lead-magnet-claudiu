@@ -14,23 +14,36 @@ interface CodePanelProps {
   aiThinking?: string;
 }
 
-export default function CodePanel({ selectedFile, companyUrl, companyAnalysis, isAICoding, generatedFileContents, typingFile, aiThinking }: CodePanelProps) {
+export default function CodePanel({
+  selectedFile,
+  companyUrl,
+  companyAnalysis,
+  isAICoding,
+  generatedFileContents,
+  typingFile,
+  aiThinking,
+}: CodePanelProps) {
   const companyName = companyUrl.split('.')[0];
-  const capitalizedName = companyAnalysis?.companyName || companyName.charAt(0).toUpperCase() + companyName.slice(1);
+  const capitalizedName =
+    companyAnalysis?.companyName || companyName.charAt(0).toUpperCase() + companyName.slice(1);
 
-  // Check if we're showing a typing file
   const showingTypingFile = typingFile && selectedFile === typingFile.name;
-
-  // Check if this is a generated file
   const isGeneratedFile = selectedFile?.startsWith('generated/');
-  const generatedContent = showingTypingFile ? typingFile.content : (isGeneratedFile && selectedFile ? generatedFileContents?.get(selectedFile) : null);
+  const generatedContent = showingTypingFile
+    ? typingFile.content
+    : isGeneratedFile && selectedFile
+      ? generatedFileContents?.get(selectedFile)
+      : null;
 
-  // Light mode syntax highlighting helper
   const renderWithSyntax = (code: string, fileType: string) => {
     if (fileType === 'yaml') {
       return code.split('\n').map((line, i) => {
         if (line.trim().startsWith('#')) {
-          return <div key={i} className="text-green-600">{line}</div>;
+          return (
+            <div key={i} className="text-green-600">
+              {line}
+            </div>
+          );
         }
         if (line.includes(':') && !line.trim().startsWith('-')) {
           const [key, ...rest] = line.split(':');
@@ -43,9 +56,17 @@ export default function CodePanel({ selectedFile, companyUrl, companyAnalysis, i
           );
         }
         if (line.trim().startsWith('-')) {
-          return <div key={i} className="text-gray-700">{line}</div>;
+          return (
+            <div key={i} className="text-gray-700">
+              {line}
+            </div>
+          );
         }
-        return <div key={i} className="text-gray-700">{line}</div>;
+        return (
+          <div key={i} className="text-gray-700">
+            {line}
+          </div>
+        );
       });
     }
 
@@ -64,19 +85,22 @@ export default function CodePanel({ selectedFile, companyUrl, companyAnalysis, i
             </div>
           );
         }
-        return <div key={i} className="text-gray-700">{line}</div>;
+        return (
+          <div key={i} className="text-gray-700">
+            {line}
+          </div>
+        );
       });
     }
 
     return <div className="text-gray-700 whitespace-pre-wrap">{code}</div>;
   };
 
-  // Sample code content based on selected file
   const getFileContent = () => {
     if (!selectedFile) {
       return {
         content: `# Welcome to ${capitalizedName} Integration Layer\n\n${companyAnalysis?.productDescription || 'Select a file from the left panel to view its contents.'}`,
-        type: 'markdown'
+        type: 'markdown',
       };
     }
 
@@ -107,7 +131,7 @@ mappings:
   - field: company
     from: HubSpot.Contact.company
     to: ${capitalizedName}.Customer.company_id`,
-        type: 'yaml'
+        type: 'yaml',
       };
     }
 
@@ -136,7 +160,7 @@ mappings:
     }
   ]
 }`,
-        type: 'json'
+        type: 'json',
       };
     }
 
@@ -168,7 +192,7 @@ mappings:
   },
   "required": ["email", "name"]
 }`,
-        type: 'json'
+        type: 'json',
       };
     }
 
@@ -193,24 +217,23 @@ actions:
     action: email.send
     condition: customer.email_verified
     template: welcome_email`,
-        type: 'yaml'
+        type: 'yaml',
       };
     }
 
-    // Handle generated files
     if (isGeneratedFile && generatedContent) {
       const fileExt = selectedFile.split('.').pop() || '';
-      const fileType = fileExt === 'yaml' || fileExt === 'yml' ? 'yaml' :
-                       fileExt === 'json' ? 'json' : 'markdown';
+      const fileType =
+        fileExt === 'yaml' || fileExt === 'yml' ? 'yaml' : fileExt === 'json' ? 'json' : 'markdown';
       return {
         content: generatedContent,
-        type: fileType
+        type: fileType,
       };
     }
 
     return {
       content: `# ${selectedFile}\n\n# Content for this file is being generated...`,
-      type: 'markdown'
+      type: 'markdown',
     };
   };
 
@@ -218,25 +241,24 @@ actions:
 
   return (
     <div className="h-full flex flex-col">
-      {/* File tab */}
       {selectedFile && (
         <div className="bg-gray-100 border-b border-gray-200 px-4 py-2 flex items-center">
           <span className="text-sm text-gray-700 font-medium">{selectedFile}</span>
         </div>
       )}
 
-      {/* Code content */}
       <div className="flex-1 overflow-auto bg-white p-6 relative">
-        <pre className="text-sm font-mono leading-relaxed">
-          {renderWithSyntax(content, type)}
-        </pre>
+        <pre className="text-sm font-mono leading-relaxed">{renderWithSyntax(content, type)}</pre>
       </div>
 
-      {/* AI Thinking Terminal - light mode */}
       <div className="h-40 bg-gray-50 border-t border-gray-200 overflow-auto font-mono text-xs">
         <div className="sticky top-0 bg-gray-100 px-3 py-2 border-b border-gray-200 flex items-center gap-2">
-          <div className={`w-2 h-2 rounded-full ${isAICoding ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`}></div>
-          <span className="text-gray-700 font-semibold">membrane@ide:~/projects/{capitalizedName}-integration-layer$</span>
+          <div
+            className={`w-2 h-2 rounded-full ${isAICoding ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`}
+          ></div>
+          <span className="text-gray-700 font-semibold">
+            membrane@ide:~/projects/{capitalizedName}-integration-layer$
+          </span>
         </div>
         <div className="p-3 text-green-700 whitespace-pre-wrap">
           {aiThinking || 'Ready to build integrations...'}

@@ -7,10 +7,10 @@ export async function POST(req: NextRequest) {
     const { url } = await req.json();
 
     if (!url) {
-      return new Response(
-        JSON.stringify({ error: 'URL is required' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
-      );
+      return new Response(JSON.stringify({ error: 'URL is required' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
     }
 
     const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
@@ -18,21 +18,18 @@ export async function POST(req: NextRequest) {
       throw new Error('ANTHROPIC_API_KEY not configured');
     }
 
-    // Extract company name from URL
     const urlObj = new URL(url.startsWith('http') ? url : `https://${url}`);
     const domain = urlObj.hostname.replace('www.', '');
     const companyName = domain.split('.')[0];
     const capitalizedName = companyName.charAt(0).toUpperCase() + companyName.slice(1);
 
-    // Fetch webpage content
     let pageContent = '';
     try {
       const pageResponse = await fetch(urlObj.toString(), {
-        headers: { 'User-Agent': 'Mozilla/5.0' }
+        headers: { 'User-Agent': 'Mozilla/5.0' },
       });
       const html = await pageResponse.text();
 
-      // Extract text content (remove scripts, styles, and HTML tags)
       pageContent = html
         .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
         .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '')
@@ -45,7 +42,6 @@ export async function POST(req: NextRequest) {
       pageContent = 'Unable to fetch page content';
     }
 
-    // Call Claude to analyze
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -94,28 +90,28 @@ Respond with ONLY valid JSON (no markdown, no code blocks):
   ]
 }
 
-FINAL CHECK: Count the service names in each use case. If you see 2+ service names, REWRITE IT with only 1 service.`
-          }
-        ]
-      })
+FINAL CHECK: Count the service names in each use case. If you see 2+ service names, REWRITE IT with only 1 service.`,
+          },
+        ],
+      }),
     });
 
     if (!response.ok) {
       const errorText = await response.text();
       console.error('Claude API error:', response.status, errorText);
 
-      // Fallback response
       return new Response(
         JSON.stringify({
           companyName: capitalizedName,
           productTagline: 'Modern SaaS Platform',
-          productDescription: 'A powerful platform for modern businesses looking to scale their operations.',
+          productDescription:
+            'A powerful platform for modern businesses looking to scale their operations.',
           suggestedUseCases: [
             'Sync customer records with Salesforce for unified customer view',
             'Send product usage events to analytics platforms like Mixpanel',
             'Connect support tickets to project management tools like Linear',
-            'Integrate payment data with accounting software like QuickBooks'
-          ]
+            'Integrate payment data with accounting software like QuickBooks',
+          ],
         }),
         { status: 200, headers: { 'Content-Type': 'application/json' } }
       );
@@ -124,20 +120,21 @@ FINAL CHECK: Count the service names in each use case. If you see 2+ service nam
     const data = await response.json();
     let analysis = data.content[0].text;
 
-    // Clean up response - remove markdown if present
-    analysis = analysis.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
+    analysis = analysis
+      .replace(/```json\s*/g, '')
+      .replace(/```\s*/g, '')
+      .trim();
     const parsedAnalysis = JSON.parse(analysis);
 
-    return new Response(
-      JSON.stringify(parsedAnalysis),
-      { status: 200, headers: { 'Content-Type': 'application/json' } }
-    );
-
+    return new Response(JSON.stringify(parsedAnalysis), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
   } catch (error) {
     console.error('Error in analyze-company:', error);
-    return new Response(
-      JSON.stringify({ error: 'Failed to analyze company' }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
-    );
+    return new Response(JSON.stringify({ error: 'Failed to analyze company' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 }

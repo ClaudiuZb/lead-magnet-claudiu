@@ -10,14 +10,12 @@ export default function Home() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!url.trim()) return;
-    // Navigate to IDE page with the URL as a query parameter
     router.push(`/ide?url=${encodeURIComponent(url)}`);
   };
 
   return (
     <div className="min-h-screen bg-membrane-bg flex justify-center items-center p-4">
       <div className="max-w-[680px] w-full text-center">
-        {/* Logo */}
         <div className="flex items-center justify-center gap-3 mb-12">
           <svg
             className="w-7 h-7"
@@ -41,17 +39,14 @@ export default function Home() {
           <span className="text-lg font-semibold text-membrane-dark">Membrane</span>
         </div>
 
-        {/* Main heading */}
         <h1 className="text-[28px] xs:text-[32px] sm:text-4xl md:text-5xl lg:text-6xl font-semibold leading-tight tracking-tight text-membrane-dark mb-4 whitespace-nowrap">
           AI for product integrations
         </h1>
 
-        {/* Subtitle */}
         <p className="font-geist text-sm md:text-base lg:text-[17px] leading-relaxed text-membrane-gray mb-10 max-w-[540px] mx-auto">
           Describe what you need. Watch integrations build, test and maintain themselves.
         </p>
 
-        {/* Form card */}
         <div className="bg-white rounded-xl p-8 md:p-10 shadow-sm">
           <form onSubmit={handleSubmit}>
             <label

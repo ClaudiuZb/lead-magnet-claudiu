@@ -1,13 +1,17 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import IDEFileTree, { FileNode } from './IDEFileTree';
+import IDEFileTree from './IDEFileTree';
 import IDECodePanel from './IDECodePanel';
 import IDEChatPanel from './IDEChatPanel';
 
 interface IDEInterfaceProps {
   companyUrl: string;
-  integrationData?: { name: string; description: string; files: { name: string; content: string }[] } | null;
+  integrationData?: {
+    name: string;
+    description: string;
+    files: { name: string; content: string }[];
+  } | null;
   onPushToProduction?: () => void;
 }
 
@@ -23,17 +27,21 @@ export interface GeneratedFile {
   content: string;
 }
 
-export default function IDEInterface({ companyUrl, integrationData, onPushToProduction }: IDEInterfaceProps) {
+export default function IDEInterface({
+  companyUrl,
+  integrationData,
+  onPushToProduction,
+}: IDEInterfaceProps) {
   const [selectedFile, setSelectedFile] = useState<string | null>('packages/crm-sync.yaml');
   const [companyAnalysis, setCompanyAnalysis] = useState<CompanyAnalysis | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(true);
   const [isAICoding, setIsAICoding] = useState(false);
-  const [dynamicFiles, setDynamicFiles] = useState<FileNode[]>([]);
-  const [generatedFileContents, setGeneratedFileContents] = useState<Map<string, string>>(new Map());
+  const [generatedFileContents, setGeneratedFileContents] = useState<Map<string, string>>(
+    new Map()
+  );
   const [typingFile, setTypingFile] = useState<{ name: string; content: string } | null>(null);
   const [aiThinking, setAiThinking] = useState<string>('');
 
-  // Analyze company on load
   useEffect(() => {
     const analyzeCompany = async () => {
       try {
@@ -57,17 +65,12 @@ export default function IDEInterface({ companyUrl, integrationData, onPushToProd
     analyzeCompany();
   }, [companyUrl]);
 
-  // Handle adding new generated files with dynamic folder structure
   const handleNewFile = (filePath: string, fileContent: string) => {
-    // Parse the file path (e.g., "src/integrations/clearbit-client.ts")
     const parts = filePath.split('/');
-    const fileName = parts[parts.length - 1];
 
-    // Store file content with full path
     setGeneratedFileContents((prev) => new Map(prev).set(filePath, fileContent));
     setSelectedFile(filePath);
 
-    // Auto-expand folders in the path
     const pathParts: string[] = [];
     for (let i = 0; i < parts.length - 1; i++) {
       pathParts.push(parts[i]);
@@ -78,14 +81,11 @@ export default function IDEInterface({ companyUrl, integrationData, onPushToProd
 
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set(['src']));
 
-  // Handle file typing animation - called MANY times as content grows
   const handleFileTyping = (filePath: string, content: string, isComplete: boolean) => {
     if (!isComplete) {
-      // Still typing - update content in REAL-TIME
       setTypingFile({ name: filePath, content });
       setSelectedFile(filePath);
     } else {
-      // Typing complete - move to permanent storage and clear typing state
       setGeneratedFileContents((prev) => {
         const newMap = new Map(prev);
         newMap.set(filePath, content);
@@ -97,7 +97,6 @@ export default function IDEInterface({ companyUrl, integrationData, onPushToProd
 
   return (
     <div className="flex h-full bg-[#1E1E1E] text-gray-100 overflow-hidden">
-      {/* Top bar - Hidden when inside DesktopOS window */}
       <div className="hidden fixed top-0 left-0 right-0 h-12 bg-[#252526] border-b border-[#3E3E42] items-center px-4 z-10">
         <div className="flex items-center gap-3">
           <span className="text-lg font-mono text-[#569CD6]">&lt;/&gt;</span>
@@ -111,9 +110,7 @@ export default function IDEInterface({ companyUrl, integrationData, onPushToProd
         </div>
       </div>
 
-      {/* Main content area - VS Code Layout */}
       <div className="flex w-full h-full">
-        {/* Left sidebar - File tree (compact, 200px like VS Code) */}
         <div className="w-[200px] bg-[#252526] border-r border-[#3E3E42] flex flex-col">
           <IDEFileTree
             onFileSelect={setSelectedFile}
@@ -135,7 +132,6 @@ export default function IDEInterface({ companyUrl, integrationData, onPushToProd
           />
         </div>
 
-        {/* Center - Code panel (always visible, responsive) */}
         <div className="flex-1 overflow-hidden flex flex-col bg-[#1E1E1E]">
           <IDECodePanel
             selectedFile={selectedFile}
@@ -148,7 +144,6 @@ export default function IDEInterface({ companyUrl, integrationData, onPushToProd
           />
         </div>
 
-        {/* Right sidebar - Chat panel (320px compact) */}
         <div className="w-[320px] border-l border-[#3E3E42] flex flex-col">
           <IDEChatPanel
             companyUrl={companyUrl}

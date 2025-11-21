@@ -74,12 +74,7 @@ export default function EmailCaptureOverlay({ onSubmit, onSkip }: EmailCaptureOv
               className="flex-1 h-12 px-4 bg-gradient-to-b from-[#35374F] to-[#0D0D12] text-white rounded-lg hover:shadow-lg hover:-translate-y-0.5 transition-all font-medium flex items-center justify-center gap-2"
             >
               Get Started
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"

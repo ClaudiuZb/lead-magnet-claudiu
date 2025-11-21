@@ -13,23 +13,18 @@ export async function POST(req: NextRequest) {
 
     const stream = await streamChatCompletion(messages as Message[], companyUrl);
 
-    // Create a ReadableStream for Server-Sent Events
     const encoder = new TextEncoder();
     const readable = new ReadableStream({
       async start(controller) {
         try {
           for await (const chunk of stream) {
-            if (
-              chunk.type === 'content_block_delta' &&
-              chunk.delta.type === 'text_delta'
-            ) {
+            if (chunk.type === 'content_block_delta' && chunk.delta.type === 'text_delta') {
               const text = chunk.delta.text;
               const data = JSON.stringify({ content: text });
               controller.enqueue(encoder.encode(`data: ${data}\n\n`));
             }
           }
 
-          // Send completion signal
           controller.enqueue(encoder.encode('data: [DONE]\n\n'));
           controller.close();
         } catch (error) {

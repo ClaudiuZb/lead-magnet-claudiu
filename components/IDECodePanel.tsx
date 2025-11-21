@@ -14,48 +14,76 @@ interface IDECodePanelProps {
   aiThinking?: string;
 }
 
-export default function IDECodePanel({ selectedFile, companyUrl, companyAnalysis, isAICoding, generatedFileContents, typingFile, aiThinking }: IDECodePanelProps) {
+export default function IDECodePanel({
+  selectedFile,
+  companyUrl,
+  companyAnalysis,
+  isAICoding,
+  generatedFileContents,
+  typingFile,
+  aiThinking,
+}: IDECodePanelProps) {
   const companyName = companyUrl.split('.')[0];
-  const capitalizedName = companyAnalysis?.companyName || companyName.charAt(0).toUpperCase() + companyName.slice(1);
+  const capitalizedName =
+    companyAnalysis?.companyName || companyName.charAt(0).toUpperCase() + companyName.slice(1);
 
-  // Check if we're showing a typing file
   const showingTypingFile = typingFile && selectedFile === typingFile.name;
-
-  // Check if this is a generated file (now they're in src/...)
   const isGeneratedFile = selectedFile && generatedFileContents?.has(selectedFile);
-  const generatedContent = showingTypingFile ? typingFile.content : (isGeneratedFile && selectedFile ? generatedFileContents?.get(selectedFile) : null);
+  const generatedContent = showingTypingFile
+    ? typingFile.content
+    : isGeneratedFile && selectedFile
+      ? generatedFileContents?.get(selectedFile)
+      : null;
 
-  // VS Code Dark+ theme - EXACT colors from official VS Code theme
   const renderWithSyntax = (code: string, fileType: string) => {
-    // TypeScript/JavaScript highlighting with EXACT VS Code colors
     if (fileType === 'typescript' || fileType === 'javascript') {
       return code.split('\n').map((line, i) => {
         const trimmed = line.trim();
 
-        // Comments - #6A9955 (green)
         if (trimmed.startsWith('//') || trimmed.startsWith('/*')) {
-          return <div key={i} className="text-[#6A9955]">{line}</div>;
+          return (
+            <div key={i} className="text-[#6A9955]">
+              {line}
+            </div>
+          );
         }
 
-        // Keywords (import, export, const, let, var, function, etc.) - #569CD6 (blue)
-        if (/^\s*(import|export|const|let|var|function|class|interface|type|async|await|return|if|else|for|while|new|try|catch|throw)\s/.test(line)) {
-          return <div key={i} className="text-[#569CD6]">{line}</div>;
+        if (
+          /^\s*(import|export|const|let|var|function|class|interface|type|async|await|return|if|else|for|while|new|try|catch|throw)\s/.test(
+            line
+          )
+        ) {
+          return (
+            <div key={i} className="text-[#569CD6]">
+              {line}
+            </div>
+          );
         }
 
-        // Strings - #CE9178 (orange/salmon)
         if (trimmed.includes('"') || trimmed.includes("'") || trimmed.includes('`')) {
-          return <div key={i} className="text-[#CE9178]">{line}</div>;
+          return (
+            <div key={i} className="text-[#CE9178]">
+              {line}
+            </div>
+          );
         }
 
-        // Default text - #D4D4D4 (light gray)
-        return <div key={i} className="text-[#D4D4D4]">{line || '\u00A0'}</div>;
+        return (
+          <div key={i} className="text-[#D4D4D4]">
+            {line || '\u00A0'}
+          </div>
+        );
       });
     }
 
     if (fileType === 'yaml') {
       return code.split('\n').map((line, i) => {
         if (line.trim().startsWith('#')) {
-          return <div key={i} className="text-[#6A9955]">{line}</div>;
+          return (
+            <div key={i} className="text-[#6A9955]">
+              {line}
+            </div>
+          );
         }
         if (line.includes(':') && !line.trim().startsWith('-')) {
           const [key, ...rest] = line.split(':');
@@ -68,9 +96,17 @@ export default function IDECodePanel({ selectedFile, companyUrl, companyAnalysis
           );
         }
         if (line.trim().startsWith('-')) {
-          return <div key={i} className="text-gray-300">{line}</div>;
+          return (
+            <div key={i} className="text-gray-300">
+              {line}
+            </div>
+          );
         }
-        return <div key={i} className="text-gray-300">{line}</div>;
+        return (
+          <div key={i} className="text-gray-300">
+            {line}
+          </div>
+        );
       });
     }
 
@@ -83,43 +119,52 @@ export default function IDECodePanel({ selectedFile, companyUrl, companyAnalysis
           return (
             <div key={i}>
               <span className="text-gray-400">{key.replace(/"([^"]+)"/, '')}</span>
-              <span className="text-[#9CDCFE]">&quot;{key.match(/"([^"]+)"/)?.[1] || ''}&quot;</span>
+              <span className="text-[#9CDCFE]">
+                &quot;{key.match(/"([^"]+)"/)?.[1] || ''}&quot;
+              </span>
               <span className="text-gray-400">: </span>
               <span className="text-[#CE9178]">{value}</span>
             </div>
           );
         }
-        return <div key={i} className="text-gray-300">{line}</div>;
+        return (
+          <div key={i} className="text-gray-300">
+            {line}
+          </div>
+        );
       });
     }
 
     return <div className="text-gray-300 whitespace-pre-wrap">{code}</div>;
   };
 
-  // Get file content
   const getFileContent = () => {
     if (!selectedFile) {
       return {
         content: `// Welcome to Your IDE\n\n// Start building your integration by selecting a file from the explorer\n// or let the AI agent generate implementation code for you.`,
-        type: 'typescript'
+        type: 'typescript',
       };
     }
 
-    // Handle generated files
     if (isGeneratedFile && generatedContent) {
       const fileExt = selectedFile.split('.').pop() || '';
-      const fileType = fileExt === 'yaml' || fileExt === 'yml' ? 'yaml' :
-                       fileExt === 'json' ? 'json' :
-                       fileExt === 'ts' || fileExt === 'js' ? 'typescript' : 'markdown';
+      const fileType =
+        fileExt === 'yaml' || fileExt === 'yml'
+          ? 'yaml'
+          : fileExt === 'json'
+            ? 'json'
+            : fileExt === 'ts' || fileExt === 'js'
+              ? 'typescript'
+              : 'markdown';
       return {
         content: generatedContent,
-        type: fileType
+        type: fileType,
       };
     }
 
     return {
       content: `# ${selectedFile}\n\n# Implementation code will appear here...`,
-      type: 'markdown'
+      type: 'markdown',
     };
   };
 
@@ -127,25 +172,26 @@ export default function IDECodePanel({ selectedFile, companyUrl, companyAnalysis
 
   return (
     <div className="h-full flex flex-col bg-[#1E1E1E]">
-      {/* File tab - VS Code style */}
       {selectedFile && (
         <div className="bg-[#252526] border-b border-[#3E3E42] px-4 py-1.5 flex items-center">
           <span className="text-[13px] text-gray-300 font-normal">{selectedFile}</span>
         </div>
       )}
 
-      {/* Code content - Dark theme */}
       <div className="flex-1 overflow-auto bg-[#1E1E1E] p-4 relative">
         <pre className="text-[13px] font-mono leading-relaxed">
           {renderWithSyntax(content, type)}
         </pre>
       </div>
 
-      {/* AI Thinking Terminal - Dark theme */}
       <div className="h-32 bg-[#1E1E1E] border-t border-[#3E3E42] overflow-auto font-mono text-[11px]">
         <div className="sticky top-0 bg-[#252526] px-3 py-1.5 border-b border-[#3E3E42] flex items-center gap-2">
-          <div className={`w-1.5 h-1.5 rounded-full ${isAICoding ? 'bg-green-500 animate-pulse' : 'bg-gray-500'}`}></div>
-          <span className="text-gray-400 text-[11px]">your@ide:~/{capitalizedName}-integration$</span>
+          <div
+            className={`w-1.5 h-1.5 rounded-full ${isAICoding ? 'bg-green-500 animate-pulse' : 'bg-gray-500'}`}
+          ></div>
+          <span className="text-gray-400 text-[11px]">
+            your@ide:~/{capitalizedName}-integration$
+          </span>
         </div>
         <div className="p-3 text-[#4EC9B0] whitespace-pre-wrap">
           {aiThinking || 'Ready to implement...'}

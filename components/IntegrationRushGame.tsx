@@ -39,10 +39,10 @@ const ALL_INTEGRATIONS = [
   { name: 'AtlasDocs', domain: 'atlasdocs.app' },
   { name: 'PulseMarketing', domain: 'pulsemarketing.digital' },
   { name: 'DeltaPay', domain: 'deltapay.biz' },
-  { name: 'HorizonPM', domain: 'horizonppm.com' }
+  { name: 'HorizonPM', domain: 'horizonppm.com' },
 ];
 
-const BUILD_TIME_MS = 2500; // Faster build time
+const BUILD_TIME_MS = 2500;
 const LANES = 6;
 
 function hashColor(str: string) {
@@ -84,12 +84,16 @@ function AppLogo({ name, domain }: { name: string; domain?: string }) {
   );
 }
 
-interface IntegrationRushGameProps {
-  onClose?: () => void;
-}
-
-export default function IntegrationRushGame({ onClose }: IntegrationRushGameProps) {
-  type Customer = { id: number; need: string; domain: string; lane: number; y: number; spawnedAt: number; built?: boolean };
+export default function IntegrationRushGame() {
+  type Customer = {
+    id: number;
+    need: string;
+    domain: string;
+    lane: number;
+    y: number;
+    spawnedAt: number;
+    built?: boolean;
+  };
   type Build = { id: number; need: string; endsAt: number };
   type Particle = { id: number; x: number; y: number; color: string; emoji: string };
 
@@ -111,7 +115,6 @@ export default function IntegrationRushGame({ onClose }: IntegrationRushGameProp
   const usedIntegrationsRef = useRef<Set<string>>(new Set());
   const customerIdCounter = useRef<number>(0);
 
-  // Load high score from localStorage
   useEffect(() => {
     const saved = localStorage.getItem('integration-rush-highscore');
     if (saved) setHighScore(parseInt(saved, 10));
@@ -119,11 +122,10 @@ export default function IntegrationRushGame({ onClose }: IntegrationRushGameProp
 
   const needsInPlay = useMemo(() => Array.from(new Set(customers.map((c) => c.need))), [customers]);
 
-
   const effectiveBuildTime = membrane ? BUILD_TIME_MS / 3 : BUILD_TIME_MS;
 
   useEffect(() => {
-    const tickMs = 50; // More frequent updates for smoother animation
+    const tickMs = 50;
     const id = setInterval(() => {
       if (paused) return;
       const now = Date.now();
@@ -138,37 +140,40 @@ export default function IntegrationRushGame({ onClose }: IntegrationRushGameProp
       if (now - lastSpawnRef.current > spawnInterval) {
         lastSpawnRef.current = now;
 
-        // Smart queue system: cycle through all integrations without repetition
         if (integrationQueueRef.current.length === 0) {
-          // Refill queue with all integrations in random order
           const shuffled = [...ALL_INTEGRATIONS].sort(() => Math.random() - 0.5);
           integrationQueueRef.current = shuffled;
           usedIntegrationsRef.current.clear();
         }
 
-        // Pick next integration from queue
         const integration = integrationQueueRef.current.shift()!;
         usedIntegrationsRef.current.add(integration.name);
 
         const lane = Math.floor(Math.random() * LANES);
 
-        // Check if there's already a customer at the top of this lane
-        const MIN_SPACING = 60; // Minimum pixels between customers
-        const customersInLane = customers.filter(c => c.lane === lane);
-        const topCustomer = customersInLane.length > 0
-          ? customersInLane.reduce((min, c) => c.y < min.y ? c : min)
-          : null;
+        const MIN_SPACING = 60;
+        const customersInLane = customers.filter((c) => c.lane === lane);
+        const topCustomer =
+          customersInLane.length > 0
+            ? customersInLane.reduce((min, c) => (c.y < min.y ? c : min))
+            : null;
 
-        // Only spawn if there's enough space or no customer in lane
         if (!topCustomer || topCustomer.y > MIN_SPACING) {
           shouldSpawn = true;
           customerIdCounter.current += 1;
-          newCustomer = { id: customerIdCounter.current, need: integration.name, domain: integration.domain, lane, y: 0, spawnedAt: now };
+          newCustomer = {
+            id: customerIdCounter.current,
+            need: integration.name,
+            domain: integration.domain,
+            lane,
+            y: 0,
+            spawnedAt: now,
+          };
         }
       }
 
       setCustomers((prev) => {
-        const dy = 1.6; // Smaller increments for smoother movement
+        const dy = 1.6;
         let arr = shouldSpawn && newCustomer ? [...prev, newCustomer] : prev;
         const newCustomers = arr.map((c) => ({ ...c, y: c.y + dy }));
         const lostCustomers = newCustomers.filter((c) => c.y >= 420 && !c.built);
@@ -194,7 +199,6 @@ export default function IntegrationRushGame({ onClose }: IntegrationRushGameProp
       setBuilds((prev) => {
         const completed = prev.filter((b) => now >= b.endsAt);
         if (completed.length) {
-          // Combo tracking: builds within 3 seconds count as combo
           if (now - lastBuildTime < 3000) {
             setCombo((c) => c + completed.length);
             setShowCombo(true);
@@ -207,7 +211,6 @@ export default function IntegrationRushGame({ onClose }: IntegrationRushGameProp
           setCustomers((prevCust) => {
             let arr = [...prevCust];
             completed.forEach((b) => {
-              // Find customers that match this build and create particles
               const matchingCustomers = arr.filter((c) => c.need === b.need && !c.built);
               matchingCustomers.forEach((c) => {
                 const xPercent = ((c.lane + 0.5) / LANES) * 100;
@@ -215,24 +218,22 @@ export default function IntegrationRushGame({ onClose }: IntegrationRushGameProp
                 const colors = ['#10b981', '#8b5cf6', '#f59e0b', '#ef4444', '#06b6d4'];
                 const emojis = ['✨', '⭐', '💫', '🎉', '🔥'];
 
-                // Create all particles at once instead of one by one
                 const newParticles: Particle[] = [];
-                for (let i = 0; i < 6; i++) { // Reduced from 8 to 6 for performance
+                for (let i = 0; i < 6; i++) {
                   const particleId = now + Math.random() * 1e6;
                   newParticles.push({
                     id: particleId,
                     x: xPercent + (Math.random() - 0.5) * 8,
                     y: yPercent + (Math.random() - 0.5) * 8,
                     color: colors[Math.floor(Math.random() * colors.length)],
-                    emoji: emojis[Math.floor(Math.random() * emojis.length)]
+                    emoji: emojis[Math.floor(Math.random() * emojis.length)],
                   });
                 }
 
                 setParticles((p) => [...p, ...newParticles]);
 
-                // Remove all particles after animation
                 setTimeout(() => {
-                  const particleIds = new Set(newParticles.map(np => np.id));
+                  const particleIds = new Set(newParticles.map((np) => np.id));
                   setParticles((p) => p.filter((particle) => !particleIds.has(particle.id)));
                 }, 1000);
               });
@@ -240,7 +241,6 @@ export default function IntegrationRushGame({ onClose }: IntegrationRushGameProp
             });
             const newScore = score + completed.length;
             setScore(newScore);
-            // Update high score
             if (newScore > highScore) {
               setHighScore(newScore);
               localStorage.setItem('integration-rush-highscore', newScore.toString());
@@ -259,15 +259,16 @@ export default function IntegrationRushGame({ onClose }: IntegrationRushGameProp
     const now = Date.now();
 
     if (membrane) {
-      // In membrane mode, clicking does nothing (auto-build is on)
       return;
     }
 
-    // Manual mode: start building if not already building this integration
     const alreadyBuilding = builds.some((b) => b.need === need);
     if (alreadyBuilding) return;
 
-    setBuilds((prev) => [...prev, { id: now + Math.random() * 1e6, need, endsAt: now + effectiveBuildTime }]);
+    setBuilds((prev) => [
+      ...prev,
+      { id: now + Math.random() * 1e6, need, endsAt: now + effectiveBuildTime },
+    ]);
   };
 
   const reset = () => {
@@ -289,14 +290,13 @@ export default function IntegrationRushGame({ onClose }: IntegrationRushGameProp
   const activeBuildsByNeed = useMemo(() => {
     const map: Record<string, Build | undefined> = {};
     builds.forEach((b) => {
-      if (!map[b.need] || b.endsAt < (map[b.need]!.endsAt)) map[b.need] = b;
+      if (!map[b.need] || b.endsAt < map[b.need]!.endsAt) map[b.need] = b;
     });
     return map;
   }, [builds]);
 
-  // Get customer emotion based on proximity to churn line
   const getCustomerEmotion = (y: number) => {
-    const churnY = 420; // Approximate churn position (500 - 80)
+    const churnY = 420;
     const progress = y / churnY;
     if (progress < 0.4) return '😊'; // Happy - far from churn
     if (progress < 0.7) return '😐'; // Neutral - getting closer
@@ -305,7 +305,6 @@ export default function IntegrationRushGame({ onClose }: IntegrationRushGameProp
 
   return (
     <div className="h-full flex flex-col bg-membrane-bg text-membrane-dark overflow-hidden">
-      {/* How to Play Banner */}
       <div className="px-6 py-3 bg-white border-b border-membrane-border">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -313,7 +312,9 @@ export default function IntegrationRushGame({ onClose }: IntegrationRushGameProp
             <div>
               <h3 className="text-sm font-bold text-membrane-dark">How to Play</h3>
               <p className="text-xs text-membrane-gray">
-                Click on falling customers to build their integrations before they reach the churn zone! Enable <span className="text-membrane-dark font-semibold">Membrane</span> for auto-building at 3× speed!
+                Click on falling customers to build their integrations before they reach the churn
+                zone! Enable <span className="text-membrane-dark font-semibold">Membrane</span> for
+                auto-building at 3× speed!
               </p>
             </div>
           </div>
@@ -329,12 +330,9 @@ export default function IntegrationRushGame({ onClose }: IntegrationRushGameProp
         </div>
       </div>
 
-      {/* Header */}
       <div className="flex items-center justify-between px-6 py-3 border-b border-membrane-border bg-white">
         <div>
-          <h1 className="text-xl font-semibold text-membrane-dark">
-            Integration Rush
-          </h1>
+          <h1 className="text-xl font-semibold text-membrane-dark">Integration Rush</h1>
         </div>
         <div className="flex items-center gap-4">
           <div className="flex gap-6 text-sm">
@@ -363,12 +361,8 @@ export default function IntegrationRushGame({ onClose }: IntegrationRushGameProp
         </div>
       </div>
 
-      {/* Game Board */}
       <div className="flex-1 flex items-center justify-center p-4">
-        <div
-          className="relative w-full h-full max-w-[1200px] rounded-xl bg-white shadow-sm border border-membrane-border overflow-hidden"
-        >
-          {/* Lane dividers */}
+        <div className="relative w-full h-full max-w-[1200px] rounded-xl bg-white shadow-sm border border-membrane-border overflow-hidden">
           {[...Array(LANES - 1)].map((_, i) => (
             <div
               key={i}
@@ -377,7 +371,6 @@ export default function IntegrationRushGame({ onClose }: IntegrationRushGameProp
             />
           ))}
 
-          {/* Churn line */}
           <div className="absolute inset-x-0 bottom-[80px] h-[2px] bg-gradient-to-r from-transparent via-red-400 to-transparent" />
           <div className="absolute inset-x-0 bottom-[60px] text-center">
             <span className="text-xs text-red-600 font-medium px-3 py-1 rounded-lg bg-red-50 border border-red-200">
@@ -385,7 +378,6 @@ export default function IntegrationRushGame({ onClose }: IntegrationRushGameProp
             </span>
           </div>
 
-          {/* Customers */}
           <AnimatePresence>
             {customers.map((c) => {
               const isBuilding = !!activeBuildsByNeed[c.need];
@@ -400,7 +392,7 @@ export default function IntegrationRushGame({ onClose }: IntegrationRushGameProp
                   style={{
                     left: `calc(${((c.lane + 0.5) / LANES) * 100}% - 80px)`,
                     top: `${(c.y / 500) * 100}%`,
-                    willChange: 'transform'
+                    willChange: 'transform',
                   }}
                   initial={{ scale: 0, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
@@ -408,7 +400,9 @@ export default function IntegrationRushGame({ onClose }: IntegrationRushGameProp
                   transition={{ duration: 0.15, ease: 'linear' }}
                   onClick={() => !c.built && startBuild(c.need)}
                 >
-                  <span className="text-2xl filter drop-shadow-lg">{c.built ? '🕴️' : getCustomerEmotion(c.y)}</span>
+                  <span className="text-2xl filter drop-shadow-lg">
+                    {c.built ? '🕴️' : getCustomerEmotion(c.y)}
+                  </span>
                   <div className="flex items-center gap-2">
                     <AppLogo name={c.need} domain={c.domain} />
                     <div
@@ -416,8 +410,8 @@ export default function IntegrationRushGame({ onClose }: IntegrationRushGameProp
                         c.built
                           ? 'bg-green-50 text-green-700 border border-green-200 line-through'
                           : isBuilding
-                          ? 'bg-gray-100 text-membrane-dark border border-gray-300 animate-pulse'
-                          : 'bg-gray-50 text-membrane-dark border border-gray-200 hover:bg-gray-100 hover:border-gray-300'
+                            ? 'bg-gray-100 text-membrane-dark border border-gray-300 animate-pulse'
+                            : 'bg-gray-50 text-membrane-dark border border-gray-200 hover:bg-gray-100 hover:border-gray-300'
                       }`}
                     >
                       {c.built && <span className="mr-1">✅</span>}
@@ -430,7 +424,6 @@ export default function IntegrationRushGame({ onClose }: IntegrationRushGameProp
             })}
           </AnimatePresence>
 
-          {/* Particle Effects */}
           <AnimatePresence>
             {particles.map((particle) => (
               <motion.div
@@ -447,7 +440,6 @@ export default function IntegrationRushGame({ onClose }: IntegrationRushGameProp
             ))}
           </AnimatePresence>
 
-          {/* Combo Display */}
           <AnimatePresence>
             {showCombo && combo >= 2 && (
               <motion.div
@@ -460,16 +452,13 @@ export default function IntegrationRushGame({ onClose }: IntegrationRushGameProp
                 <div className="text-6xl font-black bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 bg-clip-text text-transparent drop-shadow-2xl">
                   {combo}x COMBO!
                 </div>
-                <div className="text-center mt-2 text-2xl">
-                  🔥🔥🔥
-                </div>
+                <div className="text-center mt-2 text-2xl">🔥🔥🔥</div>
               </motion.div>
             )}
           </AnimatePresence>
         </div>
       </div>
 
-      {/* Control Panel */}
       <div className="px-6 pb-6">
         <div className="rounded-xl bg-white border border-membrane-border p-4 shadow-sm">
           <div className="flex items-center justify-between">
