@@ -29,6 +29,8 @@ export default function MembraneConsole({ companyUrl, onAddToIDE }: MembraneCons
   >('dashboard');
   const [activeTab, setActiveTab] = useState<'your-app' | 'membrane' | 'external-apps'>('membrane');
   const [showCodeEditor, setShowCodeEditor] = useState(false);
+  const [showChat, setShowChat] = useState(false);
+  const [initialPrompt, setInitialPrompt] = useState('');
 
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
   const [companyAnalysis, setCompanyAnalysis] = useState<CompanyAnalysis | null>(null);
@@ -52,6 +54,11 @@ export default function MembraneConsole({ companyUrl, onAddToIDE }: MembraneCons
     if (isCoding) {
       setShowCodeEditor(true);
     }
+  };
+
+  const handleInitialSubmit = (prompt: string) => {
+    setInitialPrompt(prompt);
+    setShowChat(true);
   };
 
   useEffect(() => {
@@ -498,67 +505,196 @@ export default function MembraneConsole({ companyUrl, onAddToIDE }: MembraneCons
         </div>
 
         <div className="flex-1 flex overflow-hidden">
-          <div className="flex-1 overflow-hidden">
-            {!showCodeEditor ? (
-              <div className="flex-1 overflow-hidden bg-[#F8F9FA] flex items-center justify-center">
-                <div
-                  className="relative"
-                  style={{
-                    width: '600px',
-                    height: '350px',
-                    marginTop: '110px',
-                  }}
-                >
-                  <svg
+          {!showChat ? (
+            <div className="flex-1 overflow-hidden bg-[#F8F9FA] flex flex-col">
+              <div className="flex items-center justify-center pt-12 pb-8">
+                <div className="w-full max-w-lg px-8">
+                  <div className="relative">
+                    <svg
+                      className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"
+                      />
+                    </svg>
+                    <input
+                      type="text"
+                      value={inputValue}
+                      onChange={(e) => setInputValue(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && inputValue.trim()) {
+                          handleInitialSubmit(inputValue.trim());
+                        }
+                      }}
+                      placeholder="What integration you want to build today?"
+                      className="w-full py-3 px-12 bg-white border border-gray-300 rounded-lg text-gray-700 placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm"
+                    />
+                  </div>
+
+                  {!isAnalyzing && companyAnalysis && companyAnalysis.suggestedUseCases.length > 0 && (
+                    <div className="mt-3 space-y-1.5">
+                      {companyAnalysis.suggestedUseCases.slice(0, 3).map((useCase, index) => (
+                        <button
+                          key={index}
+                          onClick={() => {
+                            setInputValue(useCase);
+                            handleInitialSubmit(useCase);
+                          }}
+                          className="w-full px-3 py-2 bg-white border border-gray-200 rounded-md text-left text-gray-600 text-xs hover:border-gray-400 hover:bg-gray-50 transition-all flex items-center gap-2 group animate-fade-in-up"
+                          style={{ animationDelay: `${index * 100}ms` }}
+                        >
+                          <svg
+                            className="w-3 h-3 text-gray-400 group-hover:text-gray-600 transition-colors flex-shrink-0"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                          </svg>
+                          <span className="line-clamp-1">{useCase}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+                <div className="flex-1 flex items-center justify-center">
+                  <div
+                    className="relative"
+                    style={{
+                      width: '600px',
+                      height: '350px',
+                    }}
+                  >
+                    <svg
                     className="absolute top-0 left-0 w-full h-full pointer-events-none"
                     style={{ zIndex: 0 }}
                     viewBox="0 0 600 350"
                   >
+                    {/* Line to Users Unified API */}
                     <path
                       ref={path1Ref}
                       id="path1"
-                      d="M 200 169 H 210 C 230 169, 230 60, 250 60 L 320 60"
-                      stroke="#DEDFE3"
+                      d="M 200 169 H 230 C 260 169, 270 60, 300 60 L 320 60"
+                      stroke="#E5E7EB"
                       strokeWidth="2"
                       fill="none"
                       strokeLinecap="round"
                       className="animate-draw-line-1"
                     />
-                    <circle r="4" fill="#4F46E5" className="animate-dot-1">
-                      <animateMotion dur="1.2s" begin="0.6s" fill="freeze">
+                    <circle r="3" fill="#6366F1" className="animate-dot-1">
+                      <animateMotion dur="1.5s" begin="0.8s" fill="freeze">
                         <mpath href="#path1" />
                       </animateMotion>
                     </circle>
 
+                    {/* Line to Create Incoming Payment */}
                     <path
                       ref={path2Ref}
                       id="path2"
-                      d="M 200 169 H 210 C 240 169, 250 169, 320 169"
-                      stroke="#DEDFE3"
+                      d="M 200 169 H 240 C 270 169, 280 169, 320 169"
+                      stroke="#E5E7EB"
                       strokeWidth="2"
                       fill="none"
                       strokeLinecap="round"
                       className="animate-draw-line-2"
                     />
-                    <circle r="4" fill="#4F46E5" className="animate-dot-2">
-                      <animateMotion dur="1.2s" begin="1.5s" fill="freeze">
+                    <circle r="3" fill="#6366F1" className="animate-dot-2">
+                      <animateMotion dur="1.5s" begin="1.7s" fill="freeze">
                         <mpath href="#path2" />
                       </animateMotion>
                     </circle>
 
+                    {/* Line to Create Bill */}
                     <path
                       ref={path3Ref}
                       id="path3"
-                      d="M 200 169 H 210 C 230 169, 230 270, 250 270 L 320 270"
-                      stroke="#DEDFE3"
+                      d="M 200 169 H 230 C 260 169, 270 270, 300 270 L 320 270"
+                      stroke="#E5E7EB"
                       strokeWidth="2"
                       fill="none"
                       strokeLinecap="round"
                       className="animate-draw-line-3"
                     />
-                    <circle r="4" fill="#4F46E5" className="animate-dot-3">
-                      <animateMotion dur="1.2s" begin="2.4s" fill="freeze">
+                    <circle r="3" fill="#6366F1" className="animate-dot-3">
+                      <animateMotion dur="1.5s" begin="2.6s" fill="freeze">
                         <mpath href="#path3" />
+                      </animateMotion>
+                    </circle>
+
+                    {/* Additional flowing dots for continuous animation */}
+                    <circle r="2" fill="#8B5CF6" opacity="0.6">
+                      <animateMotion dur="2s" begin="0s" repeatCount="indefinite">
+                        <mpath href="#path1" />
+                      </animateMotion>
+                    </circle>
+                    <circle r="2" fill="#8B5CF6" opacity="0.6">
+                      <animateMotion dur="2s" begin="0.3s" repeatCount="indefinite">
+                        <mpath href="#path2" />
+                      </animateMotion>
+                    </circle>
+                    <circle r="2" fill="#8B5CF6" opacity="0.6">
+                      <animateMotion dur="2s" begin="0.6s" repeatCount="indefinite">
+                        <mpath href="#path3" />
+                      </animateMotion>
+                    </circle>
+
+                    {/* Lines from integration cards to right-side icons */}
+                    {/* From Users Unified API to icons */}
+                    <path
+                      id="path4"
+                      d="M 520 60 H 540 C 560 60, 560 80, 575 80"
+                      stroke="#E5E7EB"
+                      strokeWidth="1.5"
+                      fill="none"
+                      strokeLinecap="round"
+                      className="animate-draw-line-1"
+                      opacity="0.7"
+                    />
+                    <circle r="2" fill="#10B981" opacity="0.5">
+                      <animateMotion dur="2.5s" begin="1s" repeatCount="indefinite">
+                        <mpath href="#path4" />
+                      </animateMotion>
+                    </circle>
+
+                    {/* From Create Incoming Payment to icons */}
+                    <path
+                      id="path5"
+                      d="M 520 169 H 540 C 560 169, 560 180, 575 180"
+                      stroke="#E5E7EB"
+                      strokeWidth="1.5"
+                      fill="none"
+                      strokeLinecap="round"
+                      className="animate-draw-line-2"
+                      opacity="0.7"
+                    />
+                    <circle r="2" fill="#10B981" opacity="0.5">
+                      <animateMotion dur="2.5s" begin="1.3s" repeatCount="indefinite">
+                        <mpath href="#path5" />
+                      </animateMotion>
+                    </circle>
+
+                    {/* From Create Bill to icons */}
+                    <path
+                      id="path6"
+                      d="M 520 270 H 540 C 560 270, 560 260, 575 260"
+                      stroke="#E5E7EB"
+                      strokeWidth="1.5"
+                      fill="none"
+                      strokeLinecap="round"
+                      className="animate-draw-line-3"
+                      opacity="0.7"
+                    />
+                    <circle r="2" fill="#10B981" opacity="0.5">
+                      <animateMotion dur="2.5s" begin="1.6s" repeatCount="indefinite">
+                        <mpath href="#path6" />
                       </animateMotion>
                     </circle>
                   </svg>
@@ -636,6 +772,11 @@ export default function MembraneConsole({ companyUrl, onAddToIDE }: MembraneCons
                       animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) 2.7s forwards;
                       opacity: 0;
                     }
+
+                    .card-fade-in-4 {
+                      animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) 3.6s forwards;
+                      opacity: 0;
+                    }
                   `}</style>
 
                   <div
@@ -707,26 +848,29 @@ export default function MembraneConsole({ companyUrl, onAddToIDE }: MembraneCons
                     style={{ zIndex: 1 }}
                   >
                     <div className="flex items-center gap-0.5 mb-1.5 flex-wrap">
-                      <div className="w-5 h-5 rounded bg-[#00A1E0] flex items-center justify-center text-white text-xs">
-                        ☁
-                      </div>
                       <div className="w-5 h-5 rounded bg-[#FF7A59] flex items-center justify-center text-white text-xs">
                         ⚙
+                      </div>
+                      <div className="w-5 h-5 rounded bg-[#00A1E0] flex items-center justify-center text-white text-xs">
+                        ☁
                       </div>
                       <div className="w-5 h-5 rounded bg-gradient-to-br from-[#0078D4] to-[#50E6FF] flex items-center justify-center text-white text-[10px]">
                         ▶
                       </div>
-                      <div className="w-5 h-5 rounded bg-[#C8242B] flex items-center justify-center text-white text-xs font-bold">
-                        Z
-                      </div>
                       <div className="w-5 h-5 rounded bg-[#000] flex items-center justify-center text-white text-xs font-bold">
                         P
                       </div>
-                      <div className="w-5 h-5 rounded bg-[#6161FF] flex items-center justify-center text-white text-xs">
-                        ▤
+                      <div className="w-5 h-5 rounded bg-[#74C947] flex items-center justify-center text-white text-xs font-bold">
+                        K
+                      </div>
+                      <div className="w-5 h-5 rounded bg-[#C8242B] flex items-center justify-center text-white text-xs font-bold">
+                        Z
+                      </div>
+                      <div className="w-5 h-5 rounded bg-[#FFB900] flex items-center justify-center text-white text-xs font-bold">
+                        ↓
                       </div>
                       <span className="px-1.5 py-0.5 bg-[#F3F4F6] rounded text-[10px] font-semibold text-[#6B7280]">
-                        +13
+                        19
                       </span>
                     </div>
                     <div className="flex gap-1 mb-1.5">
@@ -745,11 +889,11 @@ export default function MembraneConsole({ companyUrl, onAddToIDE }: MembraneCons
                     style={{ zIndex: 1 }}
                   >
                     <div className="flex items-center gap-0.5 mb-1.5 flex-wrap">
-                      <div className="w-5 h-5 rounded bg-[#00A1E0] flex items-center justify-center text-white text-xs">
-                        ☁
-                      </div>
                       <div className="w-5 h-5 rounded bg-[#FF7A59] flex items-center justify-center text-white text-xs">
                         ⚙
+                      </div>
+                      <div className="w-5 h-5 rounded bg-[#00A1E0] flex items-center justify-center text-white text-xs">
+                        ☁
                       </div>
                       <div className="w-5 h-5 rounded bg-gradient-to-br from-[#0078D4] to-[#50E6FF] flex items-center justify-center text-white text-[10px]">
                         ▶
@@ -757,15 +901,18 @@ export default function MembraneConsole({ companyUrl, onAddToIDE }: MembraneCons
                       <div className="w-5 h-5 rounded bg-[#000] flex items-center justify-center text-white text-xs font-bold">
                         P
                       </div>
+                      <div className="w-5 h-5 rounded bg-[#FFB900] flex items-center justify-center text-white text-xs font-bold">
+                        ↓
+                      </div>
                       <span className="px-1.5 py-0.5 bg-[#F3F4F6] rounded text-[10px] font-semibold text-[#6B7280]">
-                        +1
+                        5
                       </span>
                     </div>
                     <div className="flex gap-1 mb-1.5">
                       <div className="w-4 h-4 rounded bg-[#E5E7EB]"></div>
                       <div className="w-4 h-4 rounded bg-[#E5E7EB]"></div>
                       <span className="px-1.5 py-0.5 bg-[#F3F4F6] rounded text-[10px] font-semibold text-[#6B7280]">
-                        2
+                        3
                       </span>
                     </div>
                     <h3 className="text-xs font-semibold text-[#1F2937]">
@@ -788,33 +935,73 @@ export default function MembraneConsole({ companyUrl, onAddToIDE }: MembraneCons
                     </div>
                     <h3 className="text-[11px] font-semibold text-[#1F2937]">Create Bill</h3>
                   </div>
+
+                  {/* Right side app icons */}
+                  <div
+                    className="absolute right-[10px] top-[20px] flex flex-col gap-1.5 card-fade-in-4"
+                    style={{ zIndex: 2 }}
+                  >
+                    <div className="w-8 h-8 rounded-lg bg-[#FF7A59] flex items-center justify-center text-white text-sm shadow-sm cursor-pointer hover:scale-110 transition-transform">
+                      ⚙
+                    </div>
+                    <div className="w-8 h-8 rounded-lg bg-[#00A1E0] flex items-center justify-center text-white text-sm shadow-sm cursor-pointer hover:scale-110 transition-transform">
+                      ☁
+                    </div>
+                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#0078D4] to-[#50E6FF] flex items-center justify-center text-white text-xs shadow-sm cursor-pointer hover:scale-110 transition-transform">
+                      ▶
+                    </div>
+                    <div className="w-8 h-8 rounded-lg bg-[#000] flex items-center justify-center text-white text-sm font-bold shadow-sm cursor-pointer hover:scale-110 transition-transform">
+                      P
+                    </div>
+                    <div className="w-8 h-8 rounded-lg bg-[#74C947] flex items-center justify-center text-white text-sm font-bold shadow-sm cursor-pointer hover:scale-110 transition-transform">
+                      K
+                    </div>
+                    <div className="w-8 h-8 rounded-lg bg-[#C8242B] flex items-center justify-center text-white text-sm font-bold shadow-sm cursor-pointer hover:scale-110 transition-transform">
+                      Z
+                    </div>
+                    <div className="w-8 h-8 rounded-lg bg-[#FFB900] flex items-center justify-center text-white text-sm font-bold shadow-sm cursor-pointer hover:scale-110 transition-transform">
+                      ↓
+                    </div>
+                    <div className="w-8 h-8 rounded-lg bg-white border-2 border-dashed border-[#D1D5DB] flex items-center justify-center text-sm text-[#9CA3AF] cursor-pointer hover:border-[#9CA3AF] transition-colors">
+                      +
+                    </div>
+                  </div>
                 </div>
               </div>
-            ) : (
-              <CodePanel
-                selectedFile={selectedFile}
-                companyUrl={companyUrl}
-                companyAnalysis={companyAnalysis || undefined}
-                isAICoding={isAICoding}
-                generatedFileContents={generatedFileContents}
-                typingFile={typingFile}
-                aiThinking={aiThinking}
-              />
-            )}
-          </div>
+            </div>
+          ) : (
+            <div className="flex-1 flex overflow-hidden animate-chat-slide-in">
+              <div className="flex-1 overflow-hidden">
+                {!showCodeEditor ? (
+                  <div className="flex-1 overflow-hidden bg-[#F8F9FA]"></div>
+                ) : (
+                  <CodePanel
+                    selectedFile={selectedFile}
+                    companyUrl={companyUrl}
+                    companyAnalysis={companyAnalysis || undefined}
+                    isAICoding={isAICoding}
+                    generatedFileContents={generatedFileContents}
+                    typingFile={typingFile}
+                    aiThinking={aiThinking}
+                  />
+                )}
+              </div>
 
-          <div className="w-96 bg-white border-l border-gray-200 flex flex-col">
-            <ChatPanel
-              companyUrl={companyUrl}
-              onCodingStateChange={handleCodingStateChange}
-              onNewFile={handleNewFile}
-              onFileTyping={handleFileTyping}
-              onAiThinking={setAiThinking}
-              companyAnalysis={companyAnalysis || undefined}
-              isAnalyzing={isAnalyzing}
-              onAddToIDE={onAddToIDE}
-            />
-          </div>
+              <div className="w-96 bg-white border-l border-gray-200 flex flex-col">
+                <ChatPanel
+                  companyUrl={companyUrl}
+                  onCodingStateChange={handleCodingStateChange}
+                  onNewFile={handleNewFile}
+                  onFileTyping={handleFileTyping}
+                  onAiThinking={setAiThinking}
+                  companyAnalysis={companyAnalysis || undefined}
+                  isAnalyzing={isAnalyzing}
+                  onAddToIDE={onAddToIDE}
+                  initialMessage={initialPrompt}
+                />
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="hidden flex-1 overflow-y-auto p-6 relative">

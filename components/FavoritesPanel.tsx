@@ -2,9 +2,10 @@
 
 interface FavoritesPanelProps {
   onItemClick?: (itemId: string) => void;
+  onClose?: () => void;
 }
 
-export default function FavoritesPanel({ onItemClick }: FavoritesPanelProps) {
+export default function FavoritesPanel({ onItemClick, onClose }: FavoritesPanelProps) {
   const handleClick = (itemId: string) => {
     if (onItemClick) {
       onItemClick(itemId);
@@ -17,9 +18,12 @@ export default function FavoritesPanel({ onItemClick }: FavoritesPanelProps) {
         <div className="flex h-full">
           <div className="w-48 bg-gray-100/50 backdrop-blur-md border-r border-gray-300/50 flex-shrink-0 p-3">
             <div className="flex space-x-2 mb-6 px-1">
-              <div className="w-3 h-3 rounded-full bg-[#FF5F57] border border-[#E0443E]"></div>
-              <div className="w-3 h-3 rounded-full bg-[#FFBD2E] border border-[#DEA123]"></div>
-              <div className="w-3 h-3 rounded-full bg-[#28CA42] border border-[#24A93D]"></div>
+              <div
+                onClick={onClose}
+                className="w-3 h-3 rounded-full bg-[#FF5F57] border border-[#E0443E] cursor-pointer hover:bg-[#FF3B30] transition-colors"
+              ></div>
+              <div className="w-3 h-3 rounded-full bg-[#FFBD2E] border border-[#DEA123] cursor-pointer hover:bg-[#FFB300] transition-colors"></div>
+              <div className="w-3 h-3 rounded-full bg-[#28CA42] border border-[#24A93D] cursor-pointer hover:bg-[#1FA935] transition-colors"></div>
             </div>
 
             <div className="text-xs font-bold text-gray-400 mb-2 pl-2">Favorites</div>

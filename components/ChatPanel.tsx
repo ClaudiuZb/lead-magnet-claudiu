@@ -28,6 +28,7 @@ interface ChatPanelProps {
     url?: string;
     files: { name: string; content: string }[];
   }) => void;
+  initialMessage?: string;
 }
 
 export default function ChatPanel({
@@ -39,6 +40,7 @@ export default function ChatPanel({
   onFileTyping,
   onAiThinking,
   onAddToIDE,
+  initialMessage,
 }: ChatPanelProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
@@ -52,9 +54,32 @@ export default function ChatPanel({
     url?: string;
     files: { name: string; content: string }[];
   } | null>(null);
+  const hasProcessedInitialMessage = useRef(false);
+
+  useEffect(() => {
+    if (initialMessage && !hasProcessedInitialMessage.current) {
+      hasProcessedInitialMessage.current = true;
+      initializedRef.current = true;
+
+      const companyName = companyUrl.split('.')[0];
+      const capitalizedName = companyName.charAt(0).toUpperCase() + companyName.slice(1);
+
+      setMessages([
+        {
+          role: 'assistant',
+          content: `Hey! I'm ready to help you build integrations for ${capitalizedName}.`,
+        },
+      ]);
+
+      setTimeout(() => {
+        handleSuggestionClick(initialMessage);
+      }, 500);
+    }
+  }, [initialMessage]);
 
   useEffect(() => {
     if (initializedRef.current) return;
+    if (initialMessage) return;
 
     const companyName = companyUrl.split('.')[0];
     const capitalizedName = companyName.charAt(0).toUpperCase() + companyName.slice(1);

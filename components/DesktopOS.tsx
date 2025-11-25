@@ -85,13 +85,14 @@ export default function DesktopOS({ companyUrl }: DesktopOSProps) {
     files: { name: string; content: string }[];
   } | null>(null);
   const [consoleClosing, setConsoleClosing] = useState(false);
+  const [showFavoritesPanel, setShowFavoritesPanel] = useState(true);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       if (!emailSubmitted) {
         setShowEmailCapture(true);
       }
-    }, 45000); // 45 seconds
+    }, 120000); // 2 minutes
 
     return () => clearTimeout(timer);
   }, [emailSubmitted]);
@@ -279,14 +280,14 @@ export default function DesktopOS({ companyUrl }: DesktopOSProps) {
   return (
     <div className="h-screen w-screen overflow-hidden relative select-none">
       <div
-        className="absolute inset-0"
+        className="absolute inset-0 bg-[#F7F9FB]"
         style={{
           backgroundImage: `url('/membrane.png')`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
         }}
-      />
+      ></div>
 
       {showEmailCapture && (
         <div className="fixed inset-0 z-[9999]">
@@ -343,7 +344,12 @@ export default function DesktopOS({ companyUrl }: DesktopOSProps) {
       </div>
 
       <div className="h-[calc(100vh-7.75rem)] relative">
-        <FavoritesPanel onItemClick={handleFavoriteClick} />
+        {showFavoritesPanel && (
+          <FavoritesPanel
+            onItemClick={handleFavoriteClick}
+            onClose={() => setShowFavoritesPanel(false)}
+          />
+        )}
 
         {windows.find((w) => w.id === 'console' && w.isOpen && !w.isMinimized) &&
           (() => {

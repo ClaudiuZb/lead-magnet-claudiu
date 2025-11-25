@@ -71,24 +71,21 @@ export default function IDEChatPanel({
       ]);
 
       setTimeout(() => {
-        const implementationRequest = `You are a senior software engineer implementing the "${integrationData.name}" integration.
+        const implementationRequest = `You are implementing a quick demo of the "${integrationData.name}" integration.
 
-CRITICAL INSTRUCTIONS:
-- Generate ONLY TypeScript/JavaScript implementation code (.ts, .js files)
-- DO NOT create YAML or JSON config files
-- Create real API client classes with proper authentication
-- Include error handling, retries, and logging
-- Use modern async/await patterns
-- Add TypeScript types and interfaces
-- Follow production-ready code standards
+CRITICAL INSTRUCTIONS - KEEP IT SIMPLE AND FAST:
+- Generate ONLY 1-2 TypeScript files (.ts) with SHORT, minimal code
+- Each file should be 15-25 lines maximum
+- Create a simple client class with basic methods (no complex error handling)
+- Add minimal TypeScript types (just 2-3 fields)
+- Use simple async/await patterns
+- NO retries, NO complex logging, NO utilities - keep it demo-quality
 
-REQUIRED FILES TO CREATE:
-1. Main integration client class (src/integrations/[integration-name].ts)
-2. Type definitions (src/types/[integration-name]-types.ts)
-3. Error handling utilities (src/utils/[integration-name]-errors.ts)
-4. API request/response handlers with retry logic
+REQUIRED FILES (ONLY 2):
+1. Main client class (src/${integrationData.name}-client.ts) - ~20 lines with 2-3 simple methods
+2. Basic types (src/${integrationData.name}-types.ts) - ~10 lines with 1-2 interfaces
 
-Each file should be production-ready, well-documented, and follow best practices.`;
+Keep everything minimal and straightforward - this is a quick demo, not production code.`;
 
         console.log('[IDEChatPanel] Starting implementation request:', implementationRequest);
 
