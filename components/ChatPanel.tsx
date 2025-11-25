@@ -354,14 +354,8 @@ export default function ChatPanel({
   };
 
   const handleSuggestionClick = async (useCase: string) => {
-    setMessages((prev) => [
-      ...prev,
-      {
-        role: 'user',
-        content: useCase,
-      },
-    ]);
-
+    // Don't show the recommendation as a user message in chat
+    // Just start showing the assistant's typing indicator
     setMessages((prev) => [
       ...prev,
       {
@@ -524,27 +518,6 @@ export default function ChatPanel({
 
             {message.role === 'assistant' &&
               index === messages.length - 1 &&
-              initializedRef.current &&
-              companyAnalysis &&
-              companyAnalysis.suggestedUseCases &&
-              companyAnalysis.suggestedUseCases.length > 0 &&
-              !messages.some((m) => m.role === 'user') && (
-                <div className="mt-3 ml-10 space-y-2">
-                  {companyAnalysis.suggestedUseCases.slice(0, 3).map((useCase, i) => (
-                    <button
-                      key={i}
-                      type="button"
-                      onClick={() => handleSuggestionClick(useCase)}
-                      className="w-full text-left text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 px-4 py-3 rounded-full border border-blue-200 transition-all font-medium"
-                    >
-                      {useCase}
-                    </button>
-                  ))}
-                </div>
-              )}
-
-            {message.role === 'assistant' &&
-              index === messages.length - 1 &&
               integrationCompleted &&
               integrationData &&
               message.content.includes('Integration complete!') && (
@@ -558,7 +531,7 @@ export default function ChatPanel({
                     }}
                     className="w-full text-left text-xs bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-4 py-3 rounded-full border border-transparent transition-all font-medium shadow-md hover:shadow-lg"
                   >
-                    ✨ Add to Your IDE
+                     Add to Your IDE
                   </button>
                 </div>
               )}

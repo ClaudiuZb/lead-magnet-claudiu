@@ -543,7 +543,6 @@ export default function MembraneConsole({ companyUrl, onAddToIDE }: MembraneCons
                         <button
                           key={index}
                           onClick={() => {
-                            setInputValue(useCase);
                             handleInitialSubmit(useCase);
                           }}
                           className="w-full px-3 py-2 bg-white border border-gray-200 rounded-md text-left text-gray-600 text-xs hover:border-gray-400 hover:bg-gray-50 transition-all flex items-center gap-2 group animate-fade-in-up"
