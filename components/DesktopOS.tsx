@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import IDEInterface from './IDEInterface';
 import EmailCaptureOverlay from './EmailCaptureOverlay';
-import FavoritesPanel from './FavoritesPanel';
 import MembraneConsole from './MembraneConsole';
 import SafariBrowser from './SafariBrowser';
 import IntegrationRushGame from './IntegrationRushGame';
@@ -91,7 +90,6 @@ export default function DesktopOS({ companyUrl }: DesktopOSProps) {
     files: { name: string; content: string }[];
   } | null>(null);
   const [consoleClosing, setConsoleClosing] = useState(false);
-  const [showFavoritesPanel, setShowFavoritesPanel] = useState(true);
   const [isHydrated, setIsHydrated] = useState(false);
 
   // Load state from localStorage after mount (client-side only)
@@ -99,7 +97,12 @@ export default function DesktopOS({ companyUrl }: DesktopOSProps) {
     const savedWindows = localStorage.getItem('membrane-windows-state');
     if (savedWindows) {
       try {
-        setWindows(JSON.parse(savedWindows));
+        const parsedWindows = JSON.parse(savedWindows);
+        // Ensure console window is always open on initial load
+        const updatedWindows = parsedWindows.map((w: AppWindow) =>
+          w.id === 'console' ? { ...w, isOpen: true } : w
+        );
+        setWindows(updatedWindows);
       } catch (e) {
         console.error('Failed to parse saved windows state:', e);
       }
@@ -124,11 +127,6 @@ export default function DesktopOS({ companyUrl }: DesktopOSProps) {
       }
     }
 
-    const savedFavoritesPanel = localStorage.getItem('membrane-favorites-panel');
-    if (savedFavoritesPanel === 'false') {
-      setShowFavoritesPanel(false);
-    }
-
     // Mark as hydrated after loading from localStorage
     setIsHydrated(true);
   }, []);
@@ -151,12 +149,6 @@ export default function DesktopOS({ companyUrl }: DesktopOSProps) {
       localStorage.setItem('membrane-integration-data', JSON.stringify(integrationData));
     }
   }, [integrationData, isHydrated]);
-
-  useEffect(() => {
-    if (isHydrated) {
-      localStorage.setItem('membrane-favorites-panel', showFavoritesPanel.toString());
-    }
-  }, [showFavoritesPanel, isHydrated]);
 
   useEffect(() => {
     if (isHydrated) {
@@ -188,7 +180,12 @@ export default function DesktopOS({ companyUrl }: DesktopOSProps) {
       );
     }
 
-    setTimeout(() => setConsoleReady(true), 10);
+    // Smooth popup animation on load
+    setTimeout(() => {
+      setConsoleReady(true);
+      setIsAnimating(true);
+      setTimeout(() => setIsAnimating(false), 600);
+    }, 100);
   }, []);
   const [dragging, setDragging] = useState<string | null>(null);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
@@ -283,15 +280,6 @@ export default function DesktopOS({ companyUrl }: DesktopOSProps) {
     }, 120000);
   };
 
-  const handleFavoriteClick = (itemId: string) => {
-    if (itemId === 'membrane-console') {
-      handleDockClick('console');
-    } else if (itemId === 'membrane-ide') {
-      handleDockClick('ide');
-    } else if (itemId === 'safari') {
-      handleDockClick('safari');
-    }
-  };
 
   const handlePushToProduction = () => {
     setWindows((prev) => prev.map((w) => (w.id === 'ide' ? { ...w, isOpen: false } : w)));
@@ -320,6 +308,13 @@ export default function DesktopOS({ companyUrl }: DesktopOSProps) {
 
       setTimeout(() => setIsAnimating(false), 500);
     }, 300);
+
+    // Show email capture overlay after 4 seconds
+    setTimeout(() => {
+      if (!emailSubmitted) {
+        setShowEmailCapture(true);
+      }
+    }, 4000); // 4 seconds
   };
 
   const handleAddToIDE = (data: {
@@ -427,13 +422,6 @@ export default function DesktopOS({ companyUrl }: DesktopOSProps) {
       </div>
 
       <div className="h-[calc(100vh-7.75rem)] relative">
-        {showFavoritesPanel && (
-          <FavoritesPanel
-            onItemClick={handleFavoriteClick}
-            onClose={() => setShowFavoritesPanel(false)}
-          />
-        )}
-
         {windows.find((w) => w.id === 'console' && w.isOpen && !w.isMinimized) &&
           (() => {
             const window = windows.find((w) => w.id === 'console')!;
@@ -441,7 +429,7 @@ export default function DesktopOS({ companyUrl }: DesktopOSProps) {
               <div
                 onMouseDown={(e) => handleMouseDown(e, 'console')}
                 className={`absolute w-[1100px] h-[700px] bg-white backdrop-blur-xl rounded-xl flex flex-col overflow-hidden border border-white/40 shadow-2xl ${
-                  isAnimating ? 'animate-popup' : 'transition-all duration-300'
+                  isAnimating ? 'animate-popup' : ''
                 }`}
                 style={{
                   left: `${window.position.x}px`,
@@ -451,9 +439,13 @@ export default function DesktopOS({ companyUrl }: DesktopOSProps) {
                     ? 'scale(0.95)'
                     : window.isMinimized
                       ? 'scale(0.9)'
-                      : 'scale(1)',
+                      : consoleReady
+                        ? 'scale(1)'
+                        : 'scale(0.9)',
                   opacity: consoleClosing ? 0 : consoleReady ? 1 : 0,
-                  transition: consoleClosing ? 'all 0.3s ease-out' : 'none',
+                  transition: consoleClosing
+                    ? 'all 0.3s ease-out'
+                    : 'opacity 0.4s ease-out, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)',
                 }}
               >
                 <div className="window-drag-handle h-10 bg-gradient-to-b from-gray-100 to-gray-200 border-b border-gray-300 flex items-center px-4 cursor-move">

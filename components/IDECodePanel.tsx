@@ -1,5 +1,7 @@
 'use client';
 
+import { useRef, useEffect } from 'react';
+
 interface IDECodePanelProps {
   selectedFile: string | null;
   companyUrl: string;
@@ -27,7 +29,16 @@ export default function IDECodePanel({
   const capitalizedName =
     companyAnalysis?.companyName || companyName.charAt(0).toUpperCase() + companyName.slice(1);
 
+  const codeScrollRef = useRef<HTMLDivElement>(null);
+
   const showingTypingFile = typingFile && selectedFile === typingFile.name;
+
+  // Auto-scroll when typing file content changes
+  useEffect(() => {
+    if (showingTypingFile && codeScrollRef.current) {
+      codeScrollRef.current.scrollTop = codeScrollRef.current.scrollHeight;
+    }
+  }, [typingFile?.content, showingTypingFile]);
   const isGeneratedFile = selectedFile && generatedFileContents?.has(selectedFile);
   const generatedContent = showingTypingFile
     ? typingFile.content
@@ -204,7 +215,7 @@ export default function IDECodePanel({
         </div>
       )}
 
-      <div className="flex-1 overflow-y-auto custom-scrollbar custom-scrollbar-y-only bg-[#1E1E1E] p-4 relative">
+      <div ref={codeScrollRef} className="flex-1 overflow-y-auto custom-scrollbar custom-scrollbar-y-only bg-[#1E1E1E] p-4 relative">
         <pre className="text-[13px] font-mono leading-relaxed">
           {renderWithSyntax(content, type)}
         </pre>

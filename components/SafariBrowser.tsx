@@ -110,23 +110,23 @@ export default function SafariBrowser({
       </div>
 
       <div className="flex flex-1 overflow-hidden bg-white">
-        <div className="w-64 border-r border-gray-200 bg-gray-50 flex flex-col">
-          <div className="p-4 border-b border-gray-200">
-            <div className="flex items-center gap-2 mb-1">
-              <div className="w-2 h-2 rounded-full bg-blue-600"></div>
-              <span className="font-semibold text-gray-900">{capitalizedName}</span>
+        <div className="w-52 border-r border-gray-800/10 bg-[#1a1a1a] flex flex-col">
+          <div className="p-3 border-b border-gray-800">
+            <div className="flex items-center gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
+              <span className="font-semibold text-white text-sm">{capitalizedName}</span>
               <div className="ml-auto">
-                <div className="w-10 h-5 bg-blue-600 rounded-full relative">
-                  <div className="absolute right-0.5 top-0.5 w-4 h-4 bg-white rounded-full"></div>
+                <div className="w-8 h-4 bg-blue-500 rounded-full relative">
+                  <div className="absolute right-0.5 top-0.5 w-3 h-3 bg-white rounded-full shadow-sm"></div>
                 </div>
               </div>
             </div>
           </div>
 
-          <nav className="flex-1 p-3">
-            <div className="space-y-1">
-              <div className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md cursor-pointer">
-                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <nav className="flex-1 p-2">
+            <div className="space-y-0.5">
+              <div className="flex items-center gap-2.5 px-2.5 py-1.5 text-xs text-gray-200 hover:bg-gray-800 hover:text-white rounded transition-colors cursor-pointer">
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -135,23 +135,10 @@ export default function SafariBrowser({
                   />
                 </svg>
                 <span>Home</span>
-                <svg
-                  className="ml-auto w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 4v16m8-8H4"
-                  />
-                </svg>
               </div>
 
-              <div className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md cursor-pointer">
-                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="flex items-center gap-2.5 px-2.5 py-1.5 text-xs text-gray-200 hover:bg-gray-800 hover:text-white rounded transition-colors cursor-pointer">
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -160,23 +147,10 @@ export default function SafariBrowser({
                   />
                 </svg>
                 <span>Dashboard</span>
-                <svg
-                  className="ml-auto w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 4v16m8-8H4"
-                  />
-                </svg>
               </div>
 
-              <div className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md cursor-pointer">
-                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="flex items-center gap-2.5 px-2.5 py-1.5 text-xs text-gray-200 hover:bg-gray-800 hover:text-white rounded transition-colors cursor-pointer">
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -185,23 +159,10 @@ export default function SafariBrowser({
                   />
                 </svg>
                 <span>Projects</span>
-                <svg
-                  className="ml-auto w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 4v16m8-8H4"
-                  />
-                </svg>
               </div>
 
-              <div className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md cursor-pointer">
-                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="flex items-center gap-2.5 px-2.5 py-1.5 text-xs text-gray-200 hover:bg-gray-800 hover:text-white rounded transition-colors cursor-pointer">
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -210,24 +171,11 @@ export default function SafariBrowser({
                   />
                 </svg>
                 <span>Tasks</span>
-                <svg
-                  className="ml-auto w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 4v16m8-8H4"
-                  />
-                </svg>
               </div>
 
               <div>
-                <div className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md cursor-pointer">
-                  <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="flex items-center gap-2.5 px-2.5 py-1.5 text-xs text-gray-200 hover:bg-gray-800 hover:text-white rounded transition-colors cursor-pointer">
+                  <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -242,42 +190,29 @@ export default function SafariBrowser({
                     />
                   </svg>
                   <span>Settings</span>
-                  <svg
-                    className="ml-auto w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M20 12H4"
-                    />
-                  </svg>
                 </div>
 
-                <div className="ml-6 mt-1 space-y-1">
-                  <div className="px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900 cursor-pointer">
+                <div className="ml-5 mt-0.5 space-y-0.5">
+                  <div className="px-2.5 py-1 text-xs text-gray-300 hover:text-white cursor-pointer">
                     My details
                   </div>
-                  <div className="px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900 cursor-pointer">
+                  <div className="px-2.5 py-1 text-xs text-gray-300 hover:text-white cursor-pointer">
                     Profile
                   </div>
-                  <div className="px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900 cursor-pointer">
+                  <div className="px-2.5 py-1 text-xs text-gray-300 hover:text-white cursor-pointer">
                     Security
                   </div>
-                  <div className="px-3 py-1.5 text-sm text-blue-600 bg-blue-50 rounded cursor-pointer font-medium">
+                  <div className="px-2.5 py-1 text-xs text-blue-300 bg-blue-500/30 rounded cursor-pointer font-medium">
                     Integrations
                   </div>
-                  <div className="px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900 cursor-pointer">
+                  <div className="px-2.5 py-1 text-xs text-gray-300 hover:text-white cursor-pointer">
                     Billing
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md cursor-pointer">
-                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="flex items-center gap-2.5 px-2.5 py-1.5 text-xs text-gray-200 hover:bg-gray-800 hover:text-white rounded transition-colors cursor-pointer">
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -286,49 +221,49 @@ export default function SafariBrowser({
                   />
                 </svg>
                 <span>Messages</span>
-                <div className="ml-auto w-2 h-2 bg-blue-600 rounded-full"></div>
+                <div className="ml-auto w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
               </div>
             </div>
           </nav>
         </div>
 
         <div className="flex-1 overflow-auto bg-white">
-          <div className="max-w-5xl mx-auto px-8 py-8">
-            <div className="mb-8">
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          <div className="max-w-5xl mx-auto px-6 py-5">
+            <div className="mb-5">
+              <h1 className="text-2xl font-bold text-gray-900 mb-1">
                 Integrations and connected apps
               </h1>
-              <p className="text-gray-600">
+              <p className="text-gray-600 text-sm">
                 Supercharge your workflow and connect the tool you use every day.
               </p>
             </div>
 
-            <div className="flex gap-6 border-b border-gray-200 mb-8">
-              <button className="pb-3 px-1 text-sm font-medium text-gray-900 border-b-2 border-gray-900">
+            <div className="flex gap-4 border-b border-gray-200 mb-5">
+              <button className="pb-2 px-1 text-xs font-medium text-gray-900 border-b-2 border-gray-900">
                 All integrations
               </button>
-              <button className="pb-3 px-1 text-sm font-medium text-gray-500 hover:text-gray-700">
+              <button className="pb-2 px-1 text-xs font-medium text-gray-500 hover:text-gray-700">
                 Developer tools
               </button>
-              <button className="pb-3 px-1 text-sm font-medium text-gray-500 hover:text-gray-700">
+              <button className="pb-2 px-1 text-xs font-medium text-gray-500 hover:text-gray-700">
                 Communication
               </button>
-              <button className="pb-3 px-1 text-sm font-medium text-gray-500 hover:text-gray-700">
+              <button className="pb-2 px-1 text-xs font-medium text-gray-500 hover:text-gray-700">
                 Productivity
               </button>
-              <button className="pb-3 px-1 text-sm font-medium text-gray-500 hover:text-gray-700">
+              <button className="pb-2 px-1 text-xs font-medium text-gray-500 hover:text-gray-700">
                 Custom integrations
               </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div className="bg-white border-2 border-green-500 rounded-xl p-6 shadow-sm hover:shadow-md transition relative">
-                <div className="absolute top-3 right-3 px-2 py-0.5 bg-green-500 text-white text-xs font-semibold rounded-full">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="bg-white border-2 border-green-500 rounded-lg p-4 shadow-sm hover:shadow-md transition relative">
+                <div className="absolute top-2 right-2 px-1.5 py-0.5 bg-green-500 text-white text-[10px] font-semibold rounded-full">
                   NEW
                 </div>
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-lg bg-white border border-gray-200 flex items-center justify-center overflow-hidden">
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-10 h-10 rounded-lg bg-white border border-gray-200 flex items-center justify-center overflow-hidden">
                       <img
                         src={`https://logo.clearbit.com/${integrationUrl}`}
                         onError={(e) => {
@@ -339,19 +274,19 @@ export default function SafariBrowser({
                       />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-900">{integrationName}</h3>
-                      <p className="text-xs text-gray-500">{integrationUrl}</p>
+                      <h3 className="font-semibold text-gray-900 text-sm">{integrationName}</h3>
+                      <p className="text-[11px] text-gray-500">{integrationUrl}</p>
                     </div>
                   </div>
                 </div>
-                <p className="text-sm text-gray-600 mb-4 line-clamp-2">{integrationDescription}</p>
+                <p className="text-xs text-gray-600 mb-3 line-clamp-2">{integrationDescription}</p>
                 <div className="flex items-center justify-between">
-                  <button className="text-sm text-gray-700 hover:text-gray-900 font-medium">
+                  <button className="text-xs text-gray-700 hover:text-gray-900 font-medium">
                     View integration
                   </button>
                   <label className="relative inline-flex items-center cursor-pointer">
                     <input type="checkbox" className="sr-only peer" checked readOnly />
-                    <div className="w-11 h-6 bg-blue-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
+                    <div className="w-9 h-5 bg-blue-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all"></div>
                   </label>
                 </div>
               </div>
@@ -359,11 +294,11 @@ export default function SafariBrowser({
               {dummyIntegrations.map((integration) => (
                 <div
                   key={integration.name}
-                  className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-md transition"
+                  className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition"
                 >
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-lg bg-white border border-gray-200 flex items-center justify-center overflow-hidden">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-10 h-10 rounded-lg bg-white border border-gray-200 flex items-center justify-center overflow-hidden">
                         <img
                           src={`https://logo.clearbit.com/${integration.url}`}
                           onError={(e) => {
@@ -374,16 +309,16 @@ export default function SafariBrowser({
                         />
                       </div>
                       <div>
-                        <h3 className="font-semibold text-gray-900">{integration.name}</h3>
-                        <p className="text-xs text-gray-500">{integration.url}</p>
+                        <h3 className="font-semibold text-gray-900 text-sm">{integration.name}</h3>
+                        <p className="text-[11px] text-gray-500">{integration.url}</p>
                       </div>
                     </div>
                   </div>
-                  <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+                  <p className="text-xs text-gray-600 mb-3 line-clamp-2">
                     {integration.description}
                   </p>
                   <div className="flex items-center justify-between">
-                    <button className="text-sm text-gray-700 hover:text-gray-900 font-medium">
+                    <button className="text-xs text-gray-700 hover:text-gray-900 font-medium">
                       View integration
                     </button>
                     <label className="relative inline-flex items-center cursor-pointer">
@@ -394,7 +329,7 @@ export default function SafariBrowser({
                         readOnly
                       />
                       <div
-                        className={`w-11 h-6 ${integration.enabled ? 'bg-blue-600' : 'bg-gray-300'} peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all`}
+                        className={`w-9 h-5 ${integration.enabled ? 'bg-blue-600' : 'bg-gray-300'} peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all`}
                       ></div>
                     </label>
                   </div>

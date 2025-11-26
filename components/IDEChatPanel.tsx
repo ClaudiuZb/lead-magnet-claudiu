@@ -74,13 +74,12 @@ export default function IDEChatPanel({
         const implementationRequest = `You are implementing a demo of the "${integrationData.name}" integration.
 
 CRITICAL INSTRUCTIONS:
-- Generate 4-6 TypeScript files (.ts) with realistic code
+- Generate 1-2 TypeScript files (.ts) with realistic code
 - Each file should be 20-40 lines of code
 - ALWAYS use Membrane client functions for a realistic integration experience
 - Use functions like: createMembraneClient(user), membrane.actions.getGoogleDriveFiles(), etc.
 - Add proper TypeScript types and interfaces
 - Use async/await patterns with Membrane actions
-- Include basic error handling and data transformation
 - Make it feel like a real integration layer
 
 IMPORTANT - FILE FORMAT:
@@ -93,13 +92,10 @@ const membrane = createMembraneClient(user);
 const data = await membrane.actions.getSomeData({ params });
 
 
-REQUIRED FILES (4-6 files):
-1. Client initialization (src/${integrationData.name}-client.ts) - Membrane client setup and auth
-2. Types and interfaces (src/${integrationData.name}-types.ts) - TypeScript types for API responses
-3. Data fetching methods (src/${integrationData.name}-api.ts) - Functions calling Membrane actions
-4. Data transformation (src/${integrationData.name}-utils.ts) - Helper functions for data processing
-5. Main integration handler (src/${integrationData.name}-handler.ts) - Orchestrates the integration flow
-6. (Optional) Configuration (src/${integrationData.name}-config.ts) - Integration settings
+REQUIRED FILES (1-2 files): EACH WITH 20-40 LINES OF CODE
+1. [FILE: integration.ts] - Main integration logic using Membrane client
+2. [FILE: auth.ts] - Authentication handling with Membrane auth functions
+
 
 Make it comprehensive and realistic - this should showcase a full Membrane integration.`;
 

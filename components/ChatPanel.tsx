@@ -3,10 +3,18 @@
 import { useState, useRef, useEffect } from 'react';
 import { Bot } from 'lucide-react';
 
+interface ToolCall {
+  name: string;
+  status: 'running' | 'complete';
+  icon?: string;
+}
+
 interface Message {
   role: 'user' | 'assistant';
   content: string;
   isTyping?: boolean;
+  plan?: string[];
+  tools?: ToolCall[];
 }
 
 interface ChatPanelProps {
@@ -30,6 +38,75 @@ interface ChatPanelProps {
   }) => void;
   initialMessage?: string;
 }
+
+const getToolIcon = (iconName?: string) => {
+  const className = "w-4 h-4";
+
+  switch (iconName) {
+    case 'lightbulb':
+      return (
+        <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+        </svg>
+      );
+    case 'search':
+      return (
+        <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+      );
+    case 'plug':
+      return (
+        <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+      );
+    case 'globe':
+      return (
+        <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+        </svg>
+      );
+    case 'grid':
+      return (
+        <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+        </svg>
+      );
+    case 'link':
+      return (
+        <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+        </svg>
+      );
+    case 'zap':
+      return (
+        <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+      );
+    case 'file':
+      return (
+        <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+        </svg>
+      );
+    case 'code':
+      return (
+        <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+        </svg>
+      );
+    case 'text':
+      return null; // Text messages don't need icons
+    default:
+      return (
+        <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+      );
+  }
+};
 
 export default function ChatPanel({
   companyUrl,
@@ -272,7 +349,7 @@ export default function ChatPanel({
                   setMessages((prev) => {
                     const newMessages = [...prev];
                     newMessages[newMessages.length - 1].content =
-                      `${textBeforeFile}\n\n📝 Creating ${fileName}...`;
+                      `${textBeforeFile}\n\n Creating ${fileName}...`;
                     return newMessages;
                   });
                 }
@@ -294,7 +371,7 @@ export default function ChatPanel({
                   setMessages((prev) => {
                     const newMessages = [...prev];
                     newMessages[newMessages.length - 1].content =
-                      `${textBeforeFile}\n\n✅ Created ${fileName}`;
+                      `${textBeforeFile}\n\n Created ${fileName}`;
                     return newMessages;
                   });
                 }
@@ -318,7 +395,7 @@ export default function ChatPanel({
       setMessages((prev) => {
         const newMessages = [...prev];
         newMessages[newMessages.length - 1].content =
-          `${textBeforeFiles}\n\n✨ Integration complete! ${processedFiles.size} file${processedFiles.size > 1 ? 's' : ''} created.`;
+          `${textBeforeFiles}\n\n Integration complete! ${processedFiles.size} file${processedFiles.size > 1 ? 's' : ''} created.`;
         return newMessages;
       });
 
@@ -354,16 +431,160 @@ export default function ChatPanel({
   };
 
   const handleSuggestionClick = async (useCase: string) => {
-    // Don't show the recommendation as a user message in chat
-    // Just start showing the assistant's typing indicator
+    const integrationName = useCase.split(' ').slice(0, 3).join(' ');
+
+    // Add initial message with reasoning structure
     setMessages((prev) => [
       ...prev,
       {
         role: 'assistant',
-        content: '',
-        isTyping: true,
+        content: `I'll help you ${useCase.toLowerCase()}. Let me first understand what we're working with and then load the relevant knowledge.`,
+        plan: [
+          'Load skills about building integrations and actions in Membrane',
+          `Check if there's an existing ${integrationName} integration`,
+          `Create or configure the necessary elements to ${useCase.toLowerCase()}`
+        ],
+        tools: []
       },
     ]);
+
+    // Simulate tool calls
+    await new Promise(resolve => setTimeout(resolve, 800));
+
+    const toolCalls: ToolCall[] = [
+      { name: 'Tool: load-skill', status: 'running', icon: 'lightbulb' },
+    ];
+
+    setMessages((prev) => {
+      const newMessages = [...prev];
+      newMessages[newMessages.length - 1].tools = [...toolCalls];
+      return newMessages;
+    });
+
+    await new Promise(resolve => setTimeout(resolve, 600));
+    toolCalls[0].status = 'complete';
+    toolCalls.push({ name: 'Tool: load-skill', status: 'running', icon: 'lightbulb' });
+    setMessages((prev) => {
+      const newMessages = [...prev];
+      newMessages[newMessages.length - 1].tools = [...toolCalls];
+      return newMessages;
+    });
+
+    await new Promise(resolve => setTimeout(resolve, 600));
+    toolCalls[1].status = 'complete';
+    toolCalls.push({ name: 'Tool: load-skill', status: 'running', icon: 'lightbulb' });
+    setMessages((prev) => {
+      const newMessages = [...prev];
+      newMessages[newMessages.length - 1].tools = [...toolCalls];
+      return newMessages;
+    });
+
+    await new Promise(resolve => setTimeout(resolve, 600));
+    toolCalls[2].status = 'complete';
+    toolCalls.push({ name: 'Membrane: List Integrations', status: 'running', icon: 'search' });
+    setMessages((prev) => {
+      const newMessages = [...prev];
+      newMessages[newMessages.length - 1].tools = [...toolCalls];
+      newMessages[newMessages.length - 1].content = `I'll help you ${useCase.toLowerCase()}. Let me first understand what we're working with and then load the relevant knowledge.\n\nLet me start by loading the necessary skills and checking the current state:`;
+      return newMessages;
+    });
+
+    await new Promise(resolve => setTimeout(resolve, 800));
+    toolCalls[3].status = 'complete';
+    toolCalls.push({ name: `Now let me search for information about ${integrationName} and check if there are any existing connectors:`, status: 'complete', icon: 'text' });
+    toolCalls.push({ name: 'Membrane: List Connectors', status: 'running', icon: 'plug' });
+    setMessages((prev) => {
+      const newMessages = [...prev];
+      newMessages[newMessages.length - 1].tools = [...toolCalls];
+      return newMessages;
+    });
+
+    await new Promise(resolve => setTimeout(resolve, 700));
+    toolCalls[5].status = 'complete';
+    toolCalls.push({ name: 'Membrane: Websearch', status: 'running', icon: 'globe' });
+    setMessages((prev) => {
+      const newMessages = [...prev];
+      newMessages[newMessages.length - 1].tools = [...toolCalls];
+      return newMessages;
+    });
+
+    await new Promise(resolve => setTimeout(resolve, 800));
+    toolCalls[6].status = 'complete';
+    toolCalls.push({ name: `Good! Now let me check if there are any apps for ${integrationName} and get more details about the API:`, status: 'complete', icon: 'text' });
+    toolCalls.push({ name: 'Membrane: List Apps', status: 'running', icon: 'grid' });
+    setMessages((prev) => {
+      const newMessages = [...prev];
+      newMessages[newMessages.length - 1].tools = [...toolCalls];
+      return newMessages;
+    });
+
+    await new Promise(resolve => setTimeout(resolve, 700));
+    toolCalls[8].status = 'complete';
+    toolCalls.push({ name: 'Tool: load-skill', status: 'running', icon: 'lightbulb' });
+    setMessages((prev) => {
+      const newMessages = [...prev];
+      newMessages[newMessages.length - 1].tools = [...toolCalls];
+      return newMessages;
+    });
+
+    await new Promise(resolve => setTimeout(resolve, 600));
+    toolCalls[9].status = 'complete';
+    toolCalls.push({ name: `Perfect! I can see that ${integrationName} app already exists and has a default connector. Let me check the existing connector and then create an integration:`, status: 'complete', icon: 'text' });
+    toolCalls.push({ name: 'Membrane: Get Connector', status: 'running', icon: 'link' });
+    setMessages((prev) => {
+      const newMessages = [...prev];
+      newMessages[newMessages.length - 1].tools = [...toolCalls];
+      return newMessages;
+    });
+
+    await new Promise(resolve => setTimeout(resolve, 800));
+    toolCalls[11].status = 'complete';
+    toolCalls.push({ name: `Great! Now I understand the setup. Let me create an integration for ${integrationName} and then build the necessary elements to ${useCase.toLowerCase()}. Let me also load the skill about internal data schemas since we'll likely need to work with contact data:`, status: 'complete', icon: 'text' });
+    toolCalls.push({ name: 'Tool: load-skill', status: 'running', icon: 'lightbulb' });
+    setMessages((prev) => {
+      const newMessages = [...prev];
+      newMessages[newMessages.length - 1].tools = [...toolCalls];
+      return newMessages;
+    });
+
+    await new Promise(resolve => setTimeout(resolve, 600));
+    toolCalls[13].status = 'complete';
+    toolCalls.push({ name: 'Membrane: Create Integration', status: 'running', icon: 'zap' });
+    setMessages((prev) => {
+      const newMessages = [...prev];
+      newMessages[newMessages.length - 1].tools = [...toolCalls];
+      return newMessages;
+    });
+
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    toolCalls[14].status = 'complete';
+    toolCalls.push({ name: `Perfect! The integration has been created. Now let me create an action that will ${useCase.toLowerCase()}. Based on the web search results, I know the API endpoint we need to use. Let me create an action for this:`, status: 'complete', icon: 'text' });
+    toolCalls.push({ name: 'Tool: load-skill', status: 'running', icon: 'lightbulb' });
+    setMessages((prev) => {
+      const newMessages = [...prev];
+      newMessages[newMessages.length - 1].tools = [...toolCalls];
+      return newMessages;
+    });
+
+    await new Promise(resolve => setTimeout(resolve, 600));
+    toolCalls[16].status = 'complete';
+    toolCalls.push({ name: 'Now let me read the documentation for the api-request-to-external-app function type since that\'s what we\'ll need:', status: 'complete', icon: 'text' });
+    toolCalls.push({ name: 'Tool: read-documentation', status: 'running', icon: 'file' });
+    setMessages((prev) => {
+      const newMessages = [...prev];
+      newMessages[newMessages.length - 1].tools = [...toolCalls];
+      return newMessages;
+    });
+
+    await new Promise(resolve => setTimeout(resolve, 800));
+    toolCalls[18].status = 'complete';
+    toolCalls.push({ name: `Perfect! Now let me create an action to ${useCase.toLowerCase()}:`, status: 'complete', icon: 'text' });
+    toolCalls.push({ name: 'Membrane: Create Action', status: 'running', icon: 'code' });
+    setMessages((prev) => {
+      const newMessages = [...prev];
+      newMessages[newMessages.length - 1].tools = [...toolCalls];
+      return newMessages;
+    });
 
     if (onAiThinking) {
       onAiThinking('Initializing integration architect...\n→ Connecting to Claude AI...\n');
@@ -390,7 +611,14 @@ export default function ChatPanel({
       const reader = response.body?.getReader();
 
       if (reader) {
-        setMessages((prev) => prev.slice(0, -1));
+        toolCalls[20].status = 'complete';
+        setMessages((prev) => {
+          const newMessages = [...prev];
+          newMessages[newMessages.length - 1].tools = [...toolCalls];
+          return newMessages;
+        });
+
+        await new Promise(resolve => setTimeout(resolve, 500));
         setMessages((prev) => [...prev, { role: 'assistant', content: '...' }]);
         await processStreamingResponse(reader, useCase, useCase);
       }
@@ -487,9 +715,10 @@ export default function ChatPanel({
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-5 py-6 space-y-6 bg-white">
-        {messages.map((message, index) => (
-          <div key={index}>
+      <div className="flex-1 overflow-y-auto bg-white flex justify-center">
+        <div className="w-full max-w-3xl px-8 py-6 space-y-6">
+          {messages.map((message, index) => (
+            <div key={index}>
             {message.role === 'assistant' && (
               <div className="flex gap-3">
                 <div className="w-8 h-8 rounded-full bg-gray-100 flex-shrink-0 flex items-center justify-center">
@@ -517,9 +746,49 @@ export default function ChatPanel({
                         ></span>
                       </div>
                     ) : (
-                      <div className="whitespace-pre-wrap break-words">
-                        {message.content.replace(/\[SERVICE:[^\]]+\]/g, '').trim()}
-                      </div>
+                      <>
+                        <div className="whitespace-pre-wrap break-words">
+                          {message.content.replace(/\[SERVICE:[^\]]+\]/g, '').trim()}
+                        </div>
+
+                        {/* Plan Section */}
+                        {message.plan && message.plan.length > 0 && (
+                          <div className="mt-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                            <div className="font-medium text-gray-900 mb-2">Plan:</div>
+                            <ol className="list-decimal list-inside space-y-1 text-gray-700">
+                              {message.plan.map((step, i) => (
+                                <li key={i} className="text-sm">{step}</li>
+                              ))}
+                            </ol>
+                          </div>
+                        )}
+
+                        {/* Tool Calls Section */}
+                        {message.tools && message.tools.length > 0 && (
+                          <div className="mt-3 space-y-1">
+                            {message.tools.map((tool, i) => (
+                              <details key={i} className="group" open={tool.name.includes('Now let me') || tool.name.includes('Good!') || tool.name.includes('Perfect!') || tool.name.includes('Great!')}>
+                                <summary className="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded cursor-pointer hover:bg-gray-100 transition-colors list-none">
+                                  {getToolIcon(tool.icon)}
+                                  <span className="flex-1 text-sm font-medium text-gray-700">{tool.name}</span>
+                                  {tool.status === 'running' ? (
+                                    <div className="w-4 h-4 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin"></div>
+                                  ) : (
+                                    <svg className="w-4 h-4 text-gray-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"/>
+                                    </svg>
+                                  )}
+                                </summary>
+                                {tool.status === 'complete' && !tool.name.includes('Now let me') && !tool.name.includes('Good!') && !tool.name.includes('Perfect!') && !tool.name.includes('Great!') && (
+                                  <div className="px-3 py-2 text-xs text-gray-600 bg-gray-50/50">
+                                    ✓ Complete
+                                  </div>
+                                )}
+                              </details>
+                            ))}
+                          </div>
+                        )}
+                      </>
                     )}
                   </div>
                 </div>
@@ -556,9 +825,12 @@ export default function ChatPanel({
                         onAddToIDE(integrationData);
                       }
                     }}
-                    className="w-full text-center text-sm bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-4 py-2.5 rounded-lg border border-transparent transition-all font-medium shadow-sm hover:shadow-md"
+                    className="inline-flex items-center gap-2 text-sm bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg border border-blue-600 transition-colors font-medium"
                   >
-                    ✨ Add to Your IDE
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    Add to Your IDE
                   </button>
                 </div>
               )}
@@ -566,32 +838,35 @@ export default function ChatPanel({
         ))}
 
         <div ref={messagesEndRef} />
+        </div>
       </div>
 
       {/* Input Area */}
-      <div className="border-t p-4 border-gray-200 bg-white">
-        <form onSubmit={handleSubmit}>
-          <div className="relative">
-            <textarea
-              ref={textareaRef}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Type your message..."
-              className="w-full text-sm rounded-lg px-4 py-3 pr-12 border focus:outline-none focus:ring-2 resize-none min-h-[48px] max-h-[150px] bg-white text-gray-700 border-gray-300 focus:border-blue-500 focus:ring-blue-100 placeholder:text-gray-400"
-              rows={1}
-            />
-            <button
-              type="submit"
-              disabled={!input.trim()}
-              className="absolute right-2 bottom-2 p-2 rounded-lg disabled:opacity-40 disabled:cursor-not-allowed transition-all bg-blue-600 text-white hover:bg-blue-700 disabled:hover:bg-blue-600"
-            >
-              <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
-              </svg>
-            </button>
-          </div>
-        </form>
+      <div className="border-t border-gray-200 bg-white flex justify-center">
+        <div className="w-full max-w-3xl px-8 py-4">
+          <form onSubmit={handleSubmit}>
+            <div className="relative">
+              <textarea
+                ref={textareaRef}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Type your message..."
+                className="w-full text-sm rounded-lg px-4 py-3 pr-12 border focus:outline-none focus:ring-2 resize-none min-h-[48px] max-h-[150px] bg-white text-gray-700 border-gray-300 focus:border-blue-500 focus:ring-blue-100 placeholder:text-gray-400"
+                rows={1}
+              />
+              <button
+                type="submit"
+                disabled={!input.trim()}
+                className="absolute right-2 bottom-2 p-2 rounded-lg disabled:opacity-40 disabled:cursor-not-allowed transition-all bg-blue-600 text-white hover:bg-blue-700 disabled:hover:bg-blue-600"
+              >
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                </svg>
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );
