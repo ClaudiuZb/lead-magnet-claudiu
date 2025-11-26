@@ -38,6 +38,7 @@ export default function CodePanel({
   const renderWithSyntax = (code: string, fileType: string) => {
     if (fileType === 'yaml') {
       return code.split('\n').map((line, i) => {
+        // Comments
         if (line.trim().startsWith('#')) {
           return (
             <div key={i} className="text-green-600">
@@ -45,16 +46,28 @@ export default function CodePanel({
             </div>
           );
         }
+        // Key-value pairs
         if (line.includes(':') && !line.trim().startsWith('-')) {
-          const [key, ...rest] = line.split(':');
+          const colonIndex = line.indexOf(':');
+          const beforeColon = line.substring(0, colonIndex);
+          const afterColon = line.substring(colonIndex + 1);
+
+          // Check if value contains variables like $.input
+          const hasVar = afterColon.includes('$.');
+
           return (
             <div key={i}>
-              <span className="text-blue-600 font-medium">{key}</span>
+              <span className="text-[#0070C1]">{beforeColon}</span>
               <span className="text-gray-700">:</span>
-              <span className="text-orange-600">{rest.join(':')}</span>
+              {hasVar ? (
+                <span className="text-[#0070C1]">{afterColon}</span>
+              ) : (
+                <span className="text-gray-700">{afterColon}</span>
+              )}
             </div>
           );
         }
+        // List items
         if (line.trim().startsWith('-')) {
           return (
             <div key={i} className="text-gray-700">
@@ -79,9 +92,9 @@ export default function CodePanel({
           return (
             <div key={i}>
               <span className="text-gray-700">{key.replace(/"([^"]+)"/, '')}</span>
-              <span className="text-blue-600">&quot;{key.match(/"([^"]+)"/)?.[1] || ''}&quot;</span>
+              <span className="text-[#0070C1]">&quot;{key.match(/"([^"]+)"/)?.[1] || ''}&quot;</span>
               <span className="text-gray-700">: </span>
-              <span className="text-orange-600">{value}</span>
+              <span className="text-[#A31515]">{value}</span>
             </div>
           );
         }
@@ -240,30 +253,34 @@ actions:
   const { content, type } = getFileContent();
 
   return (
-    <div className="h-full flex flex-col">
-      {selectedFile && (
-        <div className="bg-gray-100 border-b border-gray-200 px-4 py-2 flex items-center">
-          <span className="text-sm text-gray-700 font-medium">{selectedFile}</span>
-        </div>
-      )}
+    <div className="h-full flex bg-white overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-200 hover:scrollbar-thumb-gray-300">
+      <style jsx>{`
+        div::-webkit-scrollbar {
+          width: 6px;
+        }
+        div::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        div::-webkit-scrollbar-thumb {
+          background: rgba(156, 163, 175, 0.3);
+          border-radius: 3px;
+        }
+        div::-webkit-scrollbar-thumb:hover {
+          background: rgba(156, 163, 175, 0.5);
+        }
+      `}</style>
 
-      <div className="flex-1 overflow-auto bg-white p-6 relative">
-        <pre className="text-sm font-mono leading-relaxed">{renderWithSyntax(content, type)}</pre>
+      {/* Line Numbers */}
+      <div className="select-none pr-3 pl-3 pt-2 text-right text-gray-400 text-[11px] font-mono leading-[18px] sticky left-0">
+        {content.split('\n').map((_, i) => (
+          <div key={i}>{i + 1}</div>
+        ))}
       </div>
 
-      <div className="h-40 bg-gray-50 border-t border-gray-200 overflow-auto font-mono text-xs">
-        <div className="sticky top-0 bg-gray-100 px-3 py-2 border-b border-gray-200 flex items-center gap-2">
-          <div
-            className={`w-2 h-2 rounded-full ${isAICoding ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`}
-          ></div>
-          <span className="text-gray-700 font-semibold">
-            membrane@ide:~/projects/{capitalizedName}-integration-layer$
-          </span>
-        </div>
-        <div className="p-3 text-green-700 whitespace-pre-wrap">
-          {aiThinking || 'Ready to build integrations...'}
-        </div>
-      </div>
+      {/* Code Content */}
+      <pre className="text-[11px] font-mono leading-[18px] flex-1 pt-2 pr-3">
+        {renderWithSyntax(content, type)}
+      </pre>
     </div>
   );
 }

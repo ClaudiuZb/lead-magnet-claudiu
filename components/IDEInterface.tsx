@@ -97,6 +97,26 @@ export default function IDEInterface({
 
   return (
     <div className="flex h-full bg-[#1E1E1E] text-gray-100 overflow-hidden">
+      <style jsx global>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 6px;
+          height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: rgba(255, 255, 255, 0.1);
+          border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: rgba(255, 255, 255, 0.2);
+        }
+        .custom-scrollbar {
+          scrollbar-width: thin;
+          scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+        }
+      `}</style>
       <div className="hidden fixed top-0 left-0 right-0 h-12 bg-[#252526] border-b border-[#3E3E42] items-center px-4 z-10">
         <div className="flex items-center gap-3">
           <span className="text-lg font-mono text-[#569CD6]">&lt;/&gt;</span>

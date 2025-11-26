@@ -66,32 +66,47 @@ export default function IDEChatPanel({
       setMessages([
         {
           role: 'assistant',
-          content: `I've received the integration schema from Membrane Console. Now I'll generate the actual TypeScript implementation code with API clients, error handling, and production-ready logic...`,
+          content: `Starting implementation for ${integrationData.name}... Setting up integration layer with Membrane client.`,
         },
       ]);
 
       setTimeout(() => {
-        const implementationRequest = `You are implementing a quick demo of the "${integrationData.name}" integration.
+        const implementationRequest = `You are implementing a demo of the "${integrationData.name}" integration.
 
-CRITICAL INSTRUCTIONS - KEEP IT SIMPLE AND FAST:
-- Generate ONLY 1-2 TypeScript files (.ts) with SHORT, minimal code
-- Each file should be 15-25 lines maximum
-- Create a simple client class with basic methods (no complex error handling)
-- Add minimal TypeScript types (just 2-3 fields)
-- Use simple async/await patterns
-- NO retries, NO complex logging, NO utilities - keep it demo-quality
+CRITICAL INSTRUCTIONS:
+- Generate 4-6 TypeScript files (.ts) with realistic code
+- Each file should be 20-40 lines of code
+- ALWAYS use Membrane client functions for a realistic integration experience
+- Use functions like: createMembraneClient(user), membrane.actions.getGoogleDriveFiles(), etc.
+- Add proper TypeScript types and interfaces
+- Use async/await patterns with Membrane actions
+- Include basic error handling and data transformation
+- Make it feel like a real integration layer
 
-REQUIRED FILES (ONLY 2):
-1. Main client class (src/${integrationData.name}-client.ts) - ~20 lines with 2-3 simple methods
-2. Basic types (src/${integrationData.name}-types.ts) - ~10 lines with 1-2 interfaces
+IMPORTANT - FILE FORMAT:
+- DO NOT include language identifiers like typescript, ts, or code block markers in your response
+- Start each file directly with [FILE: filename.ts] followed by the code
+- NO code block markers, NO language tags, NO markdown - just clean code
 
-Keep everything minimal and straightforward - this is a quick demo, not production code.`;
+REQUIRED MEMBRANE PATTERN - ALWAYS USE THIS:
+const membrane = createMembraneClient(user);
+const data = await membrane.actions.getSomeData({ params });
+
+
+REQUIRED FILES (4-6 files):
+1. Client initialization (src/${integrationData.name}-client.ts) - Membrane client setup and auth
+2. Types and interfaces (src/${integrationData.name}-types.ts) - TypeScript types for API responses
+3. Data fetching methods (src/${integrationData.name}-api.ts) - Functions calling Membrane actions
+4. Data transformation (src/${integrationData.name}-utils.ts) - Helper functions for data processing
+5. Main integration handler (src/${integrationData.name}-handler.ts) - Orchestrates the integration flow
+6. (Optional) Configuration (src/${integrationData.name}-config.ts) - Integration settings
+
+Make it comprehensive and realistic - this should showcase a full Membrane integration.`;
 
         console.log('[IDEChatPanel] Starting implementation request:', implementationRequest);
 
         setMessages((prev) => [
           ...prev,
-          { role: 'user', content: implementationRequest },
           { role: 'assistant', content: '...' },
         ]);
 
@@ -274,11 +289,10 @@ Keep everything minimal and straightforward - this is a quick demo, not producti
           onAiThinking(terminalOutput);
         }
 
-        const cleanText = textBeforeFiles || 'Implementation complete';
         setMessages((prev) => {
           const newMessages = [...prev];
           newMessages[newMessages.length - 1].content =
-            `✅ ${cleanText}\n\nGenerated ${processedFiles.size} production-ready TypeScript file${processedFiles.size > 1 ? 's' : ''}.`;
+            `✅ ${integrationData?.name || 'Integration'} complete. Generated ${processedFiles.size} file${processedFiles.size > 1 ? 's' : ''}.`;
           return newMessages;
         });
 
@@ -357,6 +371,26 @@ Keep everything minimal and straightforward - this is a quick demo, not producti
 
   return (
     <div className="flex flex-col h-full">
+      <style jsx>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: rgba(255, 255, 255, 0.1);
+          border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: rgba(255, 255, 255, 0.2);
+        }
+        .custom-scrollbar {
+          scrollbar-width: thin;
+          scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+          overflow-x: hidden;
+        }
+      `}</style>
       <div className="border-b px-4 py-3 flex items-center gap-2 bg-[#252526] border-[#3E3E42]">
         <div
           className={`w-2 h-2 rounded-full ${isAnalyzing ? 'bg-yellow-500 animate-pulse' : 'bg-green-500'}`}
@@ -364,7 +398,7 @@ Keep everything minimal and straightforward - this is a quick demo, not producti
         <span className="text-sm font-medium text-gray-300">Your IDE Agent</span>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 bg-[#1E1E1E]">
+      <div className="flex-1 overflow-y-auto custom-scrollbar px-4 py-4 space-y-4 bg-[#1E1E1E]">
         {messages.map((message, index) => (
           <div key={index}>
             <div className={`flex gap-3 ${message.role === 'user' ? 'flex-row-reverse' : ''}`}>

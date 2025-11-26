@@ -424,7 +424,7 @@ export default function DesktopOS({ companyUrl }: DesktopOSProps) {
                   opacity: window.isMinimized ? 0 : 1,
                 }}
               >
-                <div className="window-drag-handle h-10 bg-gradient-to-b from-gray-100 to-gray-200 border-b border-gray-300 flex items-center px-4 cursor-move">
+                <div className="window-drag-handle h-10 bg-[#252526] border-b border-[#3E3E42] flex items-center px-4 cursor-move">
                   <div className="flex items-center gap-2 group">
                     <button
                       type="button"
@@ -441,7 +441,7 @@ export default function DesktopOS({ companyUrl }: DesktopOSProps) {
                       className="w-3 h-3 rounded-full bg-[#28CA42] hover:bg-[#1AAD34] border border-[#24A93D]"
                     ></button>
                   </div>
-                  <div className="flex-1 text-center text-gray-700 text-sm font-medium">
+                  <div className="flex-1 text-center text-gray-300 text-sm font-medium">
                     Your IDE
                   </div>
                   <div className="w-14"></div>

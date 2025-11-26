@@ -152,13 +152,33 @@ export default function IDEFileTree({
 
   return (
     <div className="h-full flex flex-col bg-[#252526]">
+      <style jsx>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: rgba(255, 255, 255, 0.1);
+          border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: rgba(255, 255, 255, 0.2);
+        }
+        .custom-scrollbar {
+          scrollbar-width: thin;
+          scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+          overflow-x: hidden;
+        }
+      `}</style>
       <div className="px-3 py-2 border-b border-[#3E3E42]">
         <div className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">
           {capitalizedName}
         </div>
         <div className="text-[10px] text-gray-500">integration-layer</div>
       </div>
-      <div className="py-2 flex-1 overflow-auto">
+      <div className="py-2 flex-1 overflow-y-auto custom-scrollbar">
         {fileStructure.map((node) => renderNode(node))}
       </div>
     </div>

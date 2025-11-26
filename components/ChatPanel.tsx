@@ -465,63 +465,90 @@ export default function ChatPanel({
     }
   };
 
+  const getTimeStamp = () => {
+    const now = new Date();
+    return now.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
+  };
+
   return (
-    <div className="flex flex-col h-full">
-      <div className="border-b px-4 py-3 flex items-center gap-2 bg-gray-100 border-gray-200">
-        <div
-          className={`w-2 h-2 rounded-full ${isAnalyzing ? 'bg-yellow-500 animate-pulse' : 'bg-green-500'}`}
-        ></div>
-        <span className="text-sm font-medium text-gray-700">Membrane Integration Agent</span>
+    <div className="flex flex-col h-full bg-gray-50">
+      {/* Header */}
+      <div className="border-b px-5 py-4 flex items-center gap-3 bg-white border-gray-200">
+        <button className="text-gray-400 hover:text-gray-600">
+          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+          </svg>
+        </button>
+        <h2 className="text-base font-semibold text-gray-900">Membrane Agent</h2>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 bg-white">
+      {/* Messages */}
+      <div className="flex-1 overflow-y-auto px-5 py-6 space-y-6 bg-white">
         {messages.map((message, index) => (
           <div key={index}>
-            <div className={`flex gap-3 ${message.role === 'user' ? 'flex-row-reverse' : ''}`}>
-              <div
-                className={`w-7 h-7 rounded flex-shrink-0 flex items-center justify-center text-xs ${
-                  message.role === 'assistant'
-                    ? 'bg-gray-200 text-gray-700'
-                    : 'bg-blue-100 text-blue-700'
-                }`}
-              >
-                {message.role === 'assistant' ? <Bot className="w-4 h-4" /> : '👤'}
-              </div>
-
-              <div
-                className={`flex-1 rounded-lg px-3 py-2 text-sm leading-relaxed whitespace-pre-wrap ${
-                  message.role === 'assistant'
-                    ? 'bg-gray-50 text-gray-800 border border-gray-200'
-                    : 'bg-blue-600 text-white'
-                }`}
-              >
-                {message.isTyping ? (
-                  <div className="flex gap-1 items-center py-1">
-                    <span
-                      className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
-                      style={{ animationDelay: '0ms' }}
-                    ></span>
-                    <span
-                      className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
-                      style={{ animationDelay: '150ms' }}
-                    ></span>
-                    <span
-                      className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
-                      style={{ animationDelay: '300ms' }}
-                    ></span>
+            {message.role === 'assistant' && (
+              <div className="flex gap-3">
+                <div className="w-8 h-8 rounded-full bg-gray-100 flex-shrink-0 flex items-center justify-center">
+                  <Bot className="w-4 h-4 text-gray-600" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-baseline gap-2 mb-1">
+                    <span className="text-sm font-medium text-gray-900">Agent</span>
+                    <span className="text-xs text-gray-400">{getTimeStamp()}</span>
                   </div>
-                ) : (
-                  message.content.replace(/\[SERVICE:[^\]]+\]/g, '').trim()
-                )}
+                  <div className="text-sm text-gray-700 leading-relaxed">
+                    {message.isTyping ? (
+                      <div className="flex gap-1 items-center py-1">
+                        <span
+                          className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"
+                          style={{ animationDelay: '0ms' }}
+                        ></span>
+                        <span
+                          className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"
+                          style={{ animationDelay: '150ms' }}
+                        ></span>
+                        <span
+                          className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"
+                          style={{ animationDelay: '300ms' }}
+                        ></span>
+                      </div>
+                    ) : (
+                      <div className="whitespace-pre-wrap break-words">
+                        {message.content.replace(/\[SERVICE:[^\]]+\]/g, '').trim()}
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
-            </div>
+            )}
+
+            {message.role === 'user' && (
+              <div className="flex gap-3">
+                <div className="w-8 h-8 rounded-full bg-blue-100 flex-shrink-0 flex items-center justify-center">
+                  <span className="text-sm">👤</span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-baseline gap-2 mb-1">
+                    <span className="text-sm font-medium text-gray-900">You</span>
+                    <span className="text-xs text-gray-400">{getTimeStamp()}</span>
+                  </div>
+                  <div className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap break-words">
+                    {message.content}
+                  </div>
+                </div>
+              </div>
+            )}
 
             {message.role === 'assistant' &&
               index === messages.length - 1 &&
               integrationCompleted &&
               integrationData &&
               message.content.includes('Integration complete!') && (
-                <div className="mt-3 ml-10">
+                <div className="mt-4 ml-11">
                   <button
                     type="button"
                     onClick={() => {
@@ -529,9 +556,9 @@ export default function ChatPanel({
                         onAddToIDE(integrationData);
                       }
                     }}
-                    className="w-full text-left text-xs bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-4 py-3 rounded-full border border-transparent transition-all font-medium shadow-md hover:shadow-lg"
+                    className="w-full text-center text-sm bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-4 py-2.5 rounded-lg border border-transparent transition-all font-medium shadow-sm hover:shadow-md"
                   >
-                     Add to Your IDE
+                    ✨ Add to Your IDE
                   </button>
                 </div>
               )}
@@ -541,24 +568,29 @@ export default function ChatPanel({
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="border-t p-4 border-gray-200 bg-gray-50">
-        <form onSubmit={handleSubmit} className="flex flex-col gap-2">
-          <textarea
-            ref={textareaRef}
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Describe the integration you need..."
-            className="w-full text-sm rounded-lg px-3 py-2 border focus:outline-none focus:ring-2 resize-none min-h-[60px] max-h-[200px] bg-white text-gray-700 border-gray-300 focus:border-blue-500 focus:ring-blue-100 placeholder:text-gray-400"
-            rows={2}
-          />
-          <button
-            type="submit"
-            disabled={!input.trim()}
-            className="self-end px-4 py-1.5 text-sm rounded disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium bg-blue-600 text-white hover:bg-blue-700"
-          >
-            Send
-          </button>
+      {/* Input Area */}
+      <div className="border-t p-4 border-gray-200 bg-white">
+        <form onSubmit={handleSubmit}>
+          <div className="relative">
+            <textarea
+              ref={textareaRef}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Type your message..."
+              className="w-full text-sm rounded-lg px-4 py-3 pr-12 border focus:outline-none focus:ring-2 resize-none min-h-[48px] max-h-[150px] bg-white text-gray-700 border-gray-300 focus:border-blue-500 focus:ring-blue-100 placeholder:text-gray-400"
+              rows={1}
+            />
+            <button
+              type="submit"
+              disabled={!input.trim()}
+              className="absolute right-2 bottom-2 p-2 rounded-lg disabled:opacity-40 disabled:cursor-not-allowed transition-all bg-blue-600 text-white hover:bg-blue-700 disabled:hover:bg-blue-600"
+            >
+              <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+              </svg>
+            </button>
+          </div>
         </form>
       </div>
     </div>

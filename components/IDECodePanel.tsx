@@ -172,19 +172,45 @@ export default function IDECodePanel({
 
   return (
     <div className="h-full flex flex-col bg-[#1E1E1E]">
+      <style jsx>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 6px;
+          height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: rgba(255, 255, 255, 0.1);
+          border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: rgba(255, 255, 255, 0.2);
+        }
+        .custom-scrollbar {
+          scrollbar-width: thin;
+          scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+        }
+        .custom-scrollbar-y-only::-webkit-scrollbar:horizontal {
+          display: none;
+        }
+        .custom-scrollbar-y-only {
+          overflow-x: hidden;
+        }
+      `}</style>
       {selectedFile && (
         <div className="bg-[#252526] border-b border-[#3E3E42] px-4 py-1.5 flex items-center">
           <span className="text-[13px] text-gray-300 font-normal">{selectedFile}</span>
         </div>
       )}
 
-      <div className="flex-1 overflow-auto bg-[#1E1E1E] p-4 relative">
+      <div className="flex-1 overflow-y-auto custom-scrollbar custom-scrollbar-y-only bg-[#1E1E1E] p-4 relative">
         <pre className="text-[13px] font-mono leading-relaxed">
           {renderWithSyntax(content, type)}
         </pre>
       </div>
 
-      <div className="h-32 bg-[#1E1E1E] border-t border-[#3E3E42] overflow-auto font-mono text-[11px]">
+      <div className="h-32 bg-[#1E1E1E] border-t border-[#3E3E42] overflow-y-auto custom-scrollbar custom-scrollbar-y-only font-mono text-[11px]">
         <div className="sticky top-0 bg-[#252526] px-3 py-1.5 border-b border-[#3E3E42] flex items-center gap-2">
           <div
             className={`w-1.5 h-1.5 rounded-full ${isAICoding ? 'bg-green-500 animate-pulse' : 'bg-gray-500'}`}

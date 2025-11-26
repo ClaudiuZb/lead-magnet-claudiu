@@ -25,7 +25,7 @@ interface CompanyAnalysis {
 export default function MembraneConsole({ companyUrl, onAddToIDE }: MembraneConsoleProps) {
   const [inputValue, setInputValue] = useState('');
   const [activeNav, setActiveNav] = useState<
-    'dashboard' | 'apps' | 'builder' | 'tenants' | 'activity'
+    'dashboard' | 'apps' | 'builder' | 'customers' | 'activity'
   >('dashboard');
   const [activeTab, setActiveTab] = useState<'your-app' | 'membrane' | 'external-apps'>('membrane');
   const [showCodeEditor, setShowCodeEditor] = useState(false);
@@ -323,41 +323,41 @@ export default function MembraneConsole({ companyUrl, onAddToIDE }: MembraneCons
             </div>
 
             <div
-              onClick={() => setActiveNav('tenants')}
+              onClick={() => setActiveNav('customers')}
               className={`flex flex-col justify-center items-center py-[7.35px] px-2 gap-[3px] w-full rounded-[2.76px] cursor-pointer transition ${
-                activeNav === 'tenants' ? 'bg-[rgba(243,245,247,0.08)]' : ''
+                activeNav === 'customers' ? 'bg-[rgba(243,245,247,0.08)]' : ''
               }`}
             >
               <div
                 className={`flex justify-center items-center w-[29.4px] h-[29.4px] rounded-[5.51px] ${
-                  activeNav === 'tenants' ? 'bg-[rgba(220,255,0,0.2)]' : ''
+                  activeNav === 'customers' ? 'bg-[rgba(220,255,0,0.2)]' : ''
                 }`}
               >
                 <svg width="18.37" height="18.37" fill="none" viewBox="0 0 19 19">
                   <path
                     d="M3.8288 5.35933C3.8288 6.17154 4.15144 6.95048 4.72576 7.52479C5.30008 8.09911 6.07902 8.42176 6.89122 8.42176C7.70343 8.42176 8.48237 8.09911 9.05669 7.52479C9.631 6.95048 9.95365 6.17154 9.95365 5.35933C9.95365 4.54713 9.631 3.76819 9.05669 3.19387C8.48237 2.61955 7.70343 2.29691 6.89122 2.29691C6.07902 2.29691 5.30008 2.61955 4.72576 3.19387C4.15144 3.76819 3.8288 4.54713 3.8288 5.35933Z"
-                    stroke={activeNav === 'tenants' ? '#DCFF00' : '#F3F5F7'}
+                    stroke={activeNav === 'customers' ? '#DCFF00' : '#F3F5F7'}
                     strokeWidth="1.38"
                     strokeLinecap="round"
                     strokeLinejoin="round"
                   />
                   <path
                     d="M2.29639 16.0778V14.5466C2.29639 13.7344 2.61903 12.9554 3.19335 12.3811C3.76767 11.8068 4.54661 11.4842 5.35881 11.4842H8.42124C9.23345 11.4842 10.0124 11.8068 10.5867 12.3811C11.161 12.9554 11.4837 13.7344 11.4837 14.5466V16.0778"
-                    stroke={activeNav === 'tenants' ? '#DCFF00' : '#F3F5F7'}
+                    stroke={activeNav === 'customers' ? '#DCFF00' : '#F3F5F7'}
                     strokeWidth="1.38"
                     strokeLinecap="round"
                     strokeLinejoin="round"
                   />
                   <path
                     d="M12.248 2.39737C12.9068 2.56603 13.4907 2.94914 13.9076 3.4863C14.3246 4.02346 14.5509 4.68411 14.5509 5.36409C14.5509 6.04408 14.3246 6.70473 13.9076 7.24189C13.4907 7.77905 12.9068 8.16216 12.248 8.33082"
-                    stroke={activeNav === 'tenants' ? '#DCFF00' : '#F3F5F7'}
+                    stroke={activeNav === 'customers' ? '#DCFF00' : '#F3F5F7'}
                     strokeWidth="1.38"
                     strokeLinecap="round"
                     strokeLinejoin="round"
                   />
                   <path
                     d="M16.0773 16.0778V14.5466C16.0734 13.8707 15.846 13.2151 15.4305 12.6819C15.0151 12.1487 14.4349 11.768 13.7805 11.599"
-                    stroke={activeNav === 'tenants' ? '#DCFF00' : '#F3F5F7'}
+                    stroke={activeNav === 'customers' ? '#DCFF00' : '#F3F5F7'}
                     strokeWidth="1.38"
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -366,10 +366,10 @@ export default function MembraneConsole({ companyUrl, onAddToIDE }: MembraneCons
               </div>
               <span
                 className={`text-[9px] font-semibold text-center tracking-tight leading-[1.2] ${
-                  activeNav === 'tenants' ? 'text-[#F3F5F7]' : 'text-[#B9BBC6]'
+                  activeNav === 'customers' ? 'text-[#F3F5F7]' : 'text-[#B9BBC6]'
                 }`}
               >
-                Tenants
+                Customers
               </span>
             </div>
 
@@ -414,21 +414,23 @@ export default function MembraneConsole({ companyUrl, onAddToIDE }: MembraneCons
 
         <div className="flex flex-col items-center gap-[9.19px] w-full">
           <div className="flex flex-col items-center gap-1 w-full">
-            <div className="flex flex-col justify-center items-center py-[7.35px] px-2 gap-[3px] w-full rounded-[2.76px] cursor-pointer">
+            <div
+              onClick={() => window.open('https://docs.getmembrane.com/docs/Overview', '_blank')}
+              className="flex flex-col justify-center items-center py-[7.35px] px-2 gap-[3px] w-full rounded-[2.76px] cursor-pointer hover:bg-[rgba(243,245,247,0.05)] transition"
+            >
               <div className="flex justify-center items-center w-[29.4px] h-[29.4px] rounded-[5.51px]">
                 <svg width="18.37" height="18.37" fill="none" viewBox="0 0 24 24">
                   <path
-                    d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2v10z"
+                    d="M12 6.25278V19.2528M12 6.25278C10.8321 5.47686 9.24649 5 7.5 5C5.75351 5 4.16789 5.47686 3 6.25278V19.2528C4.16789 18.4769 5.75351 18 7.5 18C9.24649 18 10.8321 18.4769 12 19.2528M12 6.25278C13.1679 5.47686 14.7535 5 16.5 5C18.2465 5 19.8321 5.47686 21 6.25278V19.2528C19.8321 18.4769 18.2465 18 16.5 18C14.7535 18 13.1679 18.4769 12 19.2528"
                     stroke="#F3F5F7"
                     strokeWidth="1.38"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   />
-                  <circle cx="9" cy="10" r="0.5" fill="#F3F5F7" />
-                  <circle cx="12" cy="10" r="0.5" fill="#F3F5F7" />
-                  <circle cx="15" cy="10" r="0.5" fill="#F3F5F7" />
                 </svg>
               </div>
               <span className="text-[9px] font-semibold text-[#B9BBC6] text-center tracking-tight leading-[1.2]">
-                Help
+                Docs
               </span>
             </div>
 
@@ -505,7 +507,519 @@ export default function MembraneConsole({ companyUrl, onAddToIDE }: MembraneCons
         </div>
 
         <div className="flex-1 flex overflow-hidden">
-          {!showChat ? (
+          {activeNav === 'customers' ? (
+            <div className="flex-1 flex overflow-hidden bg-gray-50">
+              {/* Left Sidebar */}
+              <div className="w-64 bg-white border-r border-gray-200 overflow-y-auto">
+                <div className="p-4">
+                  <h2 className="text-xs font-semibold text-gray-900 mb-3">Customers</h2>
+                  <nav className="space-y-1">
+                    <a className="flex items-center gap-2 px-3 py-2 text-sm text-gray-900 bg-gray-100 rounded-md">
+                      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                      </svg>
+                      Customers
+                    </a>
+                    <a className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-md">
+                      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+                      </svg>
+                      Connections
+                    </a>
+                  </nav>
+                </div>
+
+                <div className="px-4 pb-4">
+                  <h3 className="text-xs font-semibold text-gray-900 mb-3">Integration Logic</h3>
+                  <nav className="space-y-1">
+                    <a className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-md">
+                      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                      </svg>
+                      Actions
+                    </a>
+                    <a className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-md">
+                      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/>
+                      </svg>
+                      Flows
+                    </a>
+                    <a className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-md">
+                      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                      </svg>
+                      External Event Sub...
+                    </a>
+                  </nav>
+                </div>
+
+                <div className="px-4 pb-4">
+                  <h3 className="text-xs font-semibold text-gray-900 mb-3">State and Config</h3>
+                  <nav className="space-y-1">
+                    <a className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-md">
+                      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/>
+                      </svg>
+                      Data Sources
+                    </a>
+                    <a className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-md">
+                      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                      </svg>
+                      Field Mappings
+                    </a>
+                    <a className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-md">
+                      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+                      </svg>
+                      Data Link Tables
+                    </a>
+                  </nav>
+                </div>
+
+                <div className="px-4 pb-4">
+                  <h3 className="text-xs font-semibold text-gray-900 mb-3">Internal Interfaces</h3>
+                  <nav className="space-y-1">
+                    <a className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-md">
+                      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/>
+                      </svg>
+                      App Data Schemas
+                    </a>
+                    <a className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-md">
+                      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                      </svg>
+                      App Event Subscriptions
+                    </a>
+                  </nav>
+                </div>
+              </div>
+
+              {/* Main Content */}
+              <div className="flex-1 overflow-y-auto bg-white p-6">
+                <div className="max-w-6xl mx-auto">
+                  <div className="mb-6">
+                    <h1 className="text-xl font-semibold text-gray-900 mb-1">Customers</h1>
+                  </div>
+
+                  {/* Search and Filter Bar */}
+                  <div className="mb-4 flex items-center gap-3">
+                    <button className="px-3 py-1.5 bg-white border border-gray-300 rounded-md text-xs font-medium text-gray-700 hover:bg-gray-50 flex items-center gap-1.5">
+                      <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                      </svg>
+                      Create a customer
+                    </button>
+                    <div className="flex-1 relative">
+                      <svg className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                      </svg>
+                      <input
+                        type="text"
+                        placeholder="Type to search"
+                        className="w-full pl-9 pr-3 py-1.5 border border-gray-300 rounded-md text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Customers List */}
+                  <div className="space-y-1.5">
+                  {[
+                    { name: 'Acme Corporation', id: '668e4397d65c1b8c8d988b99', tags: ['test'] },
+                    { name: 'TechFlow Solutions', id: 'techflow-solutions', tags: ['active customer'] },
+                    { name: 'Global Dynamics Inc', id: '6183c5690ff1e5ee388ab853', tags: ['test'] },
+                    { name: 'BlueWave Systems', id: 'bluewave-systems', tags: ['active customer'] },
+                    { name: 'NextGen Industries', id: 'nextgen-industries', tags: [] },
+                    { name: 'sarah.johnson@techcorp.com', id: '671674be849cd7352c44c62e', tags: ['test'] },
+                    { name: 'michael.chen@startup.io', id: '677fd3f3c71dc8424346c89a', tags: [] },
+                    { name: 'emma.davis@enterprise.com', id: '677fe589c71dc8424346c909', tags: [] },
+                    { name: 'james.wilson@company.net', id: '67859d604537f1c2a1638cd5', tags: [] },
+                    { name: 'olivia.martinez@bizapp.com', id: '678a3d1dec7e27526e02f02c', tags: [] },
+                    { name: 'noah.anderson@platform.io', id: '678a3ff3ec7e27526e02f042', tags: [] },
+                    { name: 'sophia.taylor@digital.com', id: '678a400cec7e27526e02f04a', tags: ['active customer'] },
+                    { name: 'liam.brown@solutions.net', id: '678a40736884cc2f0eb1f647', tags: ['active customer'] },
+                    { name: 'ava.garcia@systems.io', id: '6789199fd45231cb2992f42d', tags: [] },
+                  ].map((customer, index) => (
+                    <div key={index} className="flex items-center justify-between px-3 py-2.5 bg-white border border-gray-200 rounded-md hover:border-gray-300 transition-colors group">
+                      <div className="flex items-center gap-3 flex-1 min-w-0">
+                        <div className="text-sm font-medium text-gray-900 min-w-[180px]">{customer.name}</div>
+                        <div className="text-xs text-gray-500 font-mono bg-gray-50 px-2 py-0.5 rounded flex-1">{customer.id}</div>
+                        <div className="flex gap-1.5">
+                          {customer.tags.map((tag, tagIndex) => (
+                            <span
+                              key={tagIndex}
+                              className={`px-2 py-0.5 text-xs rounded ${
+                                tag === 'test'
+                                  ? 'bg-yellow-100 text-yellow-700 border border-yellow-200'
+                                  : 'bg-green-100 text-green-700 border border-green-200'
+                              }`}
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                      <button className="text-gray-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity ml-3">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                        </svg>
+                      </button>
+                    </div>
+                  ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : activeNav === 'apps' ? (
+            <div className="flex-1 overflow-y-auto bg-white p-8">
+              <div className="max-w-6xl mx-auto">
+                <div className="mb-6">
+                  <h1 className="text-2xl font-semibold text-gray-900 mb-2">External Apps</h1>
+                  <p className="text-sm text-gray-500">Manage your connected applications and integrations</p>
+                </div>
+
+                {/* Search and Filter Bar */}
+                <div className="mb-6 flex items-center gap-4">
+                  <button className="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 flex items-center gap-2">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                    </svg>
+                    Add Integrations
+                  </button>
+                  <div className="flex-1 relative">
+                    <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                    <input
+                      type="text"
+                      placeholder="Type to search apps by keyword"
+                      className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                  <label className="flex items-center gap-2 text-sm text-gray-700">
+                    <input type="checkbox" className="rounded border-gray-300"/>
+                    include archived
+                  </label>
+                </div>
+
+                {/* Apps List */}
+                <div className="space-y-2">
+                  {[
+                    { name: 'Gmail', key: 'gmail', logo: 'https://logo.clearbit.com/google.com' },
+                    { name: 'Salesforce', key: 'salesforce', logo: 'https://logo.clearbit.com/salesforce.com' },
+                    { name: 'Slack (Membrane AI Assistant)', key: 'slack-membrane-ai-assistant', logo: 'https://logo.clearbit.com/slack.com' },
+                    { name: 'HubSpot', key: 'hubspot', logo: 'https://logo.clearbit.com/hubspot.com' },
+                    { name: 'Slack (Membrane Copilot)', key: 'slack-membrane-copilot', logo: 'https://logo.clearbit.com/slack.com' },
+                    { name: 'AWS Lambda', key: 'aws-lambda', logo: 'https://logo.clearbit.com/aws.amazon.com' },
+                    { name: 'Anthropic', key: 'anthropic', logo: 'https://logo.clearbit.com/anthropic.com' },
+                    { name: 'Linear (Claude)', key: 'linear-claude', logo: 'https://logo.clearbit.com/linear.app' },
+                    { name: 'Discourse', key: 'discourse', logo: 'https://logo.clearbit.com/discourse.org' },
+                    { name: 'Gitpod', key: 'gitpod', logo: 'https://logo.clearbit.com/gitpod.io' },
+                    { name: 'Linear (Pathfinder)', key: 'linear-pathfinder', logo: 'https://logo.clearbit.com/linear.app' },
+                    { name: 'Google Drive', key: 'google-drive', logo: 'https://logo.clearbit.com/drive.google.com' },
+                  ].map((app, index) => (
+                    <div key={index} className="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-lg hover:border-gray-300 transition-colors group">
+                      <div className="flex items-center gap-4">
+                        <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                        <div className="w-10 h-10 rounded-lg bg-white border border-gray-200 flex items-center justify-center overflow-hidden">
+                          <img
+                            src={app.logo}
+                            alt={app.name}
+                            className="w-8 h-8 object-contain"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.style.display = 'none';
+                              const fallback = target.nextElementSibling as HTMLElement;
+                              if (fallback) fallback.style.display = 'flex';
+                            }}
+                          />
+                          <div className="w-8 h-8 hidden items-center justify-center bg-gray-100 rounded text-xs font-semibold text-gray-600">
+                            {app.name.charAt(0)}
+                          </div>
+                        </div>
+                        <div>
+                          <div className="font-medium text-gray-900">{app.name}</div>
+                          <div className="text-sm text-gray-500 font-mono">{app.key}</div>
+                        </div>
+                      </div>
+                      <button className="text-gray-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                        </svg>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ) : activeNav === 'activity' ? (
+            <div className="flex-1 flex overflow-hidden bg-gray-50">
+              {/* Left Sidebar */}
+              <div className="w-64 bg-white border-r border-gray-200 overflow-y-auto">
+                <div className="p-4">
+                  <h2 className="text-xs font-semibold text-gray-900 mb-3">Activity</h2>
+                  <nav className="space-y-1">
+                    <a className="flex items-center gap-2 px-3 py-2 text-sm text-gray-900 bg-gray-100 rounded-md">
+                      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                      </svg>
+                      Dashboard
+                    </a>
+                  </nav>
+                </div>
+
+                <div className="px-4 pb-4">
+                  <h3 className="text-xs font-semibold text-gray-900 mb-3">Logs</h3>
+                  <nav className="space-y-1">
+                    <a className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-md">
+                      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                      </svg>
+                      Flow Runs
+                    </a>
+                    <a className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-md">
+                      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                      </svg>
+                      Action Runs
+                    </a>
+                    <a className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-md">
+                      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                      </svg>
+                      External API
+                    </a>
+                    <a className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-md">
+                      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                      </svg>
+                      External Webhooks
+                    </a>
+                    <a className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-md">
+                      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/>
+                      </svg>
+                      External Events
+                    </a>
+                    <a className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-md">
+                      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                      </svg>
+                      External Event Pulls
+                    </a>
+                    <a className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-md">
+                      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                      </svg>
+                      App Events
+                    </a>
+                    <a className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-md">
+                      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                      </svg>
+                      Agent Sessions
+                    </a>
+                  </nav>
+                </div>
+              </div>
+
+              {/* Main Content */}
+              <div className="flex-1 overflow-y-auto bg-white p-4">
+                <div className="max-w-6xl mx-auto">
+                  {/* Monitoring Section */}
+                  <div className="mb-4">
+                    <h1 className="text-base font-semibold text-gray-900 mb-1">Monitoring</h1>
+                    <div className="flex items-center gap-2 text-xs mb-3">
+                      <span className="text-blue-600">Alert</span>
+                      <a href="#" className="text-blue-600 hover:underline">See log</a>
+                    </div>
+                    <div className="bg-gray-50 rounded-lg p-2.5 border border-gray-200 mb-4">
+                      <p className="text-xs text-gray-600">No ongoing alerts</p>
+                    </div>
+                  </div>
+
+                  {/* Activity Logs Section */}
+                  <div className="mb-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <h2 className="text-sm font-semibold text-gray-900">Activity Logs</h2>
+                      <select className="text-xs border border-gray-300 rounded-md px-2 py-1">
+                        <option>Last 7 days</option>
+                        <option>Last 30 days</option>
+                        <option>Last 90 days</option>
+                      </select>
+                    </div>
+
+                    {/* Stats Grid */}
+                    <div className="grid grid-cols-3 gap-2 mb-3">
+                      <div className="bg-white border border-gray-200 rounded-lg p-2.5">
+                        <div className="flex items-center gap-1.5 mb-1.5">
+                          <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                          </svg>
+                          <span className="text-xs font-medium text-gray-700">External API</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="flex items-center gap-1 text-xs">
+                            <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                            641512
+                          </span>
+                          <span className="flex items-center gap-1 text-xs">
+                            <span className="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                            1220
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="bg-white border border-gray-200 rounded-lg p-2.5">
+                        <div className="flex items-center gap-1.5 mb-1.5">
+                          <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/>
+                          </svg>
+                          <span className="text-xs font-medium text-gray-700">External Events</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="flex items-center gap-1 text-xs">
+                            <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                            102883
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="bg-white border border-gray-200 rounded-lg p-2.5">
+                        <div className="flex items-center gap-1.5 mb-1.5">
+                          <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                          </svg>
+                          <span className="text-xs font-medium text-gray-700">Flow Runs</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="flex items-center gap-1 text-xs">
+                            <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                            67729
+                          </span>
+                          <span className="flex items-center gap-1 text-xs">
+                            <span className="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                            32
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="bg-white border border-gray-200 rounded-lg p-2.5">
+                        <div className="flex items-center gap-1.5 mb-1.5">
+                          <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                          </svg>
+                          <span className="text-xs font-medium text-gray-700">App Events</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="flex items-center gap-1 text-xs">
+                            <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                            64254
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="bg-white border border-gray-200 rounded-lg p-2.5">
+                        <div className="flex items-center gap-1.5 mb-1.5">
+                          <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                          </svg>
+                          <span className="text-xs font-medium text-gray-700">External Webhooks</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="flex items-center gap-1 text-xs">
+                            <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                            4759
+                          </span>
+                          <span className="flex items-center gap-1 text-xs">
+                            <span className="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                            131
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="bg-white border border-gray-200 rounded-lg p-2.5">
+                        <div className="flex items-center gap-1.5 mb-1.5">
+                          <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                          </svg>
+                          <span className="text-xs font-medium text-gray-700">Action Runs</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="flex items-center gap-1 text-xs">
+                            <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                            1006
+                          </span>
+                          <span className="flex items-center gap-1 text-xs">
+                            <span className="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                            42
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="bg-white border border-gray-200 rounded-lg p-2.5">
+                        <div className="flex items-center gap-1.5 mb-1.5">
+                          <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                          </svg>
+                          <span className="text-xs font-medium text-gray-700">External Event Pulls</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs">0</span>
+                        </div>
+                      </div>
+
+                      <div className="bg-white border border-gray-200 rounded-lg p-2.5">
+                        <div className="flex items-center gap-1.5 mb-1.5">
+                          <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                          </svg>
+                          <span className="text-xs font-medium text-gray-700">Agent Sessions</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs">4</span>
+                          <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Task Queue Section */}
+                    <div className="mt-4">
+                      <div className="flex items-center gap-2 mb-3">
+                        <h3 className="text-sm font-semibold text-gray-900">Task Queue</h3>
+                        <a href="#" className="text-xs text-blue-600 hover:underline">See details</a>
+                      </div>
+                      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                        <table className="w-full">
+                          <thead className="bg-gray-50 border-b border-gray-200">
+                            <tr>
+                              <th className="px-3 py-1.5 text-left text-xs font-medium text-gray-600">Task type</th>
+                              <th className="px-3 py-1.5 text-left text-xs font-medium text-gray-600">Queued</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr className="border-b border-gray-100">
+                              <td className="px-3 py-2 text-xs text-gray-900">Flow Runs</td>
+                              <td className="px-3 py-2 text-xs text-gray-600">0</td>
+                            </tr>
+                            <tr className="border-b border-gray-100">
+                              <td className="px-3 py-2 text-xs text-gray-900">External Event Processing</td>
+                              <td className="px-3 py-2 text-xs text-gray-600">0</td>
+                            </tr>
+                            <tr>
+                              <td className="px-3 py-2 text-xs text-gray-900">External Event Pulls</td>
+                              <td className="px-3 py-2 text-xs text-gray-600">0</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : !showChat ? (
             <div className="flex-1 overflow-hidden bg-[#F8F9FA] flex flex-col">
               <div className="flex items-center justify-center pt-12 pb-8">
                 <div className="w-full max-w-lg px-8">
@@ -588,12 +1102,6 @@ export default function MembraneConsole({ companyUrl, onAddToIDE }: MembraneCons
                       strokeLinecap="round"
                       className="animate-draw-line-1"
                     />
-                    <circle r="3" fill="#6366F1" className="animate-dot-1">
-                      <animateMotion dur="1.5s" begin="0.8s" fill="freeze">
-                        <mpath href="#path1" />
-                      </animateMotion>
-                    </circle>
-
                     {/* Line to Create Incoming Payment */}
                     <path
                       ref={path2Ref}
@@ -605,11 +1113,6 @@ export default function MembraneConsole({ companyUrl, onAddToIDE }: MembraneCons
                       strokeLinecap="round"
                       className="animate-draw-line-2"
                     />
-                    <circle r="3" fill="#6366F1" className="animate-dot-2">
-                      <animateMotion dur="1.5s" begin="1.7s" fill="freeze">
-                        <mpath href="#path2" />
-                      </animateMotion>
-                    </circle>
 
                     {/* Line to Create Bill */}
                     <path
@@ -622,28 +1125,6 @@ export default function MembraneConsole({ companyUrl, onAddToIDE }: MembraneCons
                       strokeLinecap="round"
                       className="animate-draw-line-3"
                     />
-                    <circle r="3" fill="#6366F1" className="animate-dot-3">
-                      <animateMotion dur="1.5s" begin="2.6s" fill="freeze">
-                        <mpath href="#path3" />
-                      </animateMotion>
-                    </circle>
-
-                    {/* Additional flowing dots for continuous animation */}
-                    <circle r="2" fill="#8B5CF6" opacity="0.6">
-                      <animateMotion dur="2s" begin="0s" repeatCount="indefinite">
-                        <mpath href="#path1" />
-                      </animateMotion>
-                    </circle>
-                    <circle r="2" fill="#8B5CF6" opacity="0.6">
-                      <animateMotion dur="2s" begin="0.3s" repeatCount="indefinite">
-                        <mpath href="#path2" />
-                      </animateMotion>
-                    </circle>
-                    <circle r="2" fill="#8B5CF6" opacity="0.6">
-                      <animateMotion dur="2s" begin="0.6s" repeatCount="indefinite">
-                        <mpath href="#path3" />
-                      </animateMotion>
-                    </circle>
 
                     {/* Lines from integration cards to right-side icons */}
                     {/* From Users Unified API to icons */}
@@ -657,11 +1138,6 @@ export default function MembraneConsole({ companyUrl, onAddToIDE }: MembraneCons
                       className="animate-draw-line-1"
                       opacity="0.7"
                     />
-                    <circle r="2" fill="#10B981" opacity="0.5">
-                      <animateMotion dur="2.5s" begin="1s" repeatCount="indefinite">
-                        <mpath href="#path4" />
-                      </animateMotion>
-                    </circle>
 
                     {/* From Create Incoming Payment to icons */}
                     <path
@@ -674,11 +1150,6 @@ export default function MembraneConsole({ companyUrl, onAddToIDE }: MembraneCons
                       className="animate-draw-line-2"
                       opacity="0.7"
                     />
-                    <circle r="2" fill="#10B981" opacity="0.5">
-                      <animateMotion dur="2.5s" begin="1.3s" repeatCount="indefinite">
-                        <mpath href="#path5" />
-                      </animateMotion>
-                    </circle>
 
                     {/* From Create Bill to icons */}
                     <path
@@ -691,11 +1162,6 @@ export default function MembraneConsole({ companyUrl, onAddToIDE }: MembraneCons
                       className="animate-draw-line-3"
                       opacity="0.7"
                     />
-                    <circle r="2" fill="#10B981" opacity="0.5">
-                      <animateMotion dur="2.5s" begin="1.6s" repeatCount="indefinite">
-                        <mpath href="#path6" />
-                      </animateMotion>
-                    </circle>
                   </svg>
 
                   <style jsx>{`
@@ -969,24 +1435,140 @@ export default function MembraneConsole({ companyUrl, onAddToIDE }: MembraneCons
               </div>
             </div>
           ) : (
-            <div className="flex-1 flex overflow-hidden animate-chat-slide-in">
-              <div className="flex-1 overflow-hidden">
-                {!showCodeEditor ? (
-                  <div className="flex-1 overflow-hidden bg-[#F8F9FA]"></div>
-                ) : (
-                  <CodePanel
-                    selectedFile={selectedFile}
-                    companyUrl={companyUrl}
-                    companyAnalysis={companyAnalysis || undefined}
-                    isAICoding={isAICoding}
-                    generatedFileContents={generatedFileContents}
-                    typingFile={typingFile}
-                    aiThinking={aiThinking}
-                  />
-                )}
+            <div className="flex-1 flex overflow-hidden animate-chat-slide-in bg-white">
+              {/* Left Panel - Integration Package Details */}
+              <div className="flex-1 overflow-y-auto p-6 border-r border-gray-200">
+                <div className="max-w-4xl mx-auto">
+                  {/* Package Header */}
+                  <div className="mb-6">
+                    <h1 className="text-xl font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                      <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" className="text-gray-400">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+                      </svg>
+                      {initialPrompt || 'Integration Package'}
+                    </h1>
+                  </div>
+
+                  {/* Code Panel - Embedded */}
+                  <div className="mb-6 rounded-lg overflow-hidden border border-gray-200 shadow-sm">
+                    <div className="h-[300px]">
+                      <CodePanel
+                        selectedFile={selectedFile}
+                        companyUrl={companyUrl}
+                        companyAnalysis={companyAnalysis || undefined}
+                        isAICoding={isAICoding}
+                        generatedFileContents={generatedFileContents}
+                        typingFile={typingFile}
+                        aiThinking={aiThinking}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Description Section */}
+                  <div className="mb-8">
+                    <div className="flex items-center gap-2 mb-3">
+                      <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" className="text-gray-400">
+                        <circle cx="12" cy="12" r="10" strokeWidth="2"/>
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01"/>
+                      </svg>
+                      <h2 className="text-base font-semibold text-gray-900">Description</h2>
+                    </div>
+                    <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                      <p className="text-sm text-gray-700 leading-relaxed">
+                        This package will automatically {initialPrompt.toLowerCase()} for {companyAnalysis?.companyName || 'your application'}.
+                        Membrane sets up a continuous pipeline that fetches, synchronizes, and updates your data in real time.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Basic Info Section */}
+                  <div className="mb-8">
+                    <div className="flex items-center gap-2 mb-3">
+                      <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" className="text-gray-400">
+                        <circle cx="12" cy="12" r="10" strokeWidth="2"/>
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01"/>
+                      </svg>
+                      <h2 className="text-base font-semibold text-gray-900">Basic info</h2>
+                    </div>
+                    <div className="space-y-4">
+                      <div className="flex items-start border-b border-gray-100 pb-4">
+                        <div className="w-32 text-sm font-medium text-gray-600">Key</div>
+                        <div className="flex-1 text-sm text-gray-900 font-mono">
+                          {initialPrompt.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}
+                        </div>
+                      </div>
+                      <div className="flex items-start">
+                        <div className="w-32 text-sm font-medium text-gray-600">Name</div>
+                        <div className="flex-1 text-sm text-gray-900">
+                          {initialPrompt}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Input Schema Section */}
+                  <div className="mb-8">
+                    <div className="flex items-center gap-2 mb-3">
+                      <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" className="text-gray-400">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/>
+                      </svg>
+                      <h2 className="text-base font-semibold text-gray-900">Input Schema</h2>
+                    </div>
+                    <p className="text-sm text-gray-500 mb-4">Schema of the input provided when running this action</p>
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200 hover:border-gray-300 transition-colors">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-medium text-gray-700">source:</span>
+                          <span className="text-sm text-green-600 font-mono">string</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <button className="text-gray-400 hover:text-gray-600 p-1">
+                            <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24">
+                              <circle cx="12" cy="12" r="2"/>
+                              <circle cx="12" cy="5" r="2"/>
+                              <circle cx="12" cy="19" r="2"/>
+                            </svg>
+                          </button>
+                          <button className="text-gray-400 hover:text-red-600 p-1">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200 hover:border-gray-300 transition-colors">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-medium text-gray-700">destination:</span>
+                          <span className="text-sm text-green-600 font-mono">string</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <button className="text-gray-400 hover:text-gray-600 p-1">
+                            <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24">
+                              <circle cx="12" cy="12" r="2"/>
+                              <circle cx="12" cy="5" r="2"/>
+                              <circle cx="12" cy="19" r="2"/>
+                            </svg>
+                          </button>
+                          <button className="text-gray-400 hover:text-red-600 p-1">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+                      <button className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1 mt-2">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                        </svg>
+                        Add Field
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              <div className="w-96 bg-white border-l border-gray-200 flex flex-col">
+              {/* Right Panel - Membrane Agent Chat */}
+              <div className="w-[450px] bg-white flex flex-col shadow-lg">
                 <ChatPanel
                   companyUrl={companyUrl}
                   onCodingStateChange={handleCodingStateChange}
