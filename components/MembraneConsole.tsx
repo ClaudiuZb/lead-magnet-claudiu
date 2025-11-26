@@ -1022,6 +1022,25 @@ export default function MembraneConsole({ companyUrl, onAddToIDE }: MembraneCons
           ) : !showChat ? (
             <div className="flex-1 overflow-hidden bg-[#F8F9FA] flex items-center justify-center">
               <div className="w-full max-w-lg px-8">
+                  {/* Membrane Logo - Centered above input */}
+                  <div className="flex items-center justify-center gap-3 mb-8">
+                    <svg width="50" height="62" viewBox="0 0 180 225" fill="none">
+                      <path
+                        d="M177.996 55.3189C178.991 55.8951 179.604 56.9578 179.604 58.1076V164.277C179.604 166.264 177.452 167.504 175.733 166.508L153.939 153.886C153.143 153.425 152.653 152.575 152.653 151.655V77.9606C152.653 76.8108 152.04 75.7481 151.045 75.1718L83.7567 36.2047C82.9606 35.7437 82.4705 34.8936 82.4705 33.9737V4.47239C82.4705 2.48618 84.6222 1.24596 86.3411 2.24139L177.996 55.3189Z"
+                        fill="#03030D"
+                      />
+                      <path
+                        d="M0 60.7224C0 58.7362 2.15168 57.496 3.8706 58.4914L95.5256 111.569C96.5207 112.145 97.1333 113.208 97.1333 114.358V220.527C97.1333 222.514 94.9817 223.754 93.2627 222.758L1.28618 169.495C0.490121 169.034 0 168.184 0 167.264V60.7224Z"
+                        fill="#03030D"
+                      />
+                      <path
+                        d="M136.761 83.4439C137.756 84.0201 138.368 85.0828 138.368 86.2326V192.402C138.368 194.389 136.217 195.629 134.498 194.633L112.703 182.011C111.907 181.55 111.417 180.7 111.417 179.78V106.086C111.417 104.936 110.805 103.873 109.81 103.297L42.5214 64.3297C41.7254 63.8687 41.2353 63.0186 41.2353 62.0987V32.5974C41.2353 30.6112 43.3869 29.371 45.1059 30.3664L136.761 83.4439Z"
+                        fill="#03030D"
+                      />
+                    </svg>
+                    <h1 className="text-3xl font-semibold text-gray-900 tracking-tight">Membrane</h1>
+                  </div>
+
                   <div className="relative">
                     <svg
                       className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
