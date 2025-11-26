@@ -53,14 +53,14 @@ export default function Home() {
               htmlFor="url"
               className="block text-left text-sm font-medium text-[#1E1F2A] mb-2"
             >
-              Product website URL
+              Please enter your website URL
             </label>
             <input
               type="text"
               id="url"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
-              placeholder="attio.com"
+              placeholder="E.g. attio.com"
               className="w-full px-4 py-3 font-geist text-[15px] border border-membrane-border rounded-lg mb-5 transition-all duration-200 focus:outline-none focus:border-membrane-dark focus:ring-4 focus:ring-membrane-dark/10 placeholder:text-gray-400"
             />
             <button

@@ -23,7 +23,9 @@ interface AppWindow {
 
 export default function DesktopOS({ companyUrl }: DesktopOSProps) {
   const [currentTime, setCurrentTime] = useState('');
-  const [windows, setWindows] = useState<AppWindow[]>([
+
+  // Default initial state (same for server and client to avoid hydration mismatch)
+  const getDefaultWindows = (): AppWindow[] => [
     {
       id: 'console',
       name: 'Membrane Console',
@@ -56,7 +58,9 @@ export default function DesktopOS({ companyUrl }: DesktopOSProps) {
       zIndex: 10,
       position: { x: 120, y: 60 },
     },
-  ]);
+  ];
+
+  const [windows, setWindows] = useState<AppWindow[]>(getDefaultWindows);
 
   useEffect(() => {
     const updateTime = () => {
@@ -74,6 +78,8 @@ export default function DesktopOS({ companyUrl }: DesktopOSProps) {
     const interval = setInterval(updateTime, 1000);
     return () => clearInterval(interval);
   }, []);
+
+  // Default state (same for server and client to avoid hydration mismatch)
   const [showEmailCapture, setShowEmailCapture] = useState(false);
   const [emailSubmitted, setEmailSubmitted] = useState(false);
   const [maxZIndex, setMaxZIndex] = useState(10);
@@ -86,6 +92,77 @@ export default function DesktopOS({ companyUrl }: DesktopOSProps) {
   } | null>(null);
   const [consoleClosing, setConsoleClosing] = useState(false);
   const [showFavoritesPanel, setShowFavoritesPanel] = useState(true);
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  // Load state from localStorage after mount (client-side only)
+  useEffect(() => {
+    const savedWindows = localStorage.getItem('membrane-windows-state');
+    if (savedWindows) {
+      try {
+        setWindows(JSON.parse(savedWindows));
+      } catch (e) {
+        console.error('Failed to parse saved windows state:', e);
+      }
+    }
+
+    const savedEmailSubmitted = localStorage.getItem('membrane-email-submitted');
+    if (savedEmailSubmitted === 'true') {
+      setEmailSubmitted(true);
+    }
+
+    const savedMaxZIndex = localStorage.getItem('membrane-max-zindex');
+    if (savedMaxZIndex) {
+      setMaxZIndex(parseInt(savedMaxZIndex, 10));
+    }
+
+    const savedIntegrationData = localStorage.getItem('membrane-integration-data');
+    if (savedIntegrationData) {
+      try {
+        setIntegrationData(JSON.parse(savedIntegrationData));
+      } catch (e) {
+        console.error('Failed to parse integration data:', e);
+      }
+    }
+
+    const savedFavoritesPanel = localStorage.getItem('membrane-favorites-panel');
+    if (savedFavoritesPanel === 'false') {
+      setShowFavoritesPanel(false);
+    }
+
+    // Mark as hydrated after loading from localStorage
+    setIsHydrated(true);
+  }, []);
+
+  // Save state to localStorage whenever it changes (only after hydration)
+  useEffect(() => {
+    if (isHydrated) {
+      localStorage.setItem('membrane-windows-state', JSON.stringify(windows));
+    }
+  }, [windows, isHydrated]);
+
+  useEffect(() => {
+    if (isHydrated) {
+      localStorage.setItem('membrane-email-submitted', emailSubmitted.toString());
+    }
+  }, [emailSubmitted, isHydrated]);
+
+  useEffect(() => {
+    if (isHydrated && integrationData) {
+      localStorage.setItem('membrane-integration-data', JSON.stringify(integrationData));
+    }
+  }, [integrationData, isHydrated]);
+
+  useEffect(() => {
+    if (isHydrated) {
+      localStorage.setItem('membrane-favorites-panel', showFavoritesPanel.toString());
+    }
+  }, [showFavoritesPanel, isHydrated]);
+
+  useEffect(() => {
+    if (isHydrated) {
+      localStorage.setItem('membrane-max-zindex', maxZIndex.toString());
+    }
+  }, [maxZIndex, isHydrated]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -97,13 +174,19 @@ export default function DesktopOS({ companyUrl }: DesktopOSProps) {
     return () => clearTimeout(timer);
   }, [emailSubmitted]);
 
+  // Only center console on first visit (when no saved state exists)
   useEffect(() => {
-    const centerX = (window.innerWidth - 1100) / 2;
-    const centerY = (window.innerHeight - 700) / 2 - 22; // -22 for menu bar
+    const savedWindows = localStorage.getItem('membrane-windows-state');
 
-    setWindows((prev) =>
-      prev.map((w) => (w.id === 'console' ? { ...w, position: { x: centerX, y: centerY } } : w))
-    );
+    // Only center if there's no saved state
+    if (!savedWindows) {
+      const centerX = (window.innerWidth - 1100) / 2;
+      const centerY = (window.innerHeight - 700) / 2 - 22; // -22 for menu bar
+
+      setWindows((prev) =>
+        prev.map((w) => (w.id === 'console' ? { ...w, position: { x: centerX, y: centerY } } : w))
+      );
+    }
 
     setTimeout(() => setConsoleReady(true), 10);
   }, []);
@@ -379,15 +462,18 @@ export default function DesktopOS({ companyUrl }: DesktopOSProps) {
                       type="button"
                       onClick={() => handleCloseWindow('console')}
                       className="w-3 h-3 rounded-full bg-[#FF5F57] hover:bg-[#FF3B30] border border-[#E0443E] flex items-center justify-center text-[8px] text-black"
+                      suppressHydrationWarning
                     ></button>
                     <button
                       type="button"
                       onClick={() => handleMinimizeWindow('console')}
                       className="w-3 h-3 rounded-full bg-[#FFBD2E] hover:bg-[#FFB400] border border-[#DEA123]"
+                      suppressHydrationWarning
                     ></button>
                     <button
                       type="button"
                       className="w-3 h-3 rounded-full bg-[#28CA42] hover:bg-[#1AAD34] border border-[#24A93D]"
+                      suppressHydrationWarning
                     ></button>
                   </div>
                   <div className="flex-1 text-center text-gray-700 text-sm font-medium">
@@ -430,15 +516,18 @@ export default function DesktopOS({ companyUrl }: DesktopOSProps) {
                       type="button"
                       onClick={() => handleCloseWindow('ide')}
                       className="w-3 h-3 rounded-full bg-[#FF5F57] hover:bg-[#FF3B30] border border-[#E0443E] flex items-center justify-center text-[8px] text-black"
+                      suppressHydrationWarning
                     ></button>
                     <button
                       type="button"
                       onClick={() => handleMinimizeWindow('ide')}
                       className="w-3 h-3 rounded-full bg-[#FFBD2E] hover:bg-[#FFB400] border border-[#DEA123]"
+                      suppressHydrationWarning
                     ></button>
                     <button
                       type="button"
                       className="w-3 h-3 rounded-full bg-[#28CA42] hover:bg-[#1AAD34] border border-[#24A93D]"
+                      suppressHydrationWarning
                     ></button>
                   </div>
                   <div className="flex-1 text-center text-gray-300 text-sm font-medium">
