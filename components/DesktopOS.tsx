@@ -94,19 +94,20 @@ export default function DesktopOS({ companyUrl }: DesktopOSProps) {
 
   // Load state from localStorage after mount (client-side only)
   useEffect(() => {
-    const savedWindows = localStorage.getItem('membrane-windows-state');
-    if (savedWindows) {
-      try {
-        const parsedWindows = JSON.parse(savedWindows);
-        // Ensure console window is always open on initial load
-        const updatedWindows = parsedWindows.map((w: AppWindow) =>
-          w.id === 'console' ? { ...w, isOpen: true } : w
-        );
-        setWindows(updatedWindows);
-      } catch (e) {
-        console.error('Failed to parse saved windows state:', e);
-      }
-    }
+    // Temporarily disabled localStorage window state loading
+    // const savedWindows = localStorage.getItem('membrane-windows-state');
+    // if (savedWindows) {
+    //   try {
+    //     const parsedWindows = JSON.parse(savedWindows);
+    //     // Ensure console window is always open on initial load
+    //     const updatedWindows = parsedWindows.map((w: AppWindow) =>
+    //       w.id === 'console' ? { ...w, isOpen: true } : w
+    //     );
+    //     setWindows(updatedWindows);
+    //   } catch (e) {
+    //     console.error('Failed to parse saved windows state:', e);
+    //   }
+    // }
 
     const savedEmailSubmitted = localStorage.getItem('membrane-email-submitted');
     if (savedEmailSubmitted === 'true') {
@@ -134,7 +135,8 @@ export default function DesktopOS({ companyUrl }: DesktopOSProps) {
   // Save state to localStorage whenever it changes (only after hydration)
   useEffect(() => {
     if (isHydrated) {
-      localStorage.setItem('membrane-windows-state', JSON.stringify(windows));
+      // Temporarily disabled localStorage window state saving
+      // localStorage.setItem('membrane-windows-state', JSON.stringify(windows));
     }
   }, [windows, isHydrated]);
 
