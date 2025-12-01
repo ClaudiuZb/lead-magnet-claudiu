@@ -94,20 +94,19 @@ export default function DesktopOS({ companyUrl }: DesktopOSProps) {
 
   // Load state from localStorage after mount (client-side only)
   useEffect(() => {
-    // Temporarily disabled localStorage window state loading
-    // const savedWindows = localStorage.getItem('membrane-windows-state');
-    // if (savedWindows) {
-    //   try {
-    //     const parsedWindows = JSON.parse(savedWindows);
-    //     // Ensure console window is always open on initial load
-    //     const updatedWindows = parsedWindows.map((w: AppWindow) =>
-    //       w.id === 'console' ? { ...w, isOpen: true } : w
-    //     );
-    //     setWindows(updatedWindows);
-    //   } catch (e) {
-    //     console.error('Failed to parse saved windows state:', e);
-    //   }
-    // }
+    const savedWindows = localStorage.getItem('membrane-windows-state');
+    if (savedWindows) {
+      try {
+        const parsedWindows = JSON.parse(savedWindows);
+        // Ensure console window is always open on initial load, and safari/other windows are closed
+        const updatedWindows = parsedWindows.map((w: AppWindow) =>
+          w.id === 'console' ? { ...w, isOpen: true } : { ...w, isOpen: false }
+        );
+        setWindows(updatedWindows);
+      } catch (e) {
+        console.error('Failed to parse saved windows state:', e);
+      }
+    }
 
     const savedEmailSubmitted = localStorage.getItem('membrane-email-submitted');
     if (savedEmailSubmitted === 'true') {
@@ -135,8 +134,7 @@ export default function DesktopOS({ companyUrl }: DesktopOSProps) {
   // Save state to localStorage whenever it changes (only after hydration)
   useEffect(() => {
     if (isHydrated) {
-      // Temporarily disabled localStorage window state saving
-      // localStorage.setItem('membrane-windows-state', JSON.stringify(windows));
+      localStorage.setItem('membrane-windows-state', JSON.stringify(windows));
     }
   }, [windows, isHydrated]);
 
@@ -170,17 +168,24 @@ export default function DesktopOS({ companyUrl }: DesktopOSProps) {
 
   // Only center console on first visit (when no saved state exists)
   useEffect(() => {
-    const savedWindows = localStorage.getItem('membrane-windows-state');
+    // Always center console on page load
+    const centerConsoleX = (window.innerWidth - 1100) / 2;
+    const centerConsoleY = (window.innerHeight - 700) / 2 - 22; // -22 for menu bar
 
-    // Only center if there's no saved state
-    if (!savedWindows) {
-      const centerX = (window.innerWidth - 1100) / 2;
-      const centerY = (window.innerHeight - 700) / 2 - 22; // -22 for menu bar
+    const centerIDEX = (window.innerWidth - 1000) / 2;
+    const centerIDEY = (window.innerHeight - 650) / 2 - 22;
 
-      setWindows((prev) =>
-        prev.map((w) => (w.id === 'console' ? { ...w, position: { x: centerX, y: centerY } } : w))
-      );
-    }
+    const centerSafariX = (window.innerWidth - 1000) / 2;
+    const centerSafariY = (window.innerHeight - 700) / 2 - 22;
+
+    setWindows((prev) =>
+      prev.map((w) => {
+        if (w.id === 'console') return { ...w, position: { x: centerConsoleX, y: centerConsoleY } };
+        if (w.id === 'ide') return { ...w, position: { x: centerIDEX, y: centerIDEY } };
+        if (w.id === 'safari') return { ...w, position: { x: centerSafariX, y: centerSafariY } };
+        return w;
+      })
+    );
 
     // Smooth popup animation on load
     setTimeout(() => {
