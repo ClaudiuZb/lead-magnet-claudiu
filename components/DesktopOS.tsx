@@ -363,7 +363,7 @@ export default function DesktopOS({ companyUrl }: DesktopOSProps) {
   };
 
   return (
-    <div className="h-screen w-screen overflow-hidden relative select-none">
+    <div className="h-screen w-screen overflow-hidden relative select-none flex flex-col">
       <div
         className="absolute inset-0 bg-[#F7F9FB]"
         style={{
@@ -380,7 +380,7 @@ export default function DesktopOS({ companyUrl }: DesktopOSProps) {
         </div>
       )}
 
-      <div className="h-11 bg-white/30 backdrop-blur-xl flex items-center px-6 relative z-50 text-base font-medium text-black/80 shadow-sm">
+      <div className="h-11 flex-shrink-0 bg-white/30 backdrop-blur-xl flex items-center px-6 relative z-50 text-base font-medium text-black/80 shadow-sm">
         <div className="flex items-center gap-6">
           <svg
             className="w-6 h-6"
@@ -428,7 +428,7 @@ export default function DesktopOS({ companyUrl }: DesktopOSProps) {
         </div>
       </div>
 
-      <div className="h-[calc(100vh-7.75rem)] relative">
+      <div className="flex-1 relative overflow-hidden pb-20">
         {windows.find((w) => w.id === 'console' && w.isOpen && !w.isMinimized) &&
           (() => {
             const window = windows.find((w) => w.id === 'console')!;

@@ -716,7 +716,7 @@ export default function ChatPanel({
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto bg-white flex justify-center">
-        <div className="w-full max-w-3xl px-8 py-6 space-y-6">
+        <div className="w-full max-w-3xl px-8 py-6 pb-8 space-y-6">
           {messages.map((message, index) => (
             <div key={index}>
             {message.role === 'assistant' && (
@@ -817,7 +817,7 @@ export default function ChatPanel({
               integrationCompleted &&
               integrationData &&
               message.content.includes('Integration complete!') && (
-                <div className="mt-4 ml-11">
+                <div className="mt-4 ml-11 mb-8">
                   <button
                     type="button"
                     onClick={() => {
@@ -837,7 +837,7 @@ export default function ChatPanel({
           </div>
         ))}
 
-        <div ref={messagesEndRef} />
+        <div ref={messagesEndRef} className="h-4" />
         </div>
       </div>
 
