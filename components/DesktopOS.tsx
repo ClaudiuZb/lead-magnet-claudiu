@@ -35,7 +35,7 @@ export default function DesktopOS({ companyUrl }: DesktopOSProps) {
     },
     {
       id: 'ide',
-      name: 'Open Membrane OS',
+      name: 'Membrane IDE',
       isOpen: false,
       isMinimized: false,
       zIndex: 10,
@@ -529,7 +529,7 @@ export default function DesktopOS({ companyUrl }: DesktopOSProps) {
                     ></button>
                   </div>
                   <div className="flex-1 text-center text-gray-300 text-sm font-medium">
-                    Open Membrane OS
+                    Membrane IDE
                   </div>
                   <div className="w-14"></div>
                 </div>

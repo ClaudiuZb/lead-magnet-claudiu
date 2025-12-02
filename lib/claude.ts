@@ -43,8 +43,8 @@ B) If they ONLY mention the use case (no specific target):
    - "ETC" - For any other use case when you dont have enough informations, pick the most relevant and popular external service.
 
 C) If they mention ${capitalizedName} in their request:
-   ❌ WRONG: "Create integration for monday.com to sync tasks" → [SERVICE: Monday.com|monday.com]
-   ✅ CORRECT: "Create integration for monday.com to sync tasks" → [SERVICE: Asana|asana.com]
+   ❌ WRONG: "Create integration for {CompanyName} to sync tasks" → [SERVICE: CompanyName|companyname.com]
+   ✅ CORRECT: "Create integration for {CompanyName} to sync tasks" → [SERVICE: Asana|asana.com]
 
    The user's phrasing is confusing - they mean "${capitalizedName} needs to integrate WITH [another service]"
    Extract the USE CASE (sync tasks) and pick the best external service for that use case.

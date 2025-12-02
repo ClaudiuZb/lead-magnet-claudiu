@@ -152,7 +152,7 @@ export default function IDECodePanel({
   const getFileContent = () => {
     if (!selectedFile) {
       return {
-        content: `// Welcome to Open Membrane OS\n\n// Start building your integration by selecting a file from the explorer\n// or let the AI agent generate implementation code for you.`,
+        content: `// Welcome to Membrane IDE\n\n// Start building your integration by selecting a file from the explorer\n// or let the AI agent generate implementation code for you.`,
         type: 'typescript',
       };
     }
@@ -230,7 +230,7 @@ export default function IDECodePanel({
             className={`w-1.5 h-1.5 rounded-full ${isAICoding ? 'bg-green-500 animate-pulse' : 'bg-gray-500'}`}
           ></div>
           <span className="text-gray-400 text-[11px]">
-            your@ide:~/{capitalizedName}-integration$
+            membrane@ide :~/{capitalizedName}-integration$
           </span>
         </div>
         <div className="p-3 text-[#4EC9B0] whitespace-pre-wrap">

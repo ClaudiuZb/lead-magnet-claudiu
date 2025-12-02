@@ -895,7 +895,7 @@ export default function ChatPanel({
                           d="M12 4v16m8-8H4"
                         />
                       </svg>
-                      Add to Open Membrane OS
+                      Add to Membrane IDE
                     </button>
                   </div>
                 )}

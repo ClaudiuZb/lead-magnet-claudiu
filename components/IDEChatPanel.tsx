@@ -388,7 +388,7 @@ Make it comprehensive and realistic - this should showcase a full Membrane integ
         <div
           className={`w-2 h-2 rounded-full ${isAnalyzing ? 'bg-yellow-500 animate-pulse' : 'bg-green-500'}`}
         ></div>
-        <span className="text-sm font-medium text-gray-300">Open Membrane OS Agent</span>
+        <span className="text-sm font-medium text-gray-300">Membrane IDE Agent</span>
       </div>
 
       <div className="flex-1 overflow-y-auto custom-scrollbar px-4 py-4 space-y-4 bg-[#1E1E1E]">

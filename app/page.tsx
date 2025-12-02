@@ -67,7 +67,7 @@ export default function Home() {
               type="submit"
               className="w-full px-6 py-3.5 bg-gradient-to-b from-[#35374F] to-[#0D0D12] text-white text-[15px] font-medium rounded-lg transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_16px_rgba(0,30,75,0.16)] active:translate-y-0"
             >
-              Open Membrane Integration IDE
+              Open Membrane OS
             </button>
           </form>
         </div>
