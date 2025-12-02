@@ -152,7 +152,7 @@ export default function IDECodePanel({
   const getFileContent = () => {
     if (!selectedFile) {
       return {
-        content: `// Welcome to Your IDE\n\n// Start building your integration by selecting a file from the explorer\n// or let the AI agent generate implementation code for you.`,
+        content: `// Welcome to Open Membrane OS\n\n// Start building your integration by selecting a file from the explorer\n// or let the AI agent generate implementation code for you.`,
         type: 'typescript',
       };
     }
@@ -215,7 +215,10 @@ export default function IDECodePanel({
         </div>
       )}
 
-      <div ref={codeScrollRef} className="flex-1 overflow-y-auto custom-scrollbar custom-scrollbar-y-only bg-[#1E1E1E] p-4 relative">
+      <div
+        ref={codeScrollRef}
+        className="flex-1 overflow-y-auto custom-scrollbar custom-scrollbar-y-only bg-[#1E1E1E] p-4 relative"
+      >
         <pre className="text-[13px] font-mono leading-relaxed">
           {renderWithSyntax(content, type)}
         </pre>

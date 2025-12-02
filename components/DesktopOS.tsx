@@ -35,7 +35,7 @@ export default function DesktopOS({ companyUrl }: DesktopOSProps) {
     },
     {
       id: 'ide',
-      name: 'Your IDE',
+      name: 'Open Membrane OS',
       isOpen: false,
       isMinimized: false,
       zIndex: 10,
@@ -287,7 +287,6 @@ export default function DesktopOS({ companyUrl }: DesktopOSProps) {
     }, 120000);
   };
 
-
   const handlePushToProduction = () => {
     setWindows((prev) => prev.map((w) => (w.id === 'ide' ? { ...w, isOpen: false } : w)));
 
@@ -530,7 +529,7 @@ export default function DesktopOS({ companyUrl }: DesktopOSProps) {
                     ></button>
                   </div>
                   <div className="flex-1 text-center text-gray-300 text-sm font-medium">
-                    Your IDE
+                    Open Membrane OS
                   </div>
                   <div className="w-14"></div>
                 </div>

@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import CodePanel from './CodePanel';
 import ChatPanel from './ChatPanel';
 
 interface MembraneConsoleProps {
@@ -28,33 +27,14 @@ export default function MembraneConsole({ companyUrl, onAddToIDE }: MembraneCons
     'dashboard' | 'apps' | 'builder' | 'customers' | 'activity'
   >('dashboard');
   const [activeTab, setActiveTab] = useState<'your-app' | 'membrane' | 'external-apps'>('membrane');
-  const [showCodeEditor, setShowCodeEditor] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const [initialPrompt, setInitialPrompt] = useState('');
-
-  const [selectedFile, setSelectedFile] = useState<string | null>(null);
   const [companyAnalysis, setCompanyAnalysis] = useState<CompanyAnalysis | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(true);
-  const [isAICoding, setIsAICoding] = useState(false);
-  const [generatedFileContents, setGeneratedFileContents] = useState<Map<string, string>>(
-    new Map()
-  );
-  const [typingFile, setTypingFile] = useState<{
-    name: string;
-    content: string;
-  } | null>(null);
-  const [aiThinking, setAiThinking] = useState<string>('');
 
   const path1Ref = useRef<SVGPathElement>(null);
   const path2Ref = useRef<SVGPathElement>(null);
   const path3Ref = useRef<SVGPathElement>(null);
-
-  const handleCodingStateChange = (isCoding: boolean) => {
-    setIsAICoding(isCoding);
-    if (isCoding) {
-      setShowCodeEditor(true);
-    }
-  };
 
   const handleInitialSubmit = (prompt: string) => {
     setInitialPrompt(prompt);
@@ -83,25 +63,6 @@ export default function MembraneConsole({ companyUrl, onAddToIDE }: MembraneCons
 
     analyzeCompany();
   }, [companyUrl]);
-
-  const handleNewFile = (fileName: string, fileContent: string) => {
-    setGeneratedFileContents((prev) => new Map(prev).set(`generated/${fileName}`, fileContent));
-    setSelectedFile(`generated/${fileName}`);
-  };
-
-  const handleFileTyping = (fileName: string, content: string, isComplete: boolean) => {
-    if (!isComplete) {
-      setTypingFile({ name: `generated/${fileName}`, content });
-      setSelectedFile(`generated/${fileName}`);
-    } else {
-      setGeneratedFileContents((prev) => {
-        const newMap = new Map(prev);
-        newMap.set(`generated/${fileName}`, content);
-        return newMap;
-      });
-      setTypingFile(null);
-    }
-  };
 
   useEffect(() => {
     if (path1Ref.current && path2Ref.current && path3Ref.current) {
@@ -515,14 +476,36 @@ export default function MembraneConsole({ companyUrl, onAddToIDE }: MembraneCons
                   <h2 className="text-xs font-semibold text-gray-900 mb-3">Customers</h2>
                   <nav className="space-y-1">
                     <a className="flex items-center gap-2 px-3 py-2 text-sm text-gray-900 bg-gray-100 rounded-md">
-                      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                      <svg
+                        width="16"
+                        height="16"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                        />
                       </svg>
                       Customers
                     </a>
                     <a className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-md">
-                      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+                      <svg
+                        width="16"
+                        height="16"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+                        />
                       </svg>
                       Connections
                     </a>
@@ -533,20 +516,53 @@ export default function MembraneConsole({ companyUrl, onAddToIDE }: MembraneCons
                   <h3 className="text-xs font-semibold text-gray-900 mb-3">Integration Logic</h3>
                   <nav className="space-y-1">
                     <a className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-md">
-                      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                      <svg
+                        width="16"
+                        height="16"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M13 10V3L4 14h7v7l9-11h-7z"
+                        />
                       </svg>
                       Actions
                     </a>
                     <a className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-md">
-                      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/>
+                      <svg
+                        width="16"
+                        height="16"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"
+                        />
                       </svg>
                       Flows
                     </a>
                     <a className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-md">
-                      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                      <svg
+                        width="16"
+                        height="16"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                        />
                       </svg>
                       External Event Sub...
                     </a>
@@ -557,20 +573,53 @@ export default function MembraneConsole({ companyUrl, onAddToIDE }: MembraneCons
                   <h3 className="text-xs font-semibold text-gray-900 mb-3">State and Config</h3>
                   <nav className="space-y-1">
                     <a className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-md">
-                      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/>
+                      <svg
+                        width="16"
+                        height="16"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"
+                        />
                       </svg>
                       Data Sources
                     </a>
                     <a className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-md">
-                      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                      <svg
+                        width="16"
+                        height="16"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                        />
                       </svg>
                       Field Mappings
                     </a>
                     <a className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-md">
-                      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+                      <svg
+                        width="16"
+                        height="16"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+                        />
                       </svg>
                       Data Link Tables
                     </a>
@@ -581,14 +630,36 @@ export default function MembraneConsole({ companyUrl, onAddToIDE }: MembraneCons
                   <h3 className="text-xs font-semibold text-gray-900 mb-3">Internal Interfaces</h3>
                   <nav className="space-y-1">
                     <a className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-md">
-                      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/>
+                      <svg
+                        width="16"
+                        height="16"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"
+                        />
                       </svg>
                       App Data Schemas
                     </a>
                     <a className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-md">
-                      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                      <svg
+                        width="16"
+                        height="16"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                        />
                       </svg>
                       App Event Subscriptions
                     </a>
@@ -606,14 +677,35 @@ export default function MembraneConsole({ companyUrl, onAddToIDE }: MembraneCons
                   {/* Search and Filter Bar */}
                   <div className="mb-4 flex items-center gap-3">
                     <button className="px-3 py-1.5 bg-white border border-gray-300 rounded-md text-xs font-medium text-gray-700 hover:bg-gray-50 flex items-center gap-1.5">
-                      <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                      <svg
+                        width="14"
+                        height="14"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                        />
                       </svg>
                       Create a customer
                     </button>
                     <div className="flex-1 relative">
-                      <svg className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                      <svg
+                        className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                        />
                       </svg>
                       <input
                         type="text"
@@ -625,48 +717,106 @@ export default function MembraneConsole({ companyUrl, onAddToIDE }: MembraneCons
 
                   {/* Customers List */}
                   <div className="space-y-1.5">
-                  {[
-                    { name: 'Acme Corporation', id: '668e4397d65c1b8c8d988b99', tags: ['test'] },
-                    { name: 'TechFlow Solutions', id: 'techflow-solutions', tags: ['active customer'] },
-                    { name: 'Global Dynamics Inc', id: '6183c5690ff1e5ee388ab853', tags: ['test'] },
-                    { name: 'BlueWave Systems', id: 'bluewave-systems', tags: ['active customer'] },
-                    { name: 'NextGen Industries', id: 'nextgen-industries', tags: [] },
-                    { name: 'sarah.johnson@techcorp.com', id: '671674be849cd7352c44c62e', tags: ['test'] },
-                    { name: 'michael.chen@startup.io', id: '677fd3f3c71dc8424346c89a', tags: [] },
-                    { name: 'emma.davis@enterprise.com', id: '677fe589c71dc8424346c909', tags: [] },
-                    { name: 'james.wilson@company.net', id: '67859d604537f1c2a1638cd5', tags: [] },
-                    { name: 'olivia.martinez@bizapp.com', id: '678a3d1dec7e27526e02f02c', tags: [] },
-                    { name: 'noah.anderson@platform.io', id: '678a3ff3ec7e27526e02f042', tags: [] },
-                    { name: 'sophia.taylor@digital.com', id: '678a400cec7e27526e02f04a', tags: ['active customer'] },
-                    { name: 'liam.brown@solutions.net', id: '678a40736884cc2f0eb1f647', tags: ['active customer'] },
-                    { name: 'ava.garcia@systems.io', id: '6789199fd45231cb2992f42d', tags: [] },
-                  ].map((customer, index) => (
-                    <div key={index} className="flex items-center justify-between px-3 py-2.5 bg-white border border-gray-200 rounded-md hover:border-gray-300 transition-colors group">
-                      <div className="flex items-center gap-3 flex-1 min-w-0">
-                        <div className="text-sm font-medium text-gray-900 min-w-[180px]">{customer.name}</div>
-                        <div className="text-xs text-gray-500 font-mono bg-gray-50 px-2 py-0.5 rounded flex-1">{customer.id}</div>
-                        <div className="flex gap-1.5">
-                          {customer.tags.map((tag, tagIndex) => (
-                            <span
-                              key={tagIndex}
-                              className={`px-2 py-0.5 text-xs rounded ${
-                                tag === 'test'
-                                  ? 'bg-yellow-100 text-yellow-700 border border-yellow-200'
-                                  : 'bg-green-100 text-green-700 border border-green-200'
-                              }`}
-                            >
-                              {tag}
-                            </span>
-                          ))}
+                    {[
+                      { name: 'Acme Corporation', id: '668e4397d65c1b8c8d988b99', tags: ['test'] },
+                      {
+                        name: 'TechFlow Solutions',
+                        id: 'techflow-solutions',
+                        tags: ['active customer'],
+                      },
+                      {
+                        name: 'Global Dynamics Inc',
+                        id: '6183c5690ff1e5ee388ab853',
+                        tags: ['test'],
+                      },
+                      {
+                        name: 'BlueWave Systems',
+                        id: 'bluewave-systems',
+                        tags: ['active customer'],
+                      },
+                      { name: 'NextGen Industries', id: 'nextgen-industries', tags: [] },
+                      {
+                        name: 'sarah.johnson@techcorp.com',
+                        id: '671674be849cd7352c44c62e',
+                        tags: ['test'],
+                      },
+                      { name: 'michael.chen@startup.io', id: '677fd3f3c71dc8424346c89a', tags: [] },
+                      {
+                        name: 'emma.davis@enterprise.com',
+                        id: '677fe589c71dc8424346c909',
+                        tags: [],
+                      },
+                      {
+                        name: 'james.wilson@company.net',
+                        id: '67859d604537f1c2a1638cd5',
+                        tags: [],
+                      },
+                      {
+                        name: 'olivia.martinez@bizapp.com',
+                        id: '678a3d1dec7e27526e02f02c',
+                        tags: [],
+                      },
+                      {
+                        name: 'noah.anderson@platform.io',
+                        id: '678a3ff3ec7e27526e02f042',
+                        tags: [],
+                      },
+                      {
+                        name: 'sophia.taylor@digital.com',
+                        id: '678a400cec7e27526e02f04a',
+                        tags: ['active customer'],
+                      },
+                      {
+                        name: 'liam.brown@solutions.net',
+                        id: '678a40736884cc2f0eb1f647',
+                        tags: ['active customer'],
+                      },
+                      { name: 'ava.garcia@systems.io', id: '6789199fd45231cb2992f42d', tags: [] },
+                    ].map((customer, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center justify-between px-3 py-2.5 bg-white border border-gray-200 rounded-md hover:border-gray-300 transition-colors group"
+                      >
+                        <div className="flex items-center gap-3 flex-1 min-w-0">
+                          <div className="text-sm font-medium text-gray-900 min-w-[180px]">
+                            {customer.name}
+                          </div>
+                          <div className="text-xs text-gray-500 font-mono bg-gray-50 px-2 py-0.5 rounded flex-1">
+                            {customer.id}
+                          </div>
+                          <div className="flex gap-1.5">
+                            {customer.tags.map((tag, tagIndex) => (
+                              <span
+                                key={tagIndex}
+                                className={`px-2 py-0.5 text-xs rounded ${
+                                  tag === 'test'
+                                    ? 'bg-yellow-100 text-yellow-700 border border-yellow-200'
+                                    : 'bg-green-100 text-green-700 border border-green-200'
+                                }`}
+                              >
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
                         </div>
+                        <button className="text-gray-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity ml-3">
+                          <svg
+                            width="16"
+                            height="16"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                            />
+                          </svg>
+                        </button>
                       </div>
-                      <button className="text-gray-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity ml-3">
-                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                        </svg>
-                      </button>
-                    </div>
-                  ))}
+                    ))}
                   </div>
                 </div>
               </div>
@@ -676,20 +826,43 @@ export default function MembraneConsole({ companyUrl, onAddToIDE }: MembraneCons
               <div className="max-w-6xl mx-auto">
                 <div className="mb-6">
                   <h1 className="text-2xl font-semibold text-gray-900 mb-2">External Apps</h1>
-                  <p className="text-sm text-gray-500">Manage your connected applications and integrations</p>
+                  <p className="text-sm text-gray-500">
+                    Manage your connected applications and integrations
+                  </p>
                 </div>
 
                 {/* Search and Filter Bar */}
                 <div className="mb-6 flex items-center gap-4">
                   <button className="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 flex items-center gap-2">
-                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                    <svg
+                      width="16"
+                      height="16"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                      />
                     </svg>
                     Add Integrations
                   </button>
                   <div className="flex-1 relative">
-                    <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    <svg
+                      className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                      />
                     </svg>
                     <input
                       type="text"
@@ -698,7 +871,7 @@ export default function MembraneConsole({ companyUrl, onAddToIDE }: MembraneCons
                     />
                   </div>
                   <label className="flex items-center gap-2 text-sm text-gray-700">
-                    <input type="checkbox" className="rounded border-gray-300"/>
+                    <input type="checkbox" className="rounded border-gray-300" />
                     include archived
                   </label>
                 </div>
@@ -707,19 +880,62 @@ export default function MembraneConsole({ companyUrl, onAddToIDE }: MembraneCons
                 <div className="space-y-2">
                   {[
                     { name: 'Gmail', key: 'gmail', logo: 'https://logo.clearbit.com/google.com' },
-                    { name: 'Salesforce', key: 'salesforce', logo: 'https://logo.clearbit.com/salesforce.com' },
-                    { name: 'Slack (Membrane AI Assistant)', key: 'slack-membrane-ai-assistant', logo: 'https://logo.clearbit.com/slack.com' },
-                    { name: 'HubSpot', key: 'hubspot', logo: 'https://logo.clearbit.com/hubspot.com' },
-                    { name: 'Slack (Membrane Copilot)', key: 'slack-membrane-copilot', logo: 'https://logo.clearbit.com/slack.com' },
-                    { name: 'AWS Lambda', key: 'aws-lambda', logo: 'https://logo.clearbit.com/aws.amazon.com' },
-                    { name: 'Anthropic', key: 'anthropic', logo: 'https://logo.clearbit.com/anthropic.com' },
-                    { name: 'Linear (Claude)', key: 'linear-claude', logo: 'https://logo.clearbit.com/linear.app' },
-                    { name: 'Discourse', key: 'discourse', logo: 'https://logo.clearbit.com/discourse.org' },
+                    {
+                      name: 'Salesforce',
+                      key: 'salesforce',
+                      logo: 'https://logo.clearbit.com/salesforce.com',
+                    },
+                    {
+                      name: 'Slack (Membrane AI Assistant)',
+                      key: 'slack-membrane-ai-assistant',
+                      logo: 'https://logo.clearbit.com/slack.com',
+                    },
+                    {
+                      name: 'HubSpot',
+                      key: 'hubspot',
+                      logo: 'https://logo.clearbit.com/hubspot.com',
+                    },
+                    {
+                      name: 'Slack (Membrane Copilot)',
+                      key: 'slack-membrane-copilot',
+                      logo: 'https://logo.clearbit.com/slack.com',
+                    },
+                    {
+                      name: 'AWS Lambda',
+                      key: 'aws-lambda',
+                      logo: 'https://logo.clearbit.com/aws.amazon.com',
+                    },
+                    {
+                      name: 'Anthropic',
+                      key: 'anthropic',
+                      logo: 'https://logo.clearbit.com/anthropic.com',
+                    },
+                    {
+                      name: 'Linear (Claude)',
+                      key: 'linear-claude',
+                      logo: 'https://logo.clearbit.com/linear.app',
+                    },
+                    {
+                      name: 'Discourse',
+                      key: 'discourse',
+                      logo: 'https://logo.clearbit.com/discourse.org',
+                    },
                     { name: 'Gitpod', key: 'gitpod', logo: 'https://logo.clearbit.com/gitpod.io' },
-                    { name: 'Linear (Pathfinder)', key: 'linear-pathfinder', logo: 'https://logo.clearbit.com/linear.app' },
-                    { name: 'Google Drive', key: 'google-drive', logo: 'https://logo.clearbit.com/drive.google.com' },
+                    {
+                      name: 'Linear (Pathfinder)',
+                      key: 'linear-pathfinder',
+                      logo: 'https://logo.clearbit.com/linear.app',
+                    },
+                    {
+                      name: 'Google Drive',
+                      key: 'google-drive',
+                      logo: 'https://logo.clearbit.com/drive.google.com',
+                    },
                   ].map((app, index) => (
-                    <div key={index} className="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-lg hover:border-gray-300 transition-colors group">
+                    <div
+                      key={index}
+                      className="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-lg hover:border-gray-300 transition-colors group"
+                    >
                       <div className="flex items-center gap-4">
                         <div className="w-2 h-2 rounded-full bg-green-500"></div>
                         <div className="w-10 h-10 rounded-lg bg-white border border-gray-200 flex items-center justify-center overflow-hidden">
@@ -744,8 +960,19 @@ export default function MembraneConsole({ companyUrl, onAddToIDE }: MembraneCons
                         </div>
                       </div>
                       <button className="text-gray-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                        <svg
+                          width="20"
+                          height="20"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                          />
                         </svg>
                       </button>
                     </div>
@@ -761,8 +988,19 @@ export default function MembraneConsole({ companyUrl, onAddToIDE }: MembraneCons
                   <h2 className="text-xs font-semibold text-gray-900 mb-3">Activity</h2>
                   <nav className="space-y-1">
                     <a className="flex items-center gap-2 px-3 py-2 text-sm text-gray-900 bg-gray-100 rounded-md">
-                      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                      <svg
+                        width="16"
+                        height="16"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                        />
                       </svg>
                       Dashboard
                     </a>
@@ -773,50 +1011,138 @@ export default function MembraneConsole({ companyUrl, onAddToIDE }: MembraneCons
                   <h3 className="text-xs font-semibold text-gray-900 mb-3">Logs</h3>
                   <nav className="space-y-1">
                     <a className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-md">
-                      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                      <svg
+                        width="16"
+                        height="16"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                        />
                       </svg>
                       Flow Runs
                     </a>
                     <a className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-md">
-                      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                      <svg
+                        width="16"
+                        height="16"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M13 10V3L4 14h7v7l9-11h-7z"
+                        />
                       </svg>
                       Action Runs
                     </a>
                     <a className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-md">
-                      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                      <svg
+                        width="16"
+                        height="16"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"
+                        />
                       </svg>
                       External API
                     </a>
                     <a className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-md">
-                      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                      <svg
+                        width="16"
+                        height="16"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                        />
                       </svg>
                       External Webhooks
                     </a>
                     <a className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-md">
-                      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/>
+                      <svg
+                        width="16"
+                        height="16"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"
+                        />
                       </svg>
                       External Events
                     </a>
                     <a className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-md">
-                      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                      <svg
+                        width="16"
+                        height="16"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                        />
                       </svg>
                       External Event Pulls
                     </a>
                     <a className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-md">
-                      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                      <svg
+                        width="16"
+                        height="16"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M13 10V3L4 14h7v7l9-11h-7z"
+                        />
                       </svg>
                       App Events
                     </a>
                     <a className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-md">
-                      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                      <svg
+                        width="16"
+                        height="16"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                        />
                       </svg>
                       Agent Sessions
                     </a>
@@ -832,7 +1158,9 @@ export default function MembraneConsole({ companyUrl, onAddToIDE }: MembraneCons
                     <h1 className="text-base font-semibold text-gray-900 mb-1">Monitoring</h1>
                     <div className="flex items-center gap-2 text-xs mb-3">
                       <span className="text-blue-600">Alert</span>
-                      <a href="#" className="text-blue-600 hover:underline">See log</a>
+                      <a href="#" className="text-blue-600 hover:underline">
+                        See log
+                      </a>
                     </div>
                     <div className="bg-gray-50 rounded-lg p-2.5 border border-gray-200 mb-4">
                       <p className="text-xs text-gray-600">No ongoing alerts</p>
@@ -854,8 +1182,19 @@ export default function MembraneConsole({ companyUrl, onAddToIDE }: MembraneCons
                     <div className="grid grid-cols-3 gap-2 mb-3">
                       <div className="bg-white border border-gray-200 rounded-lg p-2.5">
                         <div className="flex items-center gap-1.5 mb-1.5">
-                          <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                          <svg
+                            width="14"
+                            height="14"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"
+                            />
                           </svg>
                           <span className="text-xs font-medium text-gray-700">External API</span>
                         </div>
@@ -873,8 +1212,19 @@ export default function MembraneConsole({ companyUrl, onAddToIDE }: MembraneCons
 
                       <div className="bg-white border border-gray-200 rounded-lg p-2.5">
                         <div className="flex items-center gap-1.5 mb-1.5">
-                          <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/>
+                          <svg
+                            width="14"
+                            height="14"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"
+                            />
                           </svg>
                           <span className="text-xs font-medium text-gray-700">External Events</span>
                         </div>
@@ -888,8 +1238,19 @@ export default function MembraneConsole({ companyUrl, onAddToIDE }: MembraneCons
 
                       <div className="bg-white border border-gray-200 rounded-lg p-2.5">
                         <div className="flex items-center gap-1.5 mb-1.5">
-                          <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                          <svg
+                            width="14"
+                            height="14"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                            />
                           </svg>
                           <span className="text-xs font-medium text-gray-700">Flow Runs</span>
                         </div>
@@ -907,8 +1268,19 @@ export default function MembraneConsole({ companyUrl, onAddToIDE }: MembraneCons
 
                       <div className="bg-white border border-gray-200 rounded-lg p-2.5">
                         <div className="flex items-center gap-1.5 mb-1.5">
-                          <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                          <svg
+                            width="14"
+                            height="14"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M13 10V3L4 14h7v7l9-11h-7z"
+                            />
                           </svg>
                           <span className="text-xs font-medium text-gray-700">App Events</span>
                         </div>
@@ -922,10 +1294,23 @@ export default function MembraneConsole({ companyUrl, onAddToIDE }: MembraneCons
 
                       <div className="bg-white border border-gray-200 rounded-lg p-2.5">
                         <div className="flex items-center gap-1.5 mb-1.5">
-                          <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                          <svg
+                            width="14"
+                            height="14"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                            />
                           </svg>
-                          <span className="text-xs font-medium text-gray-700">External Webhooks</span>
+                          <span className="text-xs font-medium text-gray-700">
+                            External Webhooks
+                          </span>
                         </div>
                         <div className="flex items-center gap-2">
                           <span className="flex items-center gap-1 text-xs">
@@ -941,8 +1326,19 @@ export default function MembraneConsole({ companyUrl, onAddToIDE }: MembraneCons
 
                       <div className="bg-white border border-gray-200 rounded-lg p-2.5">
                         <div className="flex items-center gap-1.5 mb-1.5">
-                          <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                          <svg
+                            width="14"
+                            height="14"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M13 10V3L4 14h7v7l9-11h-7z"
+                            />
                           </svg>
                           <span className="text-xs font-medium text-gray-700">Action Runs</span>
                         </div>
@@ -960,10 +1356,23 @@ export default function MembraneConsole({ companyUrl, onAddToIDE }: MembraneCons
 
                       <div className="bg-white border border-gray-200 rounded-lg p-2.5">
                         <div className="flex items-center gap-1.5 mb-1.5">
-                          <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                          <svg
+                            width="14"
+                            height="14"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                            />
                           </svg>
-                          <span className="text-xs font-medium text-gray-700">External Event Pulls</span>
+                          <span className="text-xs font-medium text-gray-700">
+                            External Event Pulls
+                          </span>
                         </div>
                         <div className="flex items-center gap-2">
                           <span className="text-xs">0</span>
@@ -972,8 +1381,19 @@ export default function MembraneConsole({ companyUrl, onAddToIDE }: MembraneCons
 
                       <div className="bg-white border border-gray-200 rounded-lg p-2.5">
                         <div className="flex items-center gap-1.5 mb-1.5">
-                          <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                          <svg
+                            width="14"
+                            height="14"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                            />
                           </svg>
                           <span className="text-xs font-medium text-gray-700">Agent Sessions</span>
                         </div>
@@ -988,14 +1408,20 @@ export default function MembraneConsole({ companyUrl, onAddToIDE }: MembraneCons
                     <div className="mt-4">
                       <div className="flex items-center gap-2 mb-3">
                         <h3 className="text-sm font-semibold text-gray-900">Task Queue</h3>
-                        <a href="#" className="text-xs text-blue-600 hover:underline">See details</a>
+                        <a href="#" className="text-xs text-blue-600 hover:underline">
+                          See details
+                        </a>
                       </div>
                       <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
                         <table className="w-full">
                           <thead className="bg-gray-50 border-b border-gray-200">
                             <tr>
-                              <th className="px-3 py-1.5 text-left text-xs font-medium text-gray-600">Task type</th>
-                              <th className="px-3 py-1.5 text-left text-xs font-medium text-gray-600">Queued</th>
+                              <th className="px-3 py-1.5 text-left text-xs font-medium text-gray-600">
+                                Task type
+                              </th>
+                              <th className="px-3 py-1.5 text-left text-xs font-medium text-gray-600">
+                                Queued
+                              </th>
                             </tr>
                           </thead>
                           <tbody>
@@ -1004,11 +1430,15 @@ export default function MembraneConsole({ companyUrl, onAddToIDE }: MembraneCons
                               <td className="px-3 py-2 text-xs text-gray-600">0</td>
                             </tr>
                             <tr className="border-b border-gray-100">
-                              <td className="px-3 py-2 text-xs text-gray-900">External Event Processing</td>
+                              <td className="px-3 py-2 text-xs text-gray-900">
+                                External Event Processing
+                              </td>
                               <td className="px-3 py-2 text-xs text-gray-600">0</td>
                             </tr>
                             <tr>
-                              <td className="px-3 py-2 text-xs text-gray-900">External Event Pulls</td>
+                              <td className="px-3 py-2 text-xs text-gray-900">
+                                External Event Pulls
+                              </td>
                               <td className="px-3 py-2 text-xs text-gray-600">0</td>
                             </tr>
                           </tbody>
@@ -1022,65 +1452,76 @@ export default function MembraneConsole({ companyUrl, onAddToIDE }: MembraneCons
           ) : !showChat ? (
             <div className="flex-1 overflow-hidden bg-[#F8F9FA] flex items-center justify-center">
               <div className="w-full max-w-lg px-8">
-                  {/* Membrane Logo - Centered above input */}
-                  <div className="flex items-center justify-center gap-3 mb-8">
-                    <svg width="50" height="62" viewBox="0 0 180 225" fill="none">
-                      <path
-                        d="M177.996 55.3189C178.991 55.8951 179.604 56.9578 179.604 58.1076V164.277C179.604 166.264 177.452 167.504 175.733 166.508L153.939 153.886C153.143 153.425 152.653 152.575 152.653 151.655V77.9606C152.653 76.8108 152.04 75.7481 151.045 75.1718L83.7567 36.2047C82.9606 35.7437 82.4705 34.8936 82.4705 33.9737V4.47239C82.4705 2.48618 84.6222 1.24596 86.3411 2.24139L177.996 55.3189Z"
-                        fill="#03030D"
-                      />
-                      <path
-                        d="M0 60.7224C0 58.7362 2.15168 57.496 3.8706 58.4914L95.5256 111.569C96.5207 112.145 97.1333 113.208 97.1333 114.358V220.527C97.1333 222.514 94.9817 223.754 93.2627 222.758L1.28618 169.495C0.490121 169.034 0 168.184 0 167.264V60.7224Z"
-                        fill="#03030D"
-                      />
-                      <path
-                        d="M136.761 83.4439C137.756 84.0201 138.368 85.0828 138.368 86.2326V192.402C138.368 194.389 136.217 195.629 134.498 194.633L112.703 182.011C111.907 181.55 111.417 180.7 111.417 179.78V106.086C111.417 104.936 110.805 103.873 109.81 103.297L42.5214 64.3297C41.7254 63.8687 41.2353 63.0186 41.2353 62.0987V32.5974C41.2353 30.6112 43.3869 29.371 45.1059 30.3664L136.761 83.4439Z"
-                        fill="#03030D"
-                      />
-                    </svg>
-                    <h1 className="text-3xl font-semibold text-gray-900 tracking-tight">Membrane</h1>
-                  </div>
-
-                  <div className="relative">
-                    <svg
-                      className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"
-                      />
-                    </svg>
-                    <input
-                      type="text"
-                      value={inputValue}
-                      onChange={(e) => setInputValue(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' && inputValue.trim()) {
-                          handleInitialSubmit(inputValue.trim());
-                        }
-                      }}
-                      placeholder="What integration you want to build today?"
-                      className="w-full py-3 px-12 bg-white border border-gray-300 rounded-lg text-gray-700 placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm"
+                {/* Membrane Logo - Centered above input */}
+                <div className="flex items-center justify-center gap-3 mb-8">
+                  <svg width="50" height="62" viewBox="0 0 180 225" fill="none">
+                    <path
+                      d="M177.996 55.3189C178.991 55.8951 179.604 56.9578 179.604 58.1076V164.277C179.604 166.264 177.452 167.504 175.733 166.508L153.939 153.886C153.143 153.425 152.653 152.575 152.653 151.655V77.9606C152.653 76.8108 152.04 75.7481 151.045 75.1718L83.7567 36.2047C82.9606 35.7437 82.4705 34.8936 82.4705 33.9737V4.47239C82.4705 2.48618 84.6222 1.24596 86.3411 2.24139L177.996 55.3189Z"
+                      fill="#03030D"
                     />
+                    <path
+                      d="M0 60.7224C0 58.7362 2.15168 57.496 3.8706 58.4914L95.5256 111.569C96.5207 112.145 97.1333 113.208 97.1333 114.358V220.527C97.1333 222.514 94.9817 223.754 93.2627 222.758L1.28618 169.495C0.490121 169.034 0 168.184 0 167.264V60.7224Z"
+                      fill="#03030D"
+                    />
+                    <path
+                      d="M136.761 83.4439C137.756 84.0201 138.368 85.0828 138.368 86.2326V192.402C138.368 194.389 136.217 195.629 134.498 194.633L112.703 182.011C111.907 181.55 111.417 180.7 111.417 179.78V106.086C111.417 104.936 110.805 103.873 109.81 103.297L42.5214 64.3297C41.7254 63.8687 41.2353 63.0186 41.2353 62.0987V32.5974C41.2353 30.6112 43.3869 29.371 45.1059 30.3664L136.761 83.4439Z"
+                      fill="#03030D"
+                    />
+                  </svg>
+                  <h1 className="text-3xl font-semibold text-gray-900 tracking-tight">Membrane</h1>
+                </div>
+
+                <div className="relative">
+                  <svg
+                    className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"
+                    />
+                  </svg>
+                  <input
+                    type="text"
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && inputValue.trim()) {
+                        handleInitialSubmit(inputValue.trim());
+                      }
+                    }}
+                    placeholder="What integration you want to build today?"
+                    className="w-full py-3 px-12 bg-white border border-gray-300 rounded-lg text-gray-700 placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm"
+                  />
+                </div>
+
+                {isAnalyzing && (
+                  <div className="mt-4 flex items-center justify-center gap-1 text-sm text-gray-600">
+                    <span>Working on your recommendations</span>
+                    <span className="flex gap-1">
+                      <span
+                        className="w-1 h-1 bg-gray-600 rounded-full animate-bounce"
+                        style={{ animationDelay: '0ms', animationDuration: '1.4s' }}
+                      ></span>
+                      <span
+                        className="w-1 h-1 bg-gray-600 rounded-full animate-bounce"
+                        style={{ animationDelay: '200ms', animationDuration: '1.4s' }}
+                      ></span>
+                      <span
+                        className="w-1 h-1 bg-gray-600 rounded-full animate-bounce"
+                        style={{ animationDelay: '400ms', animationDuration: '1.4s' }}
+                      ></span>
+                    </span>
                   </div>
+                )}
 
-                  {isAnalyzing && (
-                    <div className="mt-4 flex items-center justify-center gap-1 text-sm text-gray-600">
-                      <span>Working on your recommendations</span>
-                      <span className="flex gap-1">
-                        <span className="w-1 h-1 bg-gray-600 rounded-full animate-bounce" style={{ animationDelay: '0ms', animationDuration: '1.4s' }}></span>
-                        <span className="w-1 h-1 bg-gray-600 rounded-full animate-bounce" style={{ animationDelay: '200ms', animationDuration: '1.4s' }}></span>
-                        <span className="w-1 h-1 bg-gray-600 rounded-full animate-bounce" style={{ animationDelay: '400ms', animationDuration: '1.4s' }}></span>
-                      </span>
-                    </div>
-                  )}
-
-                  {!isAnalyzing && companyAnalysis && companyAnalysis.suggestedUseCases.length > 0 && (
+                {!isAnalyzing &&
+                  companyAnalysis &&
+                  companyAnalysis.suggestedUseCases.length > 0 && (
                     <div className="mt-3 space-y-1.5">
                       {companyAnalysis.suggestedUseCases.slice(0, 3).map((useCase, index) => (
                         <button
@@ -1096,27 +1537,26 @@ export default function MembraneConsole({ companyUrl, onAddToIDE }: MembraneCons
                             stroke="currentColor"
                             viewBox="0 0 24 24"
                           >
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M13 10V3L4 14h7v7l9-11h-7z"
+                            />
                           </svg>
                           <span className="line-clamp-1">{useCase}</span>
                         </button>
                       ))}
                     </div>
                   )}
-                </div>
+              </div>
             </div>
           ) : (
             <div className="flex-1 flex overflow-hidden bg-white">
-              {/* Simple Chat Interface */}
               <div className="flex-1 bg-white flex flex-col">
                 <ChatPanel
                   companyUrl={companyUrl}
-                  onCodingStateChange={handleCodingStateChange}
-                  onNewFile={handleNewFile}
-                  onFileTyping={handleFileTyping}
-                  onAiThinking={setAiThinking}
                   companyAnalysis={companyAnalysis || undefined}
-                  isAnalyzing={isAnalyzing}
                   onAddToIDE={onAddToIDE}
                   initialMessage={initialPrompt}
                 />

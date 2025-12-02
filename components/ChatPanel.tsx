@@ -25,11 +25,6 @@ interface ChatPanelProps {
     productTagline: string;
     suggestedUseCases: string[];
   };
-  isAnalyzing: boolean;
-  onCodingStateChange?: (isCoding: boolean) => void;
-  onNewFile?: (fileName: string, fileContent: string) => void;
-  onFileTyping?: (fileName: string, content: string, isComplete: boolean) => void;
-  onAiThinking?: (thinking: string) => void;
   onAddToIDE?: (integrationData: {
     name: string;
     description: string;
@@ -40,61 +35,106 @@ interface ChatPanelProps {
 }
 
 const getToolIcon = (iconName?: string) => {
-  const className = "w-4 h-4";
+  const className = 'w-4 h-4';
 
   switch (iconName) {
     case 'lightbulb':
       return (
         <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+          />
         </svg>
       );
     case 'search':
       return (
         <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+          />
         </svg>
       );
     case 'plug':
       return (
         <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M13 10V3L4 14h7v7l9-11h-7z"
+          />
         </svg>
       );
     case 'globe':
       return (
         <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"
+          />
         </svg>
       );
     case 'grid':
       return (
         <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
+          />
         </svg>
       );
     case 'link':
       return (
         <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+          />
         </svg>
       );
     case 'zap':
       return (
         <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M13 10V3L4 14h7v7l9-11h-7z"
+          />
         </svg>
       );
     case 'file':
       return (
         <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+          />
         </svg>
       );
     case 'code':
       return (
         <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
+          />
         </svg>
       );
     case 'text':
@@ -102,7 +142,12 @@ const getToolIcon = (iconName?: string) => {
     default:
       return (
         <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M13 10V3L4 14h7v7l9-11h-7z"
+          />
         </svg>
       );
   }
@@ -111,11 +156,6 @@ const getToolIcon = (iconName?: string) => {
 export default function ChatPanel({
   companyUrl,
   companyAnalysis,
-  isAnalyzing,
-  onCodingStateChange,
-  onNewFile,
-  onFileTyping,
-  onAiThinking,
   onAddToIDE,
   initialMessage,
 }: ChatPanelProps) {
@@ -291,11 +331,6 @@ export default function ChatPanel({
     let displayedText = '';
     const processedFiles = new Set<string>();
     const createdFiles: { name: string; content: string }[] = [];
-    let terminalOutput = 'Parsing integration requirements...\n';
-
-    if (onAiThinking) {
-      onAiThinking(terminalOutput);
-    }
 
     while (true) {
       const { done, value } = await reader.read();
@@ -335,17 +370,6 @@ export default function ChatPanel({
                 if (!processedFiles.has(fileName)) {
                   processedFiles.add(fileName);
 
-                  terminalOutput += `→ Detected API specifications...\n`;
-                  terminalOutput += `→ Analyzing authentication methods...\n`;
-                  terminalOutput += `→ Generating ${fileName}...\n`;
-                  if (onAiThinking) {
-                    onAiThinking(terminalOutput);
-                  }
-
-                  if (onNewFile) {
-                    onNewFile(fileName, '');
-                  }
-
                   setMessages((prev) => {
                     const newMessages = [...prev];
                     newMessages[newMessages.length - 1].content =
@@ -354,18 +378,7 @@ export default function ChatPanel({
                   });
                 }
 
-                if (fileContent.length > 0) {
-                  if (onFileTyping) {
-                    onFileTyping(fileName, fileContent, isComplete);
-                  }
-                }
-
                 if (isComplete) {
-                  terminalOutput += `✓ ${fileName} created successfully (${fileContent.length} chars)\n`;
-                  if (onAiThinking) {
-                    onAiThinking(terminalOutput);
-                  }
-
                   createdFiles.push({ name: fileName, content: fileContent });
 
                   setMessages((prev) => {
@@ -386,12 +399,6 @@ export default function ChatPanel({
 
     const textBeforeFiles = assistantMessage.split('[FILE:')[0].trim();
     if (processedFiles.size > 0) {
-      terminalOutput += `\n✓ All tests passed\n`;
-      terminalOutput += `✓ Integration complete\n`;
-      if (onAiThinking) {
-        onAiThinking(terminalOutput);
-      }
-
       setMessages((prev) => {
         const newMessages = [...prev];
         newMessages[newMessages.length - 1].content =
@@ -399,21 +406,26 @@ export default function ChatPanel({
         return newMessages;
       });
 
-      let serviceName = integrationName;
-      let serviceUrl = '';
-
       const serviceMatch = assistantMessage.match(/\[SERVICE:\s*([^|]+)\|([^\]]+)\]/);
-      if (serviceMatch) {
-        serviceName = serviceMatch[1].trim();
-        serviceUrl = serviceMatch[2].trim();
-      }
 
-      setIntegrationData({
-        name: serviceName,
-        description: userRequest,
-        url: serviceUrl,
-        files: createdFiles,
-      });
+      if (serviceMatch) {
+        const serviceName = serviceMatch[1].trim();
+        const serviceUrl = serviceMatch[2].trim();
+
+        setIntegrationData({
+          name: serviceName,
+          description: userRequest,
+          url: serviceUrl,
+          files: createdFiles,
+        });
+      } else {
+        setIntegrationData({
+          name: integrationName,
+          description: userRequest,
+          url: '',
+          files: createdFiles,
+        });
+      }
       setIntegrationCompleted(true);
     } else {
       setMessages((prev) => {
@@ -422,12 +434,6 @@ export default function ChatPanel({
         return newMessages;
       });
     }
-
-    setTimeout(() => {
-      if (onAiThinking) {
-        onAiThinking('');
-      }
-    }, 2000);
   };
 
   const handleSuggestionClick = async (useCase: string) => {
@@ -442,14 +448,14 @@ export default function ChatPanel({
         plan: [
           'Load skills about building integrations and actions in Membrane',
           `Check if there's an existing ${integrationName} integration`,
-          `Create or configure the necessary elements to ${useCase.toLowerCase()}`
+          `Create or configure the necessary elements to ${useCase.toLowerCase()}`,
         ],
-        tools: []
+        tools: [],
       },
     ]);
 
     // Simulate tool calls
-    await new Promise(resolve => setTimeout(resolve, 800));
+    await new Promise((resolve) => setTimeout(resolve, 800));
 
     const toolCalls: ToolCall[] = [
       { name: 'Tool: load-skill', status: 'running', icon: 'lightbulb' },
@@ -461,7 +467,7 @@ export default function ChatPanel({
       return newMessages;
     });
 
-    await new Promise(resolve => setTimeout(resolve, 600));
+    await new Promise((resolve) => setTimeout(resolve, 600));
     toolCalls[0].status = 'complete';
     toolCalls.push({ name: 'Tool: load-skill', status: 'running', icon: 'lightbulb' });
     setMessages((prev) => {
@@ -470,7 +476,7 @@ export default function ChatPanel({
       return newMessages;
     });
 
-    await new Promise(resolve => setTimeout(resolve, 600));
+    await new Promise((resolve) => setTimeout(resolve, 600));
     toolCalls[1].status = 'complete';
     toolCalls.push({ name: 'Tool: load-skill', status: 'running', icon: 'lightbulb' });
     setMessages((prev) => {
@@ -479,19 +485,24 @@ export default function ChatPanel({
       return newMessages;
     });
 
-    await new Promise(resolve => setTimeout(resolve, 600));
+    await new Promise((resolve) => setTimeout(resolve, 600));
     toolCalls[2].status = 'complete';
     toolCalls.push({ name: 'Membrane: List Integrations', status: 'running', icon: 'search' });
     setMessages((prev) => {
       const newMessages = [...prev];
       newMessages[newMessages.length - 1].tools = [...toolCalls];
-      newMessages[newMessages.length - 1].content = `I'll help you ${useCase.toLowerCase()}. Let me first understand what we're working with and then load the relevant knowledge.\n\nLet me start by loading the necessary skills and checking the current state:`;
+      newMessages[newMessages.length - 1].content =
+        `I'll help you ${useCase.toLowerCase()}. Let me first understand what we're working with and then load the relevant knowledge.\n\nLet me start by loading the necessary skills and checking the current state:`;
       return newMessages;
     });
 
-    await new Promise(resolve => setTimeout(resolve, 800));
+    await new Promise((resolve) => setTimeout(resolve, 800));
     toolCalls[3].status = 'complete';
-    toolCalls.push({ name: `Now let me search for information about ${integrationName} and check if there are any existing connectors:`, status: 'complete', icon: 'text' });
+    toolCalls.push({
+      name: `Now let me search for information about ${integrationName} and check if there are any existing connectors:`,
+      status: 'complete',
+      icon: 'text',
+    });
     toolCalls.push({ name: 'Membrane: List Connectors', status: 'running', icon: 'plug' });
     setMessages((prev) => {
       const newMessages = [...prev];
@@ -499,7 +510,7 @@ export default function ChatPanel({
       return newMessages;
     });
 
-    await new Promise(resolve => setTimeout(resolve, 700));
+    await new Promise((resolve) => setTimeout(resolve, 700));
     toolCalls[5].status = 'complete';
     toolCalls.push({ name: 'Membrane: Websearch', status: 'running', icon: 'globe' });
     setMessages((prev) => {
@@ -508,9 +519,13 @@ export default function ChatPanel({
       return newMessages;
     });
 
-    await new Promise(resolve => setTimeout(resolve, 800));
+    await new Promise((resolve) => setTimeout(resolve, 800));
     toolCalls[6].status = 'complete';
-    toolCalls.push({ name: `Good! Now let me check if there are any apps for ${integrationName} and get more details about the API:`, status: 'complete', icon: 'text' });
+    toolCalls.push({
+      name: `Good! Now let me check if there are any apps for ${integrationName} and get more details about the API:`,
+      status: 'complete',
+      icon: 'text',
+    });
     toolCalls.push({ name: 'Membrane: List Apps', status: 'running', icon: 'grid' });
     setMessages((prev) => {
       const newMessages = [...prev];
@@ -518,7 +533,7 @@ export default function ChatPanel({
       return newMessages;
     });
 
-    await new Promise(resolve => setTimeout(resolve, 700));
+    await new Promise((resolve) => setTimeout(resolve, 700));
     toolCalls[8].status = 'complete';
     toolCalls.push({ name: 'Tool: load-skill', status: 'running', icon: 'lightbulb' });
     setMessages((prev) => {
@@ -527,9 +542,13 @@ export default function ChatPanel({
       return newMessages;
     });
 
-    await new Promise(resolve => setTimeout(resolve, 600));
+    await new Promise((resolve) => setTimeout(resolve, 600));
     toolCalls[9].status = 'complete';
-    toolCalls.push({ name: `Perfect! I can see that ${integrationName} app already exists and has a default connector. Let me check the existing connector and then create an integration:`, status: 'complete', icon: 'text' });
+    toolCalls.push({
+      name: `Perfect! I can see that ${integrationName} app already exists and has a default connector. Let me check the existing connector and then create an integration:`,
+      status: 'complete',
+      icon: 'text',
+    });
     toolCalls.push({ name: 'Membrane: Get Connector', status: 'running', icon: 'link' });
     setMessages((prev) => {
       const newMessages = [...prev];
@@ -537,9 +556,13 @@ export default function ChatPanel({
       return newMessages;
     });
 
-    await new Promise(resolve => setTimeout(resolve, 800));
+    await new Promise((resolve) => setTimeout(resolve, 800));
     toolCalls[11].status = 'complete';
-    toolCalls.push({ name: `Great! Now I understand the setup. Let me create an integration for ${integrationName} and then build the necessary elements to ${useCase.toLowerCase()}. Let me also load the skill about internal data schemas since we'll likely need to work with contact data:`, status: 'complete', icon: 'text' });
+    toolCalls.push({
+      name: `Great! Now I understand the setup. Let me create an integration for ${integrationName} and then build the necessary elements to ${useCase.toLowerCase()}. Let me also load the skill about internal data schemas since we'll likely need to work with contact data:`,
+      status: 'complete',
+      icon: 'text',
+    });
     toolCalls.push({ name: 'Tool: load-skill', status: 'running', icon: 'lightbulb' });
     setMessages((prev) => {
       const newMessages = [...prev];
@@ -547,7 +570,7 @@ export default function ChatPanel({
       return newMessages;
     });
 
-    await new Promise(resolve => setTimeout(resolve, 600));
+    await new Promise((resolve) => setTimeout(resolve, 600));
     toolCalls[13].status = 'complete';
     toolCalls.push({ name: 'Membrane: Create Integration', status: 'running', icon: 'zap' });
     setMessages((prev) => {
@@ -556,9 +579,13 @@ export default function ChatPanel({
       return newMessages;
     });
 
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     toolCalls[14].status = 'complete';
-    toolCalls.push({ name: `Perfect! The integration has been created. Now let me create an action that will ${useCase.toLowerCase()}. Based on the web search results, I know the API endpoint we need to use. Let me create an action for this:`, status: 'complete', icon: 'text' });
+    toolCalls.push({
+      name: `Perfect! The integration has been created. Now let me create an action that will ${useCase.toLowerCase()}. Based on the web search results, I know the API endpoint we need to use. Let me create an action for this:`,
+      status: 'complete',
+      icon: 'text',
+    });
     toolCalls.push({ name: 'Tool: load-skill', status: 'running', icon: 'lightbulb' });
     setMessages((prev) => {
       const newMessages = [...prev];
@@ -566,9 +593,13 @@ export default function ChatPanel({
       return newMessages;
     });
 
-    await new Promise(resolve => setTimeout(resolve, 600));
+    await new Promise((resolve) => setTimeout(resolve, 600));
     toolCalls[16].status = 'complete';
-    toolCalls.push({ name: 'Now let me read the documentation for the api-request-to-external-app function type since that\'s what we\'ll need:', status: 'complete', icon: 'text' });
+    toolCalls.push({
+      name: "Now let me read the documentation for the api-request-to-external-app function type since that's what we'll need:",
+      status: 'complete',
+      icon: 'text',
+    });
     toolCalls.push({ name: 'Tool: read-documentation', status: 'running', icon: 'file' });
     setMessages((prev) => {
       const newMessages = [...prev];
@@ -576,21 +607,19 @@ export default function ChatPanel({
       return newMessages;
     });
 
-    await new Promise(resolve => setTimeout(resolve, 800));
+    await new Promise((resolve) => setTimeout(resolve, 800));
     toolCalls[18].status = 'complete';
-    toolCalls.push({ name: `Perfect! Now let me create an action to ${useCase.toLowerCase()}:`, status: 'complete', icon: 'text' });
+    toolCalls.push({
+      name: `Perfect! Now let me create an action to ${useCase.toLowerCase()}:`,
+      status: 'complete',
+      icon: 'text',
+    });
     toolCalls.push({ name: 'Membrane: Create Action', status: 'running', icon: 'code' });
     setMessages((prev) => {
       const newMessages = [...prev];
       newMessages[newMessages.length - 1].tools = [...toolCalls];
       return newMessages;
     });
-
-    if (onAiThinking) {
-      onAiThinking('Initializing integration architect...\n→ Connecting to Claude AI...\n');
-    }
-
-    onCodingStateChange?.(true);
 
     try {
       const response = await fetch('/api/chat', {
@@ -618,7 +647,7 @@ export default function ChatPanel({
           return newMessages;
         });
 
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await new Promise((resolve) => setTimeout(resolve, 500));
         setMessages((prev) => [...prev, { role: 'assistant', content: '...' }]);
         await processStreamingResponse(reader, useCase, useCase);
       }
@@ -634,8 +663,6 @@ export default function ChatPanel({
           },
         ];
       });
-    } finally {
-      onCodingStateChange?.(false);
     }
   };
 
@@ -648,8 +675,6 @@ export default function ChatPanel({
 
     setMessages((prev) => [...prev, { role: 'user', content: userMessage }]);
     setMessages((prev) => [...prev, { role: 'assistant', content: '...' }]);
-
-    onCodingStateChange?.(true);
 
     try {
       const response = await fetch('/api/chat', {
@@ -681,8 +706,6 @@ export default function ChatPanel({
           content: 'Sorry, I encountered an error. Please try again.',
         },
       ]);
-    } finally {
-      onCodingStateChange?.(false);
     }
   };
 
@@ -698,7 +721,7 @@ export default function ChatPanel({
     return now.toLocaleTimeString('en-US', {
       hour: '2-digit',
       minute: '2-digit',
-      hour12: true
+      hour12: true,
     });
   };
 
@@ -708,7 +731,12 @@ export default function ChatPanel({
       <div className="border-b px-5 py-4 flex items-center gap-3 bg-white border-gray-200">
         <button className="text-gray-400 hover:text-gray-600">
           <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M10 19l-7-7m0 0l7-7m-7 7h18"
+            />
           </svg>
         </button>
         <h2 className="text-base font-semibold text-gray-900">Membrane Agent</h2>
@@ -719,125 +747,162 @@ export default function ChatPanel({
         <div className="w-full max-w-3xl px-8 py-6 pb-8 space-y-6">
           {messages.map((message, index) => (
             <div key={index}>
-            {message.role === 'assistant' && (
-              <div className="flex gap-3">
-                <div className="w-8 h-8 rounded-full bg-gray-100 flex-shrink-0 flex items-center justify-center">
-                  <Bot className="w-4 h-4 text-gray-600" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-baseline gap-2 mb-1">
-                    <span className="text-sm font-medium text-gray-900">Agent</span>
-                    <span className="text-xs text-gray-400">{getTimeStamp()}</span>
+              {message.role === 'assistant' && (
+                <div className="flex gap-3">
+                  <div className="w-8 h-8 rounded-full bg-gray-100 flex-shrink-0 flex items-center justify-center">
+                    <Bot className="w-4 h-4 text-gray-600" />
                   </div>
-                  <div className="text-sm text-gray-700 leading-relaxed">
-                    {message.isTyping ? (
-                      <div className="flex gap-1 items-center py-1">
-                        <span
-                          className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"
-                          style={{ animationDelay: '0ms' }}
-                        ></span>
-                        <span
-                          className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"
-                          style={{ animationDelay: '150ms' }}
-                        ></span>
-                        <span
-                          className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"
-                          style={{ animationDelay: '300ms' }}
-                        ></span>
-                      </div>
-                    ) : (
-                      <>
-                        <div className="whitespace-pre-wrap break-words">
-                          {message.content.replace(/\[SERVICE:[^\]]+\]/g, '').trim()}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-baseline gap-2 mb-1">
+                      <span className="text-sm font-medium text-gray-900">Agent</span>
+                      <span className="text-xs text-gray-400">{getTimeStamp()}</span>
+                    </div>
+                    <div className="text-sm text-gray-700 leading-relaxed">
+                      {message.isTyping ? (
+                        <div className="flex gap-1 items-center py-1">
+                          <span
+                            className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"
+                            style={{ animationDelay: '0ms' }}
+                          ></span>
+                          <span
+                            className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"
+                            style={{ animationDelay: '150ms' }}
+                          ></span>
+                          <span
+                            className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"
+                            style={{ animationDelay: '300ms' }}
+                          ></span>
                         </div>
+                      ) : (
+                        <>
+                          <div className="whitespace-pre-wrap break-words">
+                            {message.content.replace(/\[SERVICE:[^\]]+\]/g, '').trim()}
+                          </div>
 
-                        {/* Plan Section */}
-                        {message.plan && message.plan.length > 0 && (
-                          <div className="mt-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
-                            <div className="font-medium text-gray-900 mb-2">Plan:</div>
-                            <ol className="list-decimal list-inside space-y-1 text-gray-700">
-                              {message.plan.map((step, i) => (
-                                <li key={i} className="text-sm">{step}</li>
+                          {/* Plan Section */}
+                          {message.plan && message.plan.length > 0 && (
+                            <div className="mt-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                              <div className="font-medium text-gray-900 mb-2">Plan:</div>
+                              <ol className="list-decimal list-inside space-y-1 text-gray-700">
+                                {message.plan.map((step, i) => (
+                                  <li key={i} className="text-sm">
+                                    {step}
+                                  </li>
+                                ))}
+                              </ol>
+                            </div>
+                          )}
+
+                          {/* Tool Calls Section */}
+                          {message.tools && message.tools.length > 0 && (
+                            <div className="mt-3 space-y-1">
+                              {message.tools.map((tool, i) => (
+                                <details
+                                  key={i}
+                                  className="group"
+                                  open={
+                                    tool.name.includes('Now let me') ||
+                                    tool.name.includes('Good!') ||
+                                    tool.name.includes('Perfect!') ||
+                                    tool.name.includes('Great!')
+                                  }
+                                >
+                                  <summary className="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded cursor-pointer hover:bg-gray-100 transition-colors list-none">
+                                    {getToolIcon(tool.icon)}
+                                    <span className="flex-1 text-sm font-medium text-gray-700">
+                                      {tool.name}
+                                    </span>
+                                    {tool.status === 'running' ? (
+                                      <div className="w-4 h-4 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin"></div>
+                                    ) : (
+                                      <svg
+                                        className="w-4 h-4 text-gray-400 group-open:rotate-180 transition-transform"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                      >
+                                        <path
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                          strokeWidth="2"
+                                          d="M19 9l-7 7-7-7"
+                                        />
+                                      </svg>
+                                    )}
+                                  </summary>
+                                  {tool.status === 'complete' &&
+                                    !tool.name.includes('Now let me') &&
+                                    !tool.name.includes('Good!') &&
+                                    !tool.name.includes('Perfect!') &&
+                                    !tool.name.includes('Great!') && (
+                                      <div className="px-3 py-2 text-xs text-gray-600 bg-gray-50/50">
+                                        ✓ Complete
+                                      </div>
+                                    )}
+                                </details>
                               ))}
-                            </ol>
-                          </div>
-                        )}
-
-                        {/* Tool Calls Section */}
-                        {message.tools && message.tools.length > 0 && (
-                          <div className="mt-3 space-y-1">
-                            {message.tools.map((tool, i) => (
-                              <details key={i} className="group" open={tool.name.includes('Now let me') || tool.name.includes('Good!') || tool.name.includes('Perfect!') || tool.name.includes('Great!')}>
-                                <summary className="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded cursor-pointer hover:bg-gray-100 transition-colors list-none">
-                                  {getToolIcon(tool.icon)}
-                                  <span className="flex-1 text-sm font-medium text-gray-700">{tool.name}</span>
-                                  {tool.status === 'running' ? (
-                                    <div className="w-4 h-4 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin"></div>
-                                  ) : (
-                                    <svg className="w-4 h-4 text-gray-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"/>
-                                    </svg>
-                                  )}
-                                </summary>
-                                {tool.status === 'complete' && !tool.name.includes('Now let me') && !tool.name.includes('Good!') && !tool.name.includes('Perfect!') && !tool.name.includes('Great!') && (
-                                  <div className="px-3 py-2 text-xs text-gray-600 bg-gray-50/50">
-                                    ✓ Complete
-                                  </div>
-                                )}
-                              </details>
-                            ))}
-                          </div>
-                        )}
-                      </>
-                    )}
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </div>
-            )}
-
-            {message.role === 'user' && (
-              <div className="flex gap-3">
-                <div className="w-8 h-8 rounded-full bg-blue-100 flex-shrink-0 flex items-center justify-center">
-                  <span className="text-sm">👤</span>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-baseline gap-2 mb-1">
-                    <span className="text-sm font-medium text-gray-900">You</span>
-                    <span className="text-xs text-gray-400">{getTimeStamp()}</span>
-                  </div>
-                  <div className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap break-words">
-                    {message.content}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {message.role === 'assistant' &&
-              index === messages.length - 1 &&
-              integrationCompleted &&
-              integrationData &&
-              message.content.includes('Integration complete!') && (
-                <div className="mt-4 ml-11 mb-8">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (onAddToIDE && integrationData) {
-                        onAddToIDE(integrationData);
-                      }
-                    }}
-                    className="inline-flex items-center gap-2 text-sm bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg border border-blue-600 transition-colors font-medium"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"/>
-                    </svg>
-                    Add to Your IDE
-                  </button>
                 </div>
               )}
-          </div>
-        ))}
 
-        <div ref={messagesEndRef} className="h-4" />
+              {message.role === 'user' && (
+                <div className="flex gap-3">
+                  <div className="w-8 h-8 rounded-full bg-blue-100 flex-shrink-0 flex items-center justify-center">
+                    <span className="text-sm">👤</span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-baseline gap-2 mb-1">
+                      <span className="text-sm font-medium text-gray-900">You</span>
+                      <span className="text-xs text-gray-400">{getTimeStamp()}</span>
+                    </div>
+                    <div className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap break-words">
+                      {message.content}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {message.role === 'assistant' &&
+                index === messages.length - 1 &&
+                integrationCompleted &&
+                integrationData &&
+                message.content.includes('Integration complete!') && (
+                  <div className="mt-4 ml-11 mb-8">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (onAddToIDE && integrationData) {
+                          onAddToIDE(integrationData);
+                        }
+                      }}
+                      className="inline-flex items-center gap-2 text-sm bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg border border-blue-600 transition-colors font-medium"
+                    >
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M12 4v16m8-8H4"
+                        />
+                      </svg>
+                      Add to Open Membrane OS
+                    </button>
+                  </div>
+                )}
+            </div>
+          ))}
+
+          <div ref={messagesEndRef} className="h-4" />
         </div>
       </div>
 
@@ -861,7 +926,12 @@ export default function ChatPanel({
                 className="absolute right-2 bottom-2 p-2 rounded-lg disabled:opacity-40 disabled:cursor-not-allowed transition-all bg-blue-600 text-white hover:bg-blue-700 disabled:hover:bg-blue-600"
               >
                 <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2.5"
+                    d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+                  />
                 </svg>
               </button>
             </div>

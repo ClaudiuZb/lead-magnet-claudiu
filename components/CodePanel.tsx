@@ -18,10 +18,8 @@ export default function CodePanel({
   selectedFile,
   companyUrl,
   companyAnalysis,
-  isAICoding,
   generatedFileContents,
   typingFile,
-  aiThinking,
 }: CodePanelProps) {
   const companyName = companyUrl.split('.')[0];
   const capitalizedName =
@@ -92,7 +90,9 @@ export default function CodePanel({
           return (
             <div key={i}>
               <span className="text-gray-700">{key.replace(/"([^"]+)"/, '')}</span>
-              <span className="text-[#0070C1]">&quot;{key.match(/"([^"]+)"/)?.[1] || ''}&quot;</span>
+              <span className="text-[#0070C1]">
+                &quot;{key.match(/"([^"]+)"/)?.[1] || ''}&quot;
+              </span>
               <span className="text-gray-700">: </span>
               <span className="text-[#A31515]">{value}</span>
             </div>

@@ -120,7 +120,7 @@ export default function IDEInterface({
       <div className="hidden fixed top-0 left-0 right-0 h-12 bg-[#252526] border-b border-[#3E3E42] items-center px-4 z-10">
         <div className="flex items-center gap-3">
           <span className="text-lg font-mono text-[#569CD6]">&lt;/&gt;</span>
-          <span className="text-sm font-medium text-gray-300">Your IDE</span>
+          <span className="text-sm font-medium text-gray-300">Open Membrane OS</span>
         </div>
         <div className="ml-auto text-xs text-[#999]">
           Project:{' '}
