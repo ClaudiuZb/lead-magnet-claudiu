@@ -1,6 +1,9 @@
 import { NextRequest } from 'next/server';
+import Anthropic from '@anthropic-ai/sdk';
 
-export const runtime = 'edge';
+const anthropic = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY || '',
+});
 
 export async function POST(req: NextRequest) {
   try {
@@ -11,11 +14,6 @@ export async function POST(req: NextRequest) {
         status: 400,
         headers: { 'Content-Type': 'application/json' },
       });
-    }
-
-    const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
-    if (!ANTHROPIC_API_KEY) {
-      throw new Error('ANTHROPIC_API_KEY not configured');
     }
 
     const urlObj = new URL(url.startsWith('http') ? url : `https://${url}`);
@@ -42,20 +40,13 @@ export async function POST(req: NextRequest) {
       pageContent = 'Unable to fetch page content';
     }
 
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'x-api-key': ANTHROPIC_API_KEY,
-        'anthropic-version': '2023-06-01',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-5-20250929',
-        max_tokens: 1024,
-        messages: [
-          {
-            role: 'user',
-            content: `Analyze this company website and provide integration suggestions.
+    const response = await anthropic.messages.create({
+      model: 'claude-sonnet-4-5-20250929',
+      max_tokens: 1024,
+      messages: [
+        {
+          role: 'user',
+          content: `Analyze this company website and provide integration suggestions.
 
 Company: ${capitalizedName}
 Domain: ${domain}
@@ -91,14 +82,12 @@ Respond with ONLY valid JSON (no markdown, no code blocks):
 }
 
 FINAL CHECK: Count the service names in each use case. If you see 2+ service names, REWRITE IT with only 1 service.`,
-          },
-        ],
-      }),
+        },
+      ],
     });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Claude API error:', response.status, errorText);
+    if (!response || !response.content || !response.content[0]) {
+      console.error('Invalid Claude API response:', response);
 
       return new Response(
         JSON.stringify({
@@ -117,8 +106,12 @@ FINAL CHECK: Count the service names in each use case. If you see 2+ service nam
       );
     }
 
-    const data = await response.json();
-    let analysis = data.content[0].text;
+    const textBlock = response.content.find((block: any) => block.type === 'text');
+    if (!textBlock || textBlock.type !== 'text') {
+      throw new Error('No text content in Claude response');
+    }
+
+    let analysis = textBlock.text;
 
     analysis = analysis
       .replace(/```json\s*/g, '')

@@ -1,8 +1,6 @@
 import { NextRequest } from 'next/server';
 import { streamChatCompletion, type Message } from '@/lib/claude';
 
-export const runtime = 'edge';
-
 export async function POST(req: NextRequest) {
   try {
     const { messages, companyUrl } = await req.json();
